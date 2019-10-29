@@ -26,12 +26,12 @@ public class FirebaseUIActivity {
     private static MapsActivity caller;
 
     private FirebaseUIActivity() {
-    }
 
-    ;
+    }
     public static boolean isAdmin;
 
     public static void openFbReference(String ref, final MapsActivity callerActivity) {
+        Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
         if (firebaseUtil == null) {
             firebaseUtil = new FirebaseUIActivity();
             mFirebaseAuth = FirebaseAuth.getInstance();
@@ -40,7 +40,7 @@ public class FirebaseUIActivity {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                     if (firebaseAuth.getCurrentUser() == null) {
-                        FirebaseUIActivity.signIn();
+                        FirebaseUIActivity.signIn(callerActivity);
                     } else {
                         String userId = firebaseAuth.getUid();
                         Toast.makeText(callerActivity.getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
@@ -51,25 +51,10 @@ public class FirebaseUIActivity {
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == Activity.RESULT_OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                // ...
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
-        }
+    public static boolean isUserLoggedIn() {
+        if (firebaseUtil != null) return true;
+        return false;
     }
-
 
     public static void attachListener() {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
@@ -79,7 +64,8 @@ public class FirebaseUIActivity {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
     }
 
-    private static void signIn() {
+    private static void signIn(final MapsActivity callerActivity) {
+        Toast.makeText(callerActivity.getBaseContext(), "signIn() called", Toast.LENGTH_SHORT).show();
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),

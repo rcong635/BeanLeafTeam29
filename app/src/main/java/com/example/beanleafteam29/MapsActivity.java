@@ -30,6 +30,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -46,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
         LatLng USC = new LatLng(34.0224, -118.2851);
         mMap.addMarker(new MarkerOptions().position(USC).title("Marker at USC"));
@@ -55,22 +57,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onResume() {
+        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
         super.onResume();
-        FirebaseUIActivity.openFbReference("some_data", this);
+        if(!FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.openFbReference("some_data", this);
+            FirebaseUIActivity.attachListener();
+        }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Toast.makeText(this, "Porca!!!", Toast.LENGTH_SHORT).show();
         Button b1= findViewById(R.id.logout);
-        FirebaseUIActivity.attachListener();
     }
 
     @Override
     protected void onPause() {
+        Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
         super.onPause();
         FirebaseUIActivity.detachListener();
     }
 
     public void onClick(View v) {
+        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
         switch (v.getId()) {
             case R.id.logout:
                 AuthUI.getInstance().signOut(this)
