@@ -2,8 +2,6 @@ package com.example.beanleafteam29;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -23,10 +21,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +54,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
+
         mMap = googleMap;
         LatLng USC = new LatLng(34.0224, -118.2851);
         mMap.addMarker(new MarkerOptions().position(USC).title("Marker at USC"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(USC));
         mMap.setMinZoomPreference(16);
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("Locations")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String location_name = document.getString("Name");
+                                GeoPoint coordinates = document.getGeoPoint("Coordinates");
+                                LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
+                                mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
+                            }
+                        } else {
+                            Log.d("Some string", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
     }
 
     @Override
