@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,7 @@ public class FirebaseUIActivity {
     public static FirebaseAuth.AuthStateListener mAuthListener;
     private static final int RC_SIGN_IN = 123;
     private static MapsActivity caller;
+    private FirebaseFirestore db;
 
     private FirebaseUIActivity() {
 

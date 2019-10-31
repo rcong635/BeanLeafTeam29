@@ -25,7 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:hint="Location Name" />
+            android:hint="Location Name"
+            android:importantForAutofill="no" />
     </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Address Label -->
@@ -38,28 +39,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress"
-                android:hint="Address" />
+                android:hint="Address"
+                android:importantForAutofill="no" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Add Location Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_add"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="63dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="Add Location"/>
-
-        <!-- Return Button -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_return"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:padding="12dp"
-            android:text="Return"/>
+            android:text="Add Location" />
 
     </LinearLayout>
 </ScrollView>

@@ -1,14 +1,12 @@
 package com.example.beanleafteam29;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -19,7 +17,6 @@ public class AddLocActivity extends AppCompatActivity {
     private EditText Name;
     private EditText Address;
     private Button Add;
-    private Button Return;
     private static final String TAG = "AddLocActivity";
 
     @Override
@@ -30,26 +27,16 @@ public class AddLocActivity extends AppCompatActivity {
         Name = findViewById(R.id.input_name);
         Address = findViewById(R.id.input_address);
         Add = findViewById(R.id.btn_add);
-        Return = findViewById(R.id.btn_return);
-
-
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addloc();
-            }
-        });
-
-        Return.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                finish();
+                addLocation();
             }
         });
 
     }
 
-    public void addloc() {
+    public void addLocation() {
         Log.d(TAG, "AddLoc");
 
         if (!validate()) {
@@ -89,7 +76,6 @@ public class AddLocActivity extends AppCompatActivity {
 
     public void AddFailed() {
         Toast.makeText(getBaseContext(), "Add Location Failed", Toast.LENGTH_LONG).show();
-
         Add.setEnabled(true);
     }
 
