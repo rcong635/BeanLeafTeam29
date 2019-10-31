@@ -115,6 +115,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         });
                 break;
+            case R.id.Add:
+
+                Intent intent = new Intent(this, AddLocActivity.class);
+                startActivity(intent);
+
+                break;
             default:
                 Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
                 break;
