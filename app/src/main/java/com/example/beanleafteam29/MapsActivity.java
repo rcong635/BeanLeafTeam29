@@ -3,6 +3,7 @@ package com.example.beanleafteam29;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import com.firebase.ui.auth.AuthUI;
@@ -26,8 +27,6 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -54,13 +53,53 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
-
         mMap = googleMap;
         LatLng USC = new LatLng(34.0224, -118.2851);
         mMap.addMarker(new MarkerOptions().position(USC).title("Marker at USC"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(USC));
         mMap.setMinZoomPreference(16);
 
+        displayLocations();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
+        super.onResume();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        if(!FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.openFbReference("some_data", this);
+            FirebaseUIActivity.attachListener();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
+        super.onPause();
+        FirebaseUIActivity.detachListener();
+    }
+
+    public void onClick(View v) {
+        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
+        switch (v.getId()) {
+            case R.id.logout:
+                FirebaseUIActivity.logout(this);
+                break;
+            case R.id.Add:
+                Intent intent = new Intent(this, AddLocActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    private void displayLocations() {
         db = FirebaseFirestore.getInstance();
         db.collection("Locations")
                 .get()
@@ -79,53 +118,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
-
     }
-
-    @Override
-    protected void onResume() {
-        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
-        super.onResume();
-        if(!FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseUIActivity.openFbReference("some_data", this);
-            FirebaseUIActivity.attachListener();
-        }
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        Button b1= findViewById(R.id.logout);
-    }
-
-    @Override
-    protected void onPause() {
-        Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
-        super.onPause();
-        FirebaseUIActivity.detachListener();
-    }
-
-    public void onClick(View v) {
-        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
-        switch (v.getId()) {
-            case R.id.logout:
-                AuthUI.getInstance().signOut(this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("Logout", "User logged out");
-                                FirebaseUIActivity.attachListener();
-                            }
-                        });
-                break;
-            case R.id.Add:
-
-                Intent intent = new Intent(this, AddLocActivity.class);
-                startActivity(intent);
-
-                break;
-            default:
-                Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
-                break;
-        }
-    }
-
 
 }

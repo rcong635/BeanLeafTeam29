@@ -25,8 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:hint="Location Name"
-            android:importantForAutofill="no" />
+            android:hint="Location Name" />
     </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Address Label -->
@@ -40,12 +39,13 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress"
                 android:hint="Address"
-                android:importantForAutofill="no" />
+                android:importantForAutofill="yes" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Add Location Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_add"
+            android:background="@color/firebaseYellow"
             android:layout_width="fill_parent"
             android:layout_height="63dp"
             android:layout_marginTop="24dp"

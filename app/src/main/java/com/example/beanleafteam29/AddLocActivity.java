@@ -54,7 +54,7 @@ public class AddLocActivity extends AppCompatActivity {
         String name = Name.getText().toString();
         String address = Address.getText().toString();
 
-        // TODO: Implement your own Add Loc logic here.
+        FirebaseUIActivity.addLocation(name, address, this);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
