@@ -93,6 +93,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent intent = new Intent(this, AddLocActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.profileBtn:
+                Intent intent2 = new Intent(this, ProfileActivity.class);
+                startActivity(intent2);
+                break;
             default:
                 Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
                 break;
