@@ -32,13 +32,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
+    private Button addLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        addLocationButton = findViewById(R.id.Add);
+
     }
 
     /**
@@ -59,9 +61,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(USC));
         mMap.setMinZoomPreference(16);
 
-        displayLocations();
-
-
+        FirebaseUIActivity.openFbReference("some_data", this);
+        if(FirebaseUIActivity.isUserLoggedIn()){
+            Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
+            FirebaseUIActivity.checkAdmin(this);
+            displayLocations();
+        } else {
+            FirebaseUIActivity.attachListener();
+        }
     }
 
     @Override
@@ -70,10 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        if(!FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseUIActivity.openFbReference("some_data", this);
-            FirebaseUIActivity.attachListener();
-        }
+
     }
 
     @Override
@@ -97,6 +101,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    public void hideButton() {
+        addLocationButton.setVisibility(View.GONE);
+    }
+
+    public void showButton() {
+        addLocationButton.setVisibility(View.VISIBLE);
     }
 
     private void displayLocations() {
