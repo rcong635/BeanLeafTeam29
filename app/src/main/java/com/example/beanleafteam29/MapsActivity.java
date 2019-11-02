@@ -16,7 +16,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,7 +32,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, PopupMenu.OnMenuItemClickListener {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
@@ -82,22 +86,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onPause();
         FirebaseUIActivity.detachListener();
     }
+    
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.user_menu);
+        popup.show();
+    }
 
-    public void onClick(View v) {
-        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
-        switch (v.getId()) {
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
+        switch (item.getItemId()) {
             case R.id.logout:
+                Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();
                 FirebaseUIActivity.logout(this);
-                break;
+                return true;
             case R.id.Add:
+                Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, AddLocActivity.class);
                 startActivity(intent);
-                break;
+                return true;
+            case R.id.View_History:
+                Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
+                return true;
             default:
-                Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
-                break;
+                return super.onOptionsItemSelected(item);
         }
     }
+
 
     private void displayLocations() {
         db = FirebaseFirestore.getInstance();
