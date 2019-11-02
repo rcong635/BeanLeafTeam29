@@ -71,7 +71,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        //addLocationButton = findViewById(R.id.Add);
+        addLocationButton = findViewById(R.id.Add);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
