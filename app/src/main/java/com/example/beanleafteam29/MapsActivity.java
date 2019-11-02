@@ -16,7 +16,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,19 +32,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, PopupMenu.OnMenuItemClickListener {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
-    private Button addLocationButton;
+    private boolean addLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        addLocationButton = findViewById(R.id.Add);
-
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
     }
 
     /**
@@ -70,6 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             FirebaseUIActivity.attachListener();
         }
+
+
     }
 
     @Override
@@ -78,7 +83,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        if(!FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.openFbReference("some_data", this);
+            FirebaseUIActivity.attachListener();
+        }
     }
 
     @Override
@@ -88,28 +96,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         FirebaseUIActivity.detachListener();
     }
 
-    public void onClick(View v) {
-        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
-        switch (v.getId()) {
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        if(addLocationButton)
+            popup.inflate(R.menu.admin_menu);
+        else
+            popup.inflate(R.menu.user_menu);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
+        switch (item.getItemId()) {
             case R.id.logout:
+                Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();
                 FirebaseUIActivity.logout(this);
-                break;
+                return true;
             case R.id.Add:
+                Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, AddLocActivity.class);
                 startActivity(intent);
-                break;
+                return true;
+            case R.id.View_History:
+                Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
+                return true;
             default:
-                Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
-                break;
+                return super.onOptionsItemSelected(item);
         }
     }
 
     public void hideButton() {
-        addLocationButton.setVisibility(View.GONE);
+        addLocationButton = false;
     }
 
     public void showButton() {
-        addLocationButton.setVisibility(View.VISIBLE);
+        addLocationButton = true;
     }
 
     private void displayLocations() {

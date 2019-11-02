@@ -16,7 +16,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,7 +60,6 @@ public class FirebaseUIActivity {
                         Toast.makeText(callerActivity.getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
                     }
                     FirebaseUIActivity.detachListener();
-                    //FirebaseUIActivity.addUserToFirestore();
                     //checkAdmin(callerActivity);
                 }
             };
@@ -94,6 +92,43 @@ public class FirebaseUIActivity {
 
     }
 
+    public static void addLocation(String locationName, String address, final AddLocActivity callerActivity) {
+        Geocoder coder = new Geocoder(callerActivity);
+        double latitude = 0, longitude = 0;
+        try {
+            ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(address, 5);
+            for(Address add : adresses){
+                longitude = add.getLongitude();
+                latitude = add.getLatitude();
+            }
+        } catch(IOException ex) {
+            System.err.println (ex.toString());
+            System.err.println("IOException thrown in method addLocation()");
+            System.exit(1);
+        }
+        Map<String, Object> locations = new HashMap<>();
+        GeoPoint latLong = new GeoPoint(latitude, longitude);
+        locations.put("Coordinates", latLong);
+        locations.put("Name", locationName);
+        db = FirebaseFirestore.getInstance();
+        db.collection("Locations").document()
+                .set(locations)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FirebaseUIActivity", "Error writing document", e);
+                    }
+                });
+
+    }
+
+
     // check admin does not work
     public static void checkAdmin(final MapsActivity callerActivity) {
         db = FirebaseFirestore.getInstance();
@@ -106,7 +141,6 @@ public class FirebaseUIActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if(task.getResult().size() != 0) {
-                                // NEEDS TO BE MODIFIED TO CHECK IF ADMIN IS TRUE
                                 FirebaseUIActivity.isAdmin = true;
                                 callerActivity.showButton();
                                 Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
@@ -145,42 +179,6 @@ public class FirebaseUIActivity {
                         .setIsSmartLockEnabled(false)
                         .build(),
                 RC_SIGN_IN);
-    }
-
-    public static void addLocation(String locationName, String address, final AddLocActivity callerActivity) {
-        Geocoder coder = new Geocoder(callerActivity);
-        double latitude = 0, longitude = 0;
-        try {
-            ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(address, 5);
-            for(Address add : adresses){
-                longitude = add.getLongitude();
-                latitude = add.getLatitude();
-            }
-        } catch(IOException ex) {
-            System.err.println (ex.toString());
-            System.err.println("IOException thrown in method addLocation()");
-            System.exit(1);
-        }
-        Map<String, Object> locations = new HashMap<>();
-        GeoPoint latLong = new GeoPoint(latitude, longitude);
-        locations.put("Coordinates", latLong);
-        locations.put("Name", locationName);
-        db = FirebaseFirestore.getInstance();
-        db.collection("Locations").document()
-                .set(locations)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("FirebaseUIActivity", "Error writing document", e);
-                    }
-                });
-
     }
 
     public static void addUserToFirestore() {
