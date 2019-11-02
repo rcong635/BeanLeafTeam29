@@ -197,7 +197,7 @@ public class FirebaseUIActivity {
                                     String name = mFirebaseAuth.getCurrentUser().getDisplayName();
                                     String email = mFirebaseAuth.getCurrentUser().getEmail();
                                     String uid = mFirebaseAuth.getUid();
-                                    boolean admin = true;
+                                    boolean admin = false;
                                     Map<String, Object> data = new HashMap<>();
                                     data.put("Name", name);
                                     data.put("Email", email);
