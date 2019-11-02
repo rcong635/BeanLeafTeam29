@@ -36,6 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
+    private boolean addLocationButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(USC));
         mMap.setMinZoomPreference(16);
 
-        displayLocations();
+        FirebaseUIActivity.openFbReference("some_data", this);
+        if(FirebaseUIActivity.isUserLoggedIn()){
+            Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
+            FirebaseUIActivity.addUserToFirestore();
+            FirebaseUIActivity.checkAdmin(this);
+            displayLocations();
+        } else {
+            FirebaseUIActivity.attachListener();
+        }
 
 
     }
@@ -90,7 +99,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(this);
-        popup.inflate(R.menu.user_menu);
+        if(addLocationButton)
+            popup.inflate(R.menu.admin_menu);
+        else
+            popup.inflate(R.menu.user_menu);
         popup.show();
     }
 
@@ -115,6 +127,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void hideButton() {
+        addLocationButton = false;
+    }
+
+    public void showButton() {
+        addLocationButton = true;
+    }
 
     private void displayLocations() {
         db = FirebaseFirestore.getInstance();
