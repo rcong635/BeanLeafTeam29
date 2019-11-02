@@ -70,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
+
         } else {
             FirebaseUIActivity.attachListener();
         }
@@ -83,10 +84,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        if(!FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseUIActivity.openFbReference("some_data", this);
-            FirebaseUIActivity.attachListener();
-        }
     }
 
     @Override
