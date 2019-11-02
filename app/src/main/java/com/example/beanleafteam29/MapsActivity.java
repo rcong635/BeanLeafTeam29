@@ -64,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()){
             Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
+            FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
         } else {
