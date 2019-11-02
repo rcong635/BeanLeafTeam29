@@ -1,5 +1,25 @@
 package com.example.beanleafteam29;
 
+
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowCloseListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.SupportMapFragment;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
@@ -10,7 +30,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.content.Intent;
@@ -28,7 +48,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMarkerClickListener, OnMapReadyCallback {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
@@ -38,31 +58,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
         LatLng USC = new LatLng(34.0224, -118.2851);
-        mMap.addMarker(new MarkerOptions().position(USC).title("Marker at USC"));
+        Marker m1 = mMap.addMarker(new MarkerOptions().position(USC).title("Marker at USC"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(USC));
         mMap.setMinZoomPreference(16);
+        mMap.setOnMarkerClickListener(this);
+
+
+//                new GoogleMap.OnMarkerClickListener() {
+//                    @Override
+//                    public boolean onMarkerClick(Marker marker) {
+//                        Intent intent3 = new Intent(getBaseContext(), ProfileActivity.class);
+//                        startActivity(intent3);
+//                          Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+//
+//                        return false;
+//                    }
+//                }
+//
+//
+//        );
 
         displayLocations();
-
-
     }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        Intent intent3 = new Intent(getBaseContext(), ProfileActivity.class);
+        startActivity(intent3);
+        Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+//
+
+        return false;
+    }
+
 
     @Override
     protected void onResume() {
@@ -123,5 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 });
     }
+
+
 
 }
