@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-//import com.google.maps.model.LatLng;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,11 +47,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener {
+        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
+        LocationListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
     private Button addLocationButton;
+    private LatLng currentLocation;
 
     /**
      * Request code for location permission request.
@@ -101,6 +103,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        mMap.setOnMarkerClickListener(this);
         enableMyLocation();
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
@@ -108,7 +111,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         }
         mMap.setMinZoomPreference(16);
-        displayRoute("3607 Trousdale Pkwy, Los Angeles, CA 90089", "929-959 W Jefferson Blvd, Los Angeles, CA 90007");
+        //displayRoute("3607 Trousdale Pkwy, Los Angeles, CA 90089", "929-959 W Jefferson Blvd, Los Angeles, CA 90007");
 
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()){
@@ -197,6 +200,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public void onMyLocationClick(@NonNull Location location) {
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     @Override
@@ -237,6 +241,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     @Override
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        currentLocation = latLng;
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
@@ -257,6 +262,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String origin = latLngToString(currentLocation);
+        String destination = latLngToString(marker.getPosition());
+        displayRoute(origin, destination);
+        return false;
+    }
+
+    private String latLngToString(LatLng location) {
+        String latLng = location.toString();
+        latLng = latLng.substring(10);
+        latLng = latLng.substring(0, latLng.length() - 1);
+        return latLng;
+    }
+
     /**
      * Displays a dialog with error message explaining that the location permission is missing.
      */
@@ -272,20 +292,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 .setWriteTimeout(1, TimeUnit.SECONDS);
     }
 
-    private void addMarkersToMap(DirectionsResult results, GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
-        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).snippet(getEndLocationTitle(results)));
-    }
+//    private void addMarkersToMap(DirectionsResult results, GoogleMap map) {
+//        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
+//        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).snippet(getEndLocationTitle(results)));
+//    }
 
     private void displayRoute(String origin, String destination) {
         DateTime now = new DateTime();
         try {
             DirectionsResult result = DirectionsApi.newRequest(getGeoContext()).mode(TravelMode.DRIVING).origin(origin).destination(destination).departureTime(now).await();
-            addMarkersToMap(result, mMap);
+            //addMarkersToMap(result, mMap);
             getEndLocationTitle(result);
             addPolyline(result, mMap);
         } catch (ApiException ae) {
-            String message = ae.getMessage();
+
         } catch (InterruptedException ie) {
 
         } catch (IOException ioe) {
