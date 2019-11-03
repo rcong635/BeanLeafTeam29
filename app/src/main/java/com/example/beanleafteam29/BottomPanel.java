@@ -23,10 +23,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 public class BottomPanel extends BottomSheetDialogFragment {
 //    private BottomSheetListener mListener;
     String titleStr = new String();
-//    String
+    String locId = new String();
 
-    public BottomPanel(String _titleStr){
+    public BottomPanel(String _titleStr, String _locId){
         titleStr = _titleStr;
+        locId = _locId;
     }
 
     @Nullable

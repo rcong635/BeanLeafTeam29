@@ -62,6 +62,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener, OnMarkerClickListener {
 
+    //hash maps for keeping track of markers on added onto the map
     private HashMap<String, Marker> locIdToMarker = new HashMap<>();
     private HashMap<Marker, String> markerToLocId = new HashMap<>();
 
@@ -69,17 +70,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     private FirebaseFirestore db;
     private Button addLocationButton;
 
-    /**
-     * Request code for location permission request.
-     *
-     * @see #onRequestPermissionsResult(int, String[], int[])
-     */
+//    Request code for location permission request.
+//    @see #onRequestPermissionsResult(int, String[], int[])
+
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
-    /**
-     * Flag indicating whether a requested permission has been denied after returning in
-     * {@link #onRequestPermissionsResult(int, String[], int[])}.
-     */
+
+//    Flag indicating whether a requested permission has been denied after returning in
+//    {@link #onRequestPermissionsResult(int, String[], int[])}.
     private boolean mPermissionDenied = false;
 
     private LocationManager locationManager;
@@ -88,9 +86,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+//        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
 
         addLocationButton = findViewById(R.id.Add);
 
@@ -116,16 +114,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         }
         mMap.setMinZoomPreference(16);
-        mMap.setOnMarkerClickListener(this);
+
+//      Creating listeners for markers on the map to show their data
+//        mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
                @Override
                public boolean onMarkerClick(Marker marker) {
                    BottomPanel bottomSheet = null;
                    if (markerToLocId.containsKey(marker)) {
-                       bottomSheet = new BottomPanel(markerToLocId.get(marker));
+                       bottomSheet = new BottomPanel(marker.getTitle(), markerToLocId.get(marker));
                    }
                    else {
-                       bottomSheet = new BottomPanel("didnt find it");
+                       bottomSheet = new BottomPanel("Ooops, sorry!", "");
 
                    }
                    bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
