@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -125,7 +124,6 @@ public class FirebaseUIActivity {
                         Log.w("FirebaseUIActivity", "Error writing document", e);
                     }
                 });
-
     }
 
 
@@ -135,6 +133,7 @@ public class FirebaseUIActivity {
         final String userID = FirebaseUIActivity.getUid();
         db.collection("Users")
                 .whereEqualTo("UID", userID)
+                .whereEqualTo("Admin", true)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -229,8 +228,6 @@ public class FirebaseUIActivity {
                             }
                         }
                     });
-
-
         }
     }
 }
