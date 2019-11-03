@@ -1,49 +1,32 @@
 package com.example.beanleafteam29;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowCloseListener;
-import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.SupportMapFragment;
-
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import java.util.HashMap;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.Bundle;
-import com.firebase.ui.auth.AuthUI;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
-
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.content.Intent;
 import android.util.Log;
@@ -59,8 +42,11 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener, OnMarkerClickListener {
+import java.util.HashMap;
+
+
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
+        LocationListener, PopupMenu.OnMenuItemClickListener, OnMarkerClickListener {
 
     //hash maps for keeping track of markers on added onto the map
     private HashMap<String, Marker> locIdToMarker = new HashMap<>();
@@ -101,10 +87,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-        mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
         LatLng location = new LatLng(400, -118);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         enableMyLocation();
@@ -138,8 +122,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()){
             Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
+            FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
+
         } else {
             FirebaseUIActivity.attachListener();
         }
@@ -156,7 +142,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     @Override
     protected void onResume() {
-        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -165,37 +151,100 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     @Override
     protected void onPause() {
-        Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
         super.onPause();
         FirebaseUIActivity.detachListener();
     }
 
-    public void onClick(View v) {
-        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
-        switch (v.getId()) {
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        if(addLocationButton)
+            popup.inflate(R.menu.admin_menu);
+        else
+            popup.inflate(R.menu.user_menu);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        //Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
+        switch (item.getItemId()) {
             case R.id.logout:
+                Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();
                 FirebaseUIActivity.logout(this);
-                break;
+                return true;
             case R.id.Add:
-                Intent intent = new Intent(this, AddLocActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.profileBtn:
+                Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
+                Intent addIntent = new Intent(this, AddLocActivity.class);
+                startActivity(addIntent);
+                return true;
+/*            case R.id.profileBtn:
                 Intent intent2 = new Intent(this, ProfileActivity.class);
                 startActivity(intent2);
-                break;
+                return true;*/
+            case R.id.View_History:
+                Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
+                Intent historyIntent = new Intent(this, UserHistoryActivity.class);
+                startActivity(historyIntent);
+                return true;
             default:
-                Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
-                break;
+                return super.onOptionsItemSelected(item);
         }
     }
 
     public void hideButton() {
-        addLocationButton.setVisibility(View.GONE);
+        addLocationButton = false;
     }
 
     public void showButton() {
-        addLocationButton.setVisibility(View.VISIBLE);
+        addLocationButton = true;
+    }
+
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionsUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mPermissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            mPermissionDenied = false;
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //currentLocation = latLng;
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        mMap.animateCamera(cameraUpdate);
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     private void displayLocations() {
@@ -221,31 +270,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 });
     }
 
-    private void enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission to access the location is missing.
-            PermissionsUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.ACCESS_FINE_LOCATION, true);
-        } else if (mMap != null) {
-            // Access to the location has been granted to the app.
-            mMap.setMyLocationEnabled(true);
-        }
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -263,38 +287,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         }
     }
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        if (mPermissionDenied) {
-            // Permission was not granted, display error dialog.
-            showMissingPermissionError();
-            mPermissionDenied = false;
-        }
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
-        mMap.animateCamera(cameraUpdate);
-        locationManager.removeUpdates(this);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
+//    @Override
+//    public boolean onMarkerClick(Marker marker) {
+//        String origin = latLngToString(currentLocation);
+//        String destination = latLngToString(marker.getPosition());
+//        displayRoute(origin, destination);
+//        return false;
+//    }
+//
+//    private String latLngToString(LatLng location) {
+//        String latLng = location.toString();
+//        latLng = latLng.substring(10);
+//        latLng = latLng.substring(0, latLng.length() - 1);
+//        return latLng;
+//    }
 
     /**
      * Displays a dialog with error message explaining that the location permission is missing.
@@ -303,5 +309,42 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         PermissionsUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
+
+//    private GeoApiContext getGeoContext() {
+//        GeoApiContext geoApiContext = new GeoApiContext();
+//        return geoApiContext.setQueryRateLimit(3).setApiKey(getString(R.string.google_maps_key))
+//                .setConnectTimeout(1, TimeUnit.SECONDS).setReadTimeout(1, TimeUnit.SECONDS)
+//                .setWriteTimeout(1, TimeUnit.SECONDS);
+//    }
+
+//    private void addMarkersToMap(DirectionsResult results, GoogleMap map) {
+//        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
+//        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).snippet(getEndLocationTitle(results)));
+//    }
+
+//    private void displayRoute(String origin, String destination) {
+//        DateTime now = new DateTime();
+//        try {
+//            DirectionsResult result = DirectionsApi.newRequest(getGeoContext()).mode(TravelMode.DRIVING).origin(origin).destination(destination).departureTime(now).await();
+//            //addMarkersToMap(result, mMap);
+//            getEndLocationTitle(result);
+//            addPolyline(result, mMap);
+//        } catch (ApiException ae) {
+//
+//        } catch (InterruptedException ie) {
+//
+//        } catch (IOException ioe) {
+//
+//        }
+//    }
+
+//    private String getEndLocationTitle(DirectionsResult results){
+//        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
+//    }
+//
+//    private void addPolyline(DirectionsResult results, GoogleMap map) {
+//        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
+//        map.addPolyline(new PolylineOptions().addAll(decodedPath));
+//    }
 
 }
