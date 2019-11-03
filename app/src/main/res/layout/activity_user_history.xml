@@ -9,18 +9,68 @@
 <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="50dp"
-    android:orientation="vertical"
-    android:background="@color/colorPrimary">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/Header"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_gravity="start"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:textSize="24sp"
         android:textColor="#ffffff"
         android:text="User History"
+        android:background="@color/colorPrimary"
         />
+
+    <RelativeLayout
+        android:id="@+id/History"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Header">
+
+        <RelativeLayout
+            android:id="@+id/Item1"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+            <TextView
+                android:id="@+id/Item1Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textSize="16dp"
+                android:textColor="@color/colorBlack"
+                />
+            <TextView
+                android:id="@+id/Item1Time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Item1Name"
+                />
+            <TextView
+                android:id="@+id/Item1Location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Item1Time"
+                />
+            <TextView
+                android:id="@+id/Item1Price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textSize="20dp"
+                android:textColor="@color/colorBlack"
+                />
+            <TextView
+                android:id="@+id/Item1Caffeine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Item1Location"
+                />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 </RelativeLayout>

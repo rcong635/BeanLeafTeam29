@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#B00000</color>
     <color name="firebaseYellow">#FCC33E</color>
+    <color name="colorBlack">#000000</color>
 </resources>
