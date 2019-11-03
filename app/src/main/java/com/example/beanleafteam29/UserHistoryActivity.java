@@ -42,7 +42,8 @@ public class UserHistoryActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 if(task.getResult().size() != 0) {
-
+                                    TextView noItems = findViewById(R.id.noItems);
+                                    noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         Map<String, Object> myData = document.getData();
                                         System.out.println(document);
@@ -55,12 +56,11 @@ public class UserHistoryActivity extends AppCompatActivity {
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-//                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
-//                                        SimpleDateFormat sfd = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//                                        sfd.format(new Date(timeStamp));
-//                                        TextView timeView = findViewById(R.id.Item1Time);
-//                                        String timeString = time.toString();
-//                                        timeView.setText(timeString);
+                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
+                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
+                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
+                                        String timeString = sfd.format(timeStamp.toDate());;
+                                        timeView.setText(timeString);
 
                                         String location = (String) myData.get("LocationName");
                                         TextView locationView = itemView.findViewById(R.id.ItemLocation);
@@ -68,18 +68,21 @@ public class UserHistoryActivity extends AppCompatActivity {
 
                                         Double price = (Double) myData.get("Price");
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
-                                        String priceString = price.toString();
+                                        String priceString = "$" + price.toString();
                                         priceView.setText(priceString);
 
                                         Long caffeine = (Long) myData.get("Caffeine");
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
-                                        String caffeineString = caffeine.toString();
+                                        String caffeineString = caffeine.toString() + "mg caffeine";
                                         caffeineView.setText(caffeineString);
 
                                         historyView.addView(itemView, 0);
 
                                         System.out.println(task.getResult().size());
                                     }
+                                } else {
+                                    TextView noItems = findViewById(R.id.noItems);
+                                    noItems.setVisibility(View.VISIBLE);
                                 }
                             } else {
                                 Log.d("getUserHistory", "Error getting documents: ", task.getException());

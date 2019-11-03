@@ -18,11 +18,18 @@
         android:layout_height="50dp"
         android:layout_gravity="start"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:textSize="24sp"
         android:textColor="#ffffff"
         android:text="User History"
         android:background="@color/colorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/noItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No items purchased yet"
+        android:visibility="invisible"
         />
 
     <LinearLayout
@@ -31,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/Header"
         android:orientation="vertical">
-
     </LinearLayout>
 
 </RelativeLayout>
