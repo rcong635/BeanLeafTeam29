@@ -1,5 +1,23 @@
 package com.example.beanleafteam29;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowCloseListener;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowLongClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.SupportMapFragment;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import java.util.HashMap;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
@@ -24,7 +42,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.content.Intent;
@@ -42,7 +60,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener {
+        GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback, LocationListener, OnMarkerClickListener {
+
+    private HashMap<String, Marker> locIdToMarker = new HashMap<>();
+    private HashMap<Marker, String> markerToLocId = new HashMap<>();
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
@@ -74,26 +95,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         addLocationButton = findViewById(R.id.Add);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         LatLng location = new LatLng(400, -118);
@@ -105,6 +116,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         }
         mMap.setMinZoomPreference(16);
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
+               @Override
+               public boolean onMarkerClick(Marker marker) {
+                   BottomPanel bottomSheet = null;
+                   if (markerToLocId.containsKey(marker)) {
+                       bottomSheet = new BottomPanel(markerToLocId.get(marker));
+                   }
+                   else {
+                       bottomSheet = new BottomPanel("didnt find it");
+
+                   }
+                   bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
+
+                   return false;
+               }
+           }
+        );
 
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()){
@@ -115,6 +144,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             FirebaseUIActivity.attachListener();
         }
     }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        Intent intent3 = new Intent(getBaseContext(), ProfileActivity.class);
+        startActivity(intent3);
+        Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
 
     @Override
     protected void onResume() {
@@ -142,6 +180,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 Intent intent = new Intent(this, AddLocActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.profileBtn:
+                Intent intent2 = new Intent(this, ProfileActivity.class);
+                startActivity(intent2);
+                break;
             default:
                 Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
                 break;
@@ -168,7 +210,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                                 String location_name = document.getString("Name");
                                 GeoPoint coordinates = document.getGeoPoint("Coordinates");
                                 LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
+                                Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
+                                locIdToMarker.put(document.getId(), newMarker);
+                                markerToLocId.put(newMarker, document.getId());
                             }
                         } else {
                             Log.d("Some string", "Error getting documents: ", task.getException());
