@@ -7,11 +7,20 @@
 <!--    tools:context=".UserHistoryActivity">-->
 
 <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary">
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="24sp"
+        android:textColor="#ffffff"
+        android:text="User History"
+        />
+</RelativeLayout>
