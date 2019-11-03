@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,7 +44,7 @@ public class FirebaseUIActivity {
 
 
     public static void openFbReference(String ref, final MapsActivity callerActivity) {
-        Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
         if (firebaseUtil == null) {
             firebaseUtil = new FirebaseUIActivity();
             mFirebaseAuth = FirebaseAuth.getInstance();
@@ -80,7 +79,7 @@ public class FirebaseUIActivity {
     }
 
     public static void logout(final MapsActivity callerActivity) {
-        Toast.makeText(callerActivity.getBaseContext(), "logout() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(callerActivity.getBaseContext(), "logout() called", Toast.LENGTH_SHORT).show();
         AuthUI.getInstance().signOut(callerActivity)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -125,7 +124,6 @@ public class FirebaseUIActivity {
                         Log.w("FirebaseUIActivity", "Error writing document", e);
                     }
                 });
-
     }
 
 
@@ -135,6 +133,7 @@ public class FirebaseUIActivity {
         final String userID = FirebaseUIActivity.getUid();
         db.collection("Users")
                 .whereEqualTo("UID", userID)
+                .whereEqualTo("Admin", true)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -143,11 +142,11 @@ public class FirebaseUIActivity {
                             if(task.getResult().size() != 0) {
                                 FirebaseUIActivity.isAdmin = true;
                                 callerActivity.showButton();
-                                Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
                             } else {
                                 FirebaseUIActivity.isAdmin = false;
                                 callerActivity.hideButton();
-                                Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(callerActivity.getBaseContext(), "Task is NOT successful!", Toast.LENGTH_SHORT).show();
@@ -179,5 +178,82 @@ public class FirebaseUIActivity {
                         .setIsSmartLockEnabled(false)
                         .build(),
                 RC_SIGN_IN);
+    }
+
+    public static void getUserHistory() {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Users/" + uid + "/History")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if(task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Map<String, Object> myData = document.getData();
+                                        System.out.println(document);
+                                        System.out.println(task.getResult().size());
+                                    }
+
+                                }
+                            } else {
+                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+    }
+
+    public static void addUserToFirestore() {
+        //Toast.makeText(caller.getBaseContext(), "addUser is called!", Toast.LENGTH_SHORT).show();
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Users")
+                    .whereEqualTo("UID", uid)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if(task.getResult().size() == 0) {
+                                    String name = mFirebaseAuth.getCurrentUser().getDisplayName();
+                                    String email = mFirebaseAuth.getCurrentUser().getEmail();
+                                    String uid = mFirebaseAuth.getUid();
+                                    boolean admin = false;
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("Name", name);
+                                    data.put("Email", email);
+                                    data.put("Admin", admin);
+                                    data.put("UID", uid);
+                                    db.collection("Users").document(uid)
+                                            .set(data)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("FirebaseUIActivity", "Error writing document", e);
+                                                }
+                                            });
+                                    data.clear();
+                                    db.collection("Users")
+                                            .document(uid)
+                                            .collection("History")
+                                            .document()
+                                            .set(data);
+                                }
+                            } else {
+                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
     }
 }

@@ -11,9 +11,6 @@ import android.widget.Toast;
 
 
 public class AddLocActivity extends AppCompatActivity {
-    //@BindView(R.id.btn_signup) Button _signupButton; -- butterknife functions
-    //@BindView(R.id.input_name) EditText _nameText;
-    //@BindView(R.id.input_address) EditText _addressText;
     private EditText Name;
     private EditText Address;
     private Button Add;
@@ -60,7 +57,7 @@ public class AddLocActivity extends AppCompatActivity {
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
+                        // On complete call either AddSuccess or AddFail
                         // depending on success
                         AddSuccess();
                         // onSignupFailed();
