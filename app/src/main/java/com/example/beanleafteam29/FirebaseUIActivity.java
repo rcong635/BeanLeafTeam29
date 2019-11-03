@@ -181,4 +181,57 @@ public class FirebaseUIActivity {
                         .build(),
                 RC_SIGN_IN);
     }
+
+    public static void addUserToFirestore() {
+        Toast.makeText(caller.getBaseContext(), "addUser is called!", Toast.LENGTH_SHORT).show();
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Users")
+                    .whereEqualTo("UID", uid)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if(task.getResult().size() == 0) {
+                                    String name = mFirebaseAuth.getCurrentUser().getDisplayName();
+                                    String email = mFirebaseAuth.getCurrentUser().getEmail();
+                                    String uid = mFirebaseAuth.getUid();
+                                    boolean admin = false;
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("Name", name);
+                                    data.put("Email", email);
+                                    data.put("Admin", admin);
+                                    data.put("UID", uid);
+                                    db.collection("Users").document(uid)
+                                            .set(data)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w("FirebaseUIActivity", "Error writing document", e);
+                                                }
+                                            });
+                                    data.clear();
+                                    db.collection("Users")
+                                            .document(uid)
+                                            .collection("History")
+                                            .document()
+                                            .set(data);
+                                }
+                            } else {
+                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+
+
+        }
+    }
 }

@@ -9,8 +9,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,35 +25,22 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.maps.DirectionsApi;
-import com.google.maps.GeoApiContext;
-import com.google.maps.errors.ApiException;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.TravelMode;
-import com.google.maps.android.*;
 
-import org.joda.time.DateTime;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
-        LocationListener {
+        LocationListener, PopupMenu.OnMenuItemClickListener {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
-    private Button addLocationButton;
+    private boolean addLocationButton;
     private LatLng currentLocation;
 
     /**
@@ -77,9 +65,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        addLocationButton = findViewById(R.id.Add);
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -115,8 +100,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()){
             Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
+            FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
+
         } else {
             FirebaseUIActivity.attachListener();
         }
@@ -129,7 +116,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -139,29 +125,43 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         FirebaseUIActivity.detachListener();
     }
 
-    public void onClick(View v) {
-        Toast.makeText(this, "onClick() called", Toast.LENGTH_SHORT).show();
-        switch (v.getId()) {
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        popup.setOnMenuItemClickListener(this);
+        if(addLocationButton)
+            popup.inflate(R.menu.admin_menu);
+        else
+            popup.inflate(R.menu.user_menu);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
+        switch (item.getItemId()) {
             case R.id.logout:
+                Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();
                 FirebaseUIActivity.logout(this);
-                break;
+                return true;
             case R.id.Add:
+                Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, AddLocActivity.class);
                 startActivity(intent);
-                break;
-            //case R.id.UserHistory:
+                return true;
+            case R.id.View_History:
+                Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
+                return true;
             default:
-                Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
-                break;
+                return super.onOptionsItemSelected(item);
         }
     }
 
     public void hideButton() {
-        addLocationButton.setVisibility(View.GONE);
+        addLocationButton = false;
     }
 
     public void showButton() {
-        addLocationButton.setVisibility(View.VISIBLE);
+        addLocationButton = true;
     }
 
     private void displayLocations() {
@@ -184,6 +184,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                     }
                 });
     }
+
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
