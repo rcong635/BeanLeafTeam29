@@ -135,6 +135,7 @@ public class FirebaseUIActivity {
         final String userID = FirebaseUIActivity.getUid();
         db.collection("Users")
                 .whereEqualTo("UID", userID)
+                .whereEqualTo("Admin", true)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

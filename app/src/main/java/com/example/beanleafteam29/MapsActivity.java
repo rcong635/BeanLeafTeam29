@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
-        LocationListener, GoogleMap.OnMarkerClickListener {
+        LocationListener {
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
@@ -103,7 +103,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
-        mMap.setOnMarkerClickListener(this);
         enableMyLocation();
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
@@ -262,20 +261,20 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        String origin = latLngToString(currentLocation);
-        String destination = latLngToString(marker.getPosition());
-        displayRoute(origin, destination);
-        return false;
-    }
-
-    private String latLngToString(LatLng location) {
-        String latLng = location.toString();
-        latLng = latLng.substring(10);
-        latLng = latLng.substring(0, latLng.length() - 1);
-        return latLng;
-    }
+//    @Override
+//    public boolean onMarkerClick(Marker marker) {
+//        String origin = latLngToString(currentLocation);
+//        String destination = latLngToString(marker.getPosition());
+//        displayRoute(origin, destination);
+//        return false;
+//    }
+//
+//    private String latLngToString(LatLng location) {
+//        String latLng = location.toString();
+//        latLng = latLng.substring(10);
+//        latLng = latLng.substring(0, latLng.length() - 1);
+//        return latLng;
+//    }
 
     /**
      * Displays a dialog with error message explaining that the location permission is missing.
@@ -285,41 +284,41 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
-    private GeoApiContext getGeoContext() {
-        GeoApiContext geoApiContext = new GeoApiContext();
-        return geoApiContext.setQueryRateLimit(3).setApiKey(getString(R.string.google_maps_key))
-                .setConnectTimeout(1, TimeUnit.SECONDS).setReadTimeout(1, TimeUnit.SECONDS)
-                .setWriteTimeout(1, TimeUnit.SECONDS);
-    }
+//    private GeoApiContext getGeoContext() {
+//        GeoApiContext geoApiContext = new GeoApiContext();
+//        return geoApiContext.setQueryRateLimit(3).setApiKey(getString(R.string.google_maps_key))
+//                .setConnectTimeout(1, TimeUnit.SECONDS).setReadTimeout(1, TimeUnit.SECONDS)
+//                .setWriteTimeout(1, TimeUnit.SECONDS);
+//    }
 
 //    private void addMarkersToMap(DirectionsResult results, GoogleMap map) {
 //        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
 //        map.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].startAddress).snippet(getEndLocationTitle(results)));
 //    }
 
-    private void displayRoute(String origin, String destination) {
-        DateTime now = new DateTime();
-        try {
-            DirectionsResult result = DirectionsApi.newRequest(getGeoContext()).mode(TravelMode.DRIVING).origin(origin).destination(destination).departureTime(now).await();
-            //addMarkersToMap(result, mMap);
-            getEndLocationTitle(result);
-            addPolyline(result, mMap);
-        } catch (ApiException ae) {
+//    private void displayRoute(String origin, String destination) {
+//        DateTime now = new DateTime();
+//        try {
+//            DirectionsResult result = DirectionsApi.newRequest(getGeoContext()).mode(TravelMode.DRIVING).origin(origin).destination(destination).departureTime(now).await();
+//            //addMarkersToMap(result, mMap);
+//            getEndLocationTitle(result);
+//            addPolyline(result, mMap);
+//        } catch (ApiException ae) {
+//
+//        } catch (InterruptedException ie) {
+//
+//        } catch (IOException ioe) {
+//
+//        }
+//    }
 
-        } catch (InterruptedException ie) {
-
-        } catch (IOException ioe) {
-
-        }
-    }
-
-    private String getEndLocationTitle(DirectionsResult results){
-        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
-    }
-
-    private void addPolyline(DirectionsResult results, GoogleMap map) {
-        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
-        map.addPolyline(new PolylineOptions().addAll(decodedPath));
-    }
+//    private String getEndLocationTitle(DirectionsResult results){
+//        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
+//    }
+//
+//    private void addPolyline(DirectionsResult results, GoogleMap map) {
+//        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
+//        map.addPolyline(new PolylineOptions().addAll(decodedPath));
+//    }
 
 }
