@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:orientation="vertical"
-        android:background="#b00000">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,9 +19,9 @@
             android:layout_gravity="start"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:textSize="32sp"
+            android:textSize="24sp"
             android:textColor="#ffffff"
-            android:text="Team29Rulez"
+            android:text="BeanLeafTeam29"
             />
 
 
@@ -32,7 +32,7 @@
             android:layout_gravity="end"
             android:layout_centerVertical="true"
             android:padding="15dp"
-            android:background="@color/colorAccent"
+            android:background="@color/colorPrimary"
             android:onClick="showPopup" />
 
     </RelativeLayout>
