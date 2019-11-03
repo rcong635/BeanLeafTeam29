@@ -145,11 +145,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 return true;
             case R.id.Add:
                 Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(this, AddLocActivity.class);
-                startActivity(intent);
+                Intent addIntent = new Intent(this, AddLocActivity.class);
+                startActivity(addIntent);
                 return true;
             case R.id.View_History:
                 Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
+                Intent historyIntent = new Intent(this, UserHistoryActivity.class);
+                startActivity(historyIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
