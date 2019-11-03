@@ -149,6 +149,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
                 Intent intent = new Intent(this, AddLocActivity.class);
                 startActivity(intent);
                 break;
+            //case R.id.UserHistory:
             default:
                 Toast.makeText(MapsActivity.this, "default", Toast.LENGTH_LONG).show();
                 break;
