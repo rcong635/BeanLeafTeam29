@@ -54,7 +54,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
-    private Button addLocationButton;
+    private boolean addLocationButton;
 
 //    Request code for location permission request.
 //    @see #onRequestPermissionsResult(int, String[], int[])
@@ -75,9 +75,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 //        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
-
-        addLocationButton = findViewById(R.id.Add);
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -121,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()){
-            Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
@@ -174,20 +171,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();
                 FirebaseUIActivity.logout(this);
                 return true;
+
             case R.id.Add:
                 Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
                 Intent addIntent = new Intent(this, AddLocActivity.class);
                 startActivity(addIntent);
                 return true;
+
 /*            case R.id.profileBtn:
                 Intent intent2 = new Intent(this, ProfileActivity.class);
                 startActivity(intent2);
                 return true;*/
+
             case R.id.View_History:
                 Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
                 Intent historyIntent = new Intent(this, UserHistoryActivity.class);
                 startActivity(historyIntent);
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
