@@ -1,7 +1,5 @@
 package com.example.beanleafteam29;
 
-
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
@@ -47,8 +45,12 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+
 
 public class MapsActivity extends FragmentActivity implements OnMarkerClickListener, OnMapReadyCallback {
+    private HashMap<String, Marker> locIdToMarker = new HashMap<>();
+    private HashMap<Marker, String> markerToLocId = new HashMap<>();
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
@@ -75,20 +77,25 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
         mMap.setMinZoomPreference(16);
         mMap.setOnMarkerClickListener(this);
 
+        mMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        BottomPanel bottomSheet = null;
+                        if (markerToLocId.containsKey(marker)) {
+                            bottomSheet = new BottomPanel(markerToLocId.get(marker));
+                        }
+                        else {
+                            bottomSheet = new BottomPanel("didnt find it");
 
-//                new GoogleMap.OnMarkerClickListener() {
-//                    @Override
-//                    public boolean onMarkerClick(Marker marker) {
-//                        Intent intent3 = new Intent(getBaseContext(), ProfileActivity.class);
-//                        startActivity(intent3);
-//                          Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
-//
-//                        return false;
-//                    }
-//                }
-//
-//
-//        );
+                        }
+                        bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
+
+                        return false;
+                    }
+                }
+
+
+        );
 
         displayLocations();
     }
@@ -155,7 +162,9 @@ public class MapsActivity extends FragmentActivity implements OnMarkerClickListe
                                 String location_name = document.getString("Name");
                                 GeoPoint coordinates = document.getGeoPoint("Coordinates");
                                 LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
-                                mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
+                                Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
+                                locIdToMarker.put(document.getId(), newMarker);
+                                markerToLocId.put(newMarker, document.getId());
                             }
                         } else {
                             Log.d("Some string", "Error getting documents: ", task.getException());

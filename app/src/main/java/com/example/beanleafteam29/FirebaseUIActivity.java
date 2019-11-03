@@ -35,7 +35,7 @@ public class FirebaseUIActivity {
     private static MapsActivity caller;
     private static FirebaseFirestore db;
 
-    private FirebaseUIActivity() {
+    public FirebaseUIActivity() {
 
     }
     public static boolean isAdmin;
