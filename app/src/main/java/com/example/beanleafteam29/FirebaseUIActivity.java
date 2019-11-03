@@ -199,7 +199,7 @@ public class FirebaseUIActivity {
 
                                 }
                             } else {
-                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                                Log.d("getUserHistory", "Error getting documents: ", task.getException());
                             }
                         }
                     });
