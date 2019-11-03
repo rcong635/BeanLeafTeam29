@@ -22,13 +22,21 @@
         android:textColor="#ffffff"
         android:text="User History"
         android:background="@color/colorPrimary"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
         />
 
     <TextView
         android:id="@+id/noItems"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="No items purchased yet"
+        android:layout_below="@id/Header"
+        android:textColor="@color/colorBlack"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:paddingTop="200dp"
         android:visibility="invisible"
         />
 
