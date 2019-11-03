@@ -61,7 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
-
+            FirebaseUIActivity.getUserHistory();
         } else {
             FirebaseUIActivity.attachListener();
         }

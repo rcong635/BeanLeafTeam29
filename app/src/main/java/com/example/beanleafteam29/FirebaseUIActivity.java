@@ -142,11 +142,11 @@ public class FirebaseUIActivity {
                             if(task.getResult().size() != 0) {
                                 FirebaseUIActivity.isAdmin = true;
                                 callerActivity.showButton();
-                                Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
                             } else {
                                 FirebaseUIActivity.isAdmin = false;
                                 callerActivity.hideButton();
-                                Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(callerActivity.getBaseContext(), "Task is NOT successful!", Toast.LENGTH_SHORT).show();
@@ -180,8 +180,34 @@ public class FirebaseUIActivity {
                 RC_SIGN_IN);
     }
 
+    public static void getUserHistory() {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Users/" + uid + "/History")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if(task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Map<String, Object> myData = document.getData();
+                                        System.out.println(document);
+                                        System.out.println(task.getResult().size());
+                                    }
+
+                                }
+                            } else {
+                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+    }
+
     public static void addUserToFirestore() {
-        Toast.makeText(caller.getBaseContext(), "addUser is called!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(caller.getBaseContext(), "addUser is called!", Toast.LENGTH_SHORT).show();
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
