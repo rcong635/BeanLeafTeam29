@@ -168,7 +168,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
             case R.id.logout:
-                Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();
                 FirebaseUIActivity.logout(this);
                 return true;
 
