@@ -38,7 +38,7 @@ public abstract class PermissionsUtils {
      * Checks if the result contains a {@link PackageManager#PERMISSION_GRANTED} result for a
      * permission from a runtime permissions request.
      *
-     * @see ActivityCompat.OnRequestPermissionsResultCallback
+     *
      */
     public static boolean isPermissionGranted(String[] grantPermissions, int[] grantResults,
                                               String permission) {
@@ -98,7 +98,7 @@ public abstract class PermissionsUtils {
      * permission.
      * <p>
      * The activity should implement
-     * {@link ActivityCompat.OnRequestPermissionsResultCallback}
+     *
      * to handle permit or denial of this permission request.
      */
     public static class RationaleDialog extends DialogFragment {
@@ -117,7 +117,7 @@ public abstract class PermissionsUtils {
          *
          * @param requestCode    Id of the request that is used to request the permission. It is
          *                       returned to the
-         *                       {@link ActivityCompat.OnRequestPermissionsResultCallback}.
+         *
          * @param finishActivity Whether the calling Activity should be finished if the dialog is
          *                       cancelled.
          */
