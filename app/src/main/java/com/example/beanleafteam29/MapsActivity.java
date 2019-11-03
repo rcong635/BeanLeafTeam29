@@ -40,7 +40,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -48,7 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
         LatLng USC = new LatLng(34.0224, -118.2851);
         mMap.addMarker(new MarkerOptions().position(USC).title("Marker at USC"));
@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onResume() {
-        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -79,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onPause() {
-        Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onPause() called", Toast.LENGTH_SHORT).show();
         super.onPause();
         FirebaseUIActivity.detachListener();
     }
@@ -96,7 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
+        //Toast.makeText(MapsActivity.this, "Options-Select", Toast.LENGTH_LONG).show();
         switch (item.getItemId()) {
             case R.id.logout:
                 Toast.makeText(MapsActivity.this, "Logout-Menu", Toast.LENGTH_LONG).show();

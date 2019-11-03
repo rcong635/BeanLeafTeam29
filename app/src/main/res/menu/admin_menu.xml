@@ -7,7 +7,7 @@
     <item android:id="@+id/logout"
         android:title="Logout" />
     <item android:id="@+id/Add"
-        android:title="Add" />
+        android:title="Add Location" />
     <item android:id="@+id/View_History"
         android:title="View History" />
 
