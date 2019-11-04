@@ -49,7 +49,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
                                         LayoutInflater inflater = getLayoutInflater();
                                         View itemView = inflater.inflate(R.layout.order_menu_item, null);
-                                        ViewGroup historyView = findViewById(R.id.History);
+                                        ViewGroup menuView = findViewById(R.id.Menu);
 
                                         String name = (String) myData.get("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
@@ -65,7 +65,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         String caffeineString = caffeine.toString() + "mg caffeine";
                                         caffeineView.setText(caffeineString);
 
-                                        historyView.addView(itemView, 0);
+                                        menuView.addView(itemView, 0);
 
                                         System.out.println(task.getResult().size());
                                     }
