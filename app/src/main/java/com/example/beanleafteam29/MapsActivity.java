@@ -164,7 +164,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         //Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-        LatLng location = new LatLng(400, -118);
+        LatLng location = new LatLng(34.0224, 118.2851);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         enableMyLocation();
         try {
@@ -251,12 +251,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Intent addIntent = new Intent(this, AddLocActivity.class);
                     startActivity(addIntent);
                     return true;
-
-/*            case R.id.profileBtn:
-                Intent intent2 = new Intent(this, ProfileActivity.class);
-                startActivity(intent2);
-                return true;*/
-
+                case R.id.Profile:
+                    Intent intent2 = new Intent(this, Edit_Location.class);
+                    startActivity(intent2);
+                    return true;
                 case R.id.View_History:
                     Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
                     Intent historyIntent = new Intent(this, UserHistoryActivity.class);
