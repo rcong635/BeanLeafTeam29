@@ -44,22 +44,22 @@ public class UserHistoryActivity extends AppCompatActivity {
                                     TextView noItems = findViewById(R.id.noItems);
                                     noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
+
                                         Map<String, Object> myData = document.getData();
                                         System.out.println(document);
 
                                         LayoutInflater inflater = getLayoutInflater();
                                         View itemView = inflater.inflate(R.layout.user_history_item, null);
                                         ViewGroup historyView = findViewById(R.id.History);
-                                        
                                         String name = document.getString("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-                                        Timestamp timeStamp = document.getTimestamp("Date");
-                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
-                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
-                                        String timeString = sfd.format(timeStamp.toDate());;
-                                        timeView.setText(timeString);
+//                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
+//                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
+//                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
+//                                        String timeString = sfd.format(timeStamp.toDate());
+//                                        timeView.setText(timeString);
 
                                         String location = document.getString("LocationName");
                                         TextView locationView = itemView.findViewById(R.id.ItemLocation);
