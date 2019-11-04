@@ -145,7 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onResume() {
-        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
