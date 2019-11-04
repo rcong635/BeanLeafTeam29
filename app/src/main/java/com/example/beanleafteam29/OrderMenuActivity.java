@@ -51,18 +51,15 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         View itemView = inflater.inflate(R.layout.order_menu_item, null);
                                         ViewGroup menuView = findViewById(R.id.Menu);
 
-                                        //String name = (String) myData.get("Name");
                                         String name = document.getString("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-                                        //Double price = (Double) myData.get("Price");
                                         double price = document.getDouble("Price");
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
                                         String priceString = "$" + price;
                                         priceView.setText(priceString);
 
-                                        //Long caffeine = (Long) myData.get("Caffeine");
                                         double caffeine = document.getDouble("Caffeine");
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + " mg caffeine";
