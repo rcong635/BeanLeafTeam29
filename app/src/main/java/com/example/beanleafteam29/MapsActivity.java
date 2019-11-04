@@ -4,14 +4,24 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +35,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -51,6 +63,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //hash maps for keeping track of markers on added onto the map
     private HashMap<String, Marker> locIdToMarker = new HashMap<>();
     private HashMap<Marker, String> markerToLocId = new HashMap<>();
+    private HashMap<Marker, String> markerToName = new HashMap<>();
+
 
     private GoogleMap mMap;
     private FirebaseFirestore db;
@@ -118,7 +132,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                public boolean onMarkerClick(Marker marker) {
                    BottomPanel bottomSheet = null;
                    if (markerToLocId.containsKey(marker)) {
-                       bottomSheet = new BottomPanel(marker.getTitle(), markerToLocId.get(marker));
+                       bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker));
                    }
                    else {
                        bottomSheet = new BottomPanel("Ooops, sorry!", "");
@@ -263,9 +277,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 String location_name = document.getString("Name");
                                 GeoPoint coordinates = document.getGeoPoint("Coordinates");
                                 LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
-                                Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
+
+                                Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected")
+                                        .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.coffee, location_name))));
+                                newMarker.setTag("location_name");
                                 locIdToMarker.put(document.getId(), newMarker);
                                 markerToLocId.put(newMarker, document.getId());
+                                markerToName.put(newMarker, location_name);
+
                             }
                         } else {
                             Log.d("Some string", "Error getting documents: ", task.getException());
@@ -273,6 +292,54 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 });
     }
+
+
+    private Bitmap writeTextOnDrawable(int drawableId, String text) {
+
+
+        Bitmap b = BitmapFactory.decodeResource(getResources(), drawableId)
+                .copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap bm = Bitmap.createScaledBitmap(b, 150, 150, false);
+
+        Typeface tf = Typeface.create("Helvetica", Typeface.BOLD);
+
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setTypeface(tf);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(convertToPixels(getBaseContext(), 13));
+
+
+        Rect textRect = new Rect();
+        Paint rectPaint = new Paint();
+        rectPaint.setColor(Color.WHITE);
+
+        paint.getTextBounds(text, 0, text.length(), textRect);
+        int text_width =  textRect.width();
+
+//        textRect.offsetTo(0, 30);
+        Bitmap bitmap = Bitmap.createBitmap(text_width, 250, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        canvas.drawRect(0,0,text_width,65,rectPaint);
+        canvas.drawBitmap(bm, (text_width/2) - 70, 65, paint);
+
+
+        canvas.drawText(text, (text_width/2), 50, paint);
+
+        return  bitmap;
+    }
+
+
+
+    public static int convertToPixels(Context context, int nDP)
+    {
+        final float conversionScale = context.getResources().getDisplayMetrics().density;
+
+        return (int) ((nDP * conversionScale) + 0.5f) ;
+
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
