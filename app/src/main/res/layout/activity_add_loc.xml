@@ -5,6 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true"
+    android:background="@drawable/background"
     tools:context=".AddLocActivity">
 
     <LinearLayout
@@ -15,8 +16,16 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-    <!-- Name Label -->
-    <com.google.android.material.textfield.TextInputLayout
+
+        <!-- Name Label -->
+
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/logo" />
+
+        <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
