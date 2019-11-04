@@ -140,7 +140,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                    }
                    bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
-
+                   bottomSheet.self = bottomSheet;
                    return false;
                }
            }

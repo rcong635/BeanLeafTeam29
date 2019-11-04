@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class BottomPanel extends BottomSheetDialogFragment {
 //    private BottomSheetListener mListener;
+    BottomPanel self = null;
     String titleStr = new String();
     String locId = new String();
 
@@ -77,6 +78,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                 orderMenuIntent.putExtra("locationID", locId);
                 orderMenuIntent.putExtra("locationName", titleStr);
                 startActivity(orderMenuIntent);
+                self.dismiss();
             }
         });
 
@@ -86,6 +88,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                 Intent editLocIntent = new Intent(getContext(), EditLocationActivity.class);
                 editLocIntent.putExtra("locationID", locId);
                 startActivity(editLocIntent);
+                self.dismiss();
             }
         });
 
