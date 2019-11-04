@@ -37,17 +37,17 @@ public class BottomPanel extends BottomSheetDialogFragment {
         View v = inflater.inflate(R.layout.bottom_sheet, container, false);
         TextView title = v.findViewById(R.id.titleTV);
         title.setText(titleStr);
-        Button seeMenu = v.findViewById(R.id.menuBtn);
+        Button button1 = v.findViewById(R.id.menuBtn);
         Button button2 = v.findViewById(R.id.navigateBtn);
 
-//        seeMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent historyIntent = new Intent(getContext(), AddLocActivity.class);
-//                startActivity(historyIntent);
-//            }
-//        });
-
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent menuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                menuIntent.putExtra("locationID", locId);
+                startActivity(menuIntent);
+            }
+        });
 //        button2.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
