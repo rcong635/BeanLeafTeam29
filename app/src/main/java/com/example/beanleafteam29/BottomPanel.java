@@ -48,11 +48,13 @@ public class BottomPanel extends BottomSheetDialogFragment {
                 startActivity(orderMenuIntent);
             }
         });
+
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
-                startActivity(editMenuIntent);
+                Intent editLocIntent = new Intent(getContext(), EditLocationActivity.class);
+                editLocIntent.putExtra("locationID", locId);
+                startActivity(editLocIntent);
             }
         });
 
