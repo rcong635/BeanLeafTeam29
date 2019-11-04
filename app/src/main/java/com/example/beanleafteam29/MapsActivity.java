@@ -55,6 +55,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
@@ -117,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException se) {
 
         }
-        mMap.setMinZoomPreference(16);
+        mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseUIActivity.addUserToFirestore();
@@ -162,6 +163,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        /*Map<String, Object> m = new HashMap<>();
+        m.put("Caffeine", 100);
+        m.put("Name", "Some Weird Coffee");
+        m.put("Price", 4.99);
+        FirebaseUIActivity.addElementToMenu(m, "7vufQOykpFmHKM0Itlm4");*/
+        //FirebaseUIActivity.deleteElementFromMenu("7vufQOykpFmHKM0Itlm4", "Some Weird Coffee");
     }
 
     @Override

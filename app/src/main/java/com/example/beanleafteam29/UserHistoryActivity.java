@@ -50,29 +50,29 @@ public class UserHistoryActivity extends AppCompatActivity {
                                         LayoutInflater inflater = getLayoutInflater();
                                         View itemView = inflater.inflate(R.layout.user_history_item, null);
                                         ViewGroup historyView = findViewById(R.id.History);
-
-                                        String name = (String) myData.get("Name");
+                                        
+                                        String name = document.getString("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
+                                        Timestamp timeStamp = document.getTimestamp("Date");
                                         SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
                                         TextView timeView = itemView.findViewById(R.id.ItemTime);
                                         String timeString = sfd.format(timeStamp.toDate());;
                                         timeView.setText(timeString);
 
-                                        String location = (String) myData.get("LocationName");
+                                        String location = document.getString("LocationName");
                                         TextView locationView = itemView.findViewById(R.id.ItemLocation);
                                         locationView.setText(location);
 
-                                        Double price = (Double) myData.get("Price");
+                                        double price = document.getDouble("Price");
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
-                                        String priceString = "$" + price.toString();
+                                        String priceString = "$" + price;
                                         priceView.setText(priceString);
 
-                                        Long caffeine = (Long) myData.get("Caffeine");
+                                        double caffeine = document.getDouble("Caffeine");
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
-                                        String caffeineString = caffeine.toString() + "mg caffeine";
+                                        String caffeineString = caffeine + "mg caffeine";
                                         caffeineView.setText(caffeineString);
 
                                         historyView.addView(itemView, 0);

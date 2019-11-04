@@ -180,6 +180,59 @@ public class FirebaseUIActivity {
                 RC_SIGN_IN);
     }
 
+    public static void addElementToUserHistory(Map m) {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Users")
+                    .document(uid)
+                    .collection("History")
+                    .add(m);
+        }
+    }
+
+    public static void addElementToMenu(Map m, String locationId) {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            db.collection("Locations")
+                    .document(locationId)
+                    .collection("Menu")
+                    .add(m);
+        }
+    }
+
+    public static void deleteElementFromMenu(final String locationId, String itemToBeDeleted) {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            // query database for itemToBeDeleted first and get the documentId
+            // call delete on documentId
+            db.collection("Locations")
+                    .document(locationId)
+                    .collection("Menu")
+                    .whereEqualTo("Name", itemToBeDeleted)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if(task.getResult().size() == 1) { // there should only be 1 element with that name
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String documentId = document.getId();
+                                        db.collection("Locations")
+                                                .document(locationId)
+                                                .collection("Menu")
+                                                .document(documentId)
+                                                .delete();
+                                    }
+                                }
+                            } else {
+                                Log.d("getUserHistory", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+    }
+
     public static void getUserHistory() {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
