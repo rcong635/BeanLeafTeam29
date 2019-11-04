@@ -43,6 +43,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
@@ -109,6 +110,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
+            Map m = new HashMap();
         }
 
 //      Creating listeners for markers on the map to show their data

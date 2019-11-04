@@ -180,6 +180,21 @@ public class FirebaseUIActivity {
                 RC_SIGN_IN);
     }
 
+    public static void addElementToUserHistory(Map m) {
+        if(isUserLoggedIn()) {
+            m.clear();
+            /***** EXAMPLE HOW TO PUT DATA INTO THE MAP ******/
+            m.put("Name", "Orzo");
+            m.put("Price", 4.99);
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Users")
+                    .document(uid)
+                    .collection("History")
+                    .add(m);
+        }
+    }
+
     public static void getUserHistory() {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
