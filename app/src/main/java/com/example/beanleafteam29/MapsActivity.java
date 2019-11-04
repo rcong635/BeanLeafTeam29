@@ -327,7 +327,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int text_width =  textRect.width();
 
 //        textRect.offsetTo(0, 30);
-        Bitmap bitmap = Bitmap.createBitmap(text_width, 250, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(text_width, 220, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawRect(0,0,text_width,65,rectPaint);
         canvas.drawBitmap(bm, (text_width/2) - 70, 65, paint);
