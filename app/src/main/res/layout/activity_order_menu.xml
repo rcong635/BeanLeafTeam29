@@ -12,7 +12,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="24sp"
         android:textColor="#ffffff"
-        android:text="User History"
+        android:text="Menu"
         android:background="@color/colorPrimary"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
