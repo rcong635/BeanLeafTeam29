@@ -104,13 +104,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException se) {
 
         }
-        mMap.setMinZoomPreference(16);
+        mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
-            Map m = new HashMap();
         }
 
 //      Creating listeners for markers on the map to show their data
@@ -146,10 +145,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onResume() {
-        //Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "onResume() called", Toast.LENGTH_SHORT).show();
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        /*Map<String, Object> m = new HashMap<>();
+        m.put("Caffeine", 100);
+        m.put("Name", "Some Weird Coffee");
+        m.put("Price", 4.99);
+        FirebaseUIActivity.addElementToMenu(m, "7vufQOykpFmHKM0Itlm4");*/
+        //FirebaseUIActivity.deleteElementFromMenu("7vufQOykpFmHKM0Itlm4", "Some Weird Coffee");
     }
 
     @Override
