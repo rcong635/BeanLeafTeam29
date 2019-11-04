@@ -33,8 +33,8 @@ public class OrderMenuActivity extends AppCompatActivity {
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String uid = mFirebaseAuth.getUid();
-            db.collection("Locations/" + uid + "/Menu")
+            String locationID = getIntent().getStringExtra("locationID");
+            db.collection("Locations/" + locationID + "/Menu")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override

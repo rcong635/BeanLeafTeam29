@@ -44,6 +44,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Intent menuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                menuIntent.putExtra("locationID", locId);
                 startActivity(menuIntent);
             }
         });
