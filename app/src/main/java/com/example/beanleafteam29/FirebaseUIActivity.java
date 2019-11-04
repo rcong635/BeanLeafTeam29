@@ -56,7 +56,7 @@ public class FirebaseUIActivity {
                         FirebaseUIActivity.signIn(callerActivity);
                     } else {
                         String userId = firebaseAuth.getUid();
-                        Toast.makeText(callerActivity.getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(callerActivity.getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
                     }
                     FirebaseUIActivity.detachListener();
                     //checkAdmin(callerActivity);
@@ -149,7 +149,7 @@ public class FirebaseUIActivity {
                                 //Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(callerActivity.getBaseContext(), "Task is NOT successful!", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(callerActivity.getBaseContext(), "Task is NOT successful!", Toast.LENGTH_SHORT).show();
                             Log.d("checkAdmin", "Error getting documents: ", task.getException());
                         }
                     }

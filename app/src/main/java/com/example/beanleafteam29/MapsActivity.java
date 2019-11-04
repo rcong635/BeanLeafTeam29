@@ -74,11 +74,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-//        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+        FirebaseUIActivity.openFbReference("some_data", this);
+        if(FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.addUserToFirestore();
+            FirebaseUIActivity.checkAdmin(this);
+            displayLocations();
+        } else {
+            FirebaseUIActivity.attachListener();
+        }
     }
 
 
@@ -95,6 +104,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
         mMap.setMinZoomPreference(16);
+
+        if (FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.addUserToFirestore();
+            FirebaseUIActivity.checkAdmin(this);
+            displayLocations();
+        }
 
 //      Creating listeners for markers on the map to show their data
 //        mMap.setOnMarkerClickListener(this);
@@ -116,23 +131,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
            }
         );
 
-        FirebaseUIActivity.openFbReference("some_data", this);
-        if(FirebaseUIActivity.isUserLoggedIn()){
-//            Toast.makeText(this, "User is logged in", Toast.LENGTH_SHORT).show();
-            FirebaseUIActivity.addUserToFirestore();
-            FirebaseUIActivity.checkAdmin(this);
-            displayLocations();
-
-        } else {
-            FirebaseUIActivity.attachListener();
-        }
     }
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
         Intent intent3 = new Intent(getBaseContext(), ProfileActivity.class);
         startActivity(intent3);
-        Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
         return false;
     }
 
@@ -143,7 +148,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -172,7 +176,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;
 
             case R.id.Add:
-                Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapsActivity.this, "Add-Menu", Toast.LENGTH_LONG).show();
                 Intent addIntent = new Intent(this, AddLocActivity.class);
                 startActivity(addIntent);
                 return true;
@@ -183,7 +187,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return true;*/
 
             case R.id.View_History:
-                Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
                 Intent historyIntent = new Intent(this, UserHistoryActivity.class);
                 startActivity(historyIntent);
                 return true;
