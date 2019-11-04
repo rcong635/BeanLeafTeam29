@@ -45,12 +45,14 @@
         <!-- Add Location Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_add"
-            android:background="@color/firebaseYellow"
+            android:background="@color/colorPrimaryDark"
             android:layout_width="fill_parent"
             android:layout_height="63dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:textSize="22dp"
             android:text="Add Location" />
 
     </LinearLayout>
