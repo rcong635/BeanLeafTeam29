@@ -1,6 +1,7 @@
 package com.example.beanleafteam29;
 //import android.support.v4.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 //import android.support.annotation.Nullable;
 //import android.support.design.widget.BottomSheetDialogFragment;
@@ -18,7 +19,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class BottomPanel extends BottomSheetDialogFragment {
 //    private BottomSheetListener mListener;
@@ -37,22 +44,49 @@ public class BottomPanel extends BottomSheetDialogFragment {
         TextView title = v.findViewById(R.id.titleTV);
         title.setText(titleStr);
         Button button1 = v.findViewById(R.id.menuBtn);
-        Button button2 = v.findViewById(R.id.navigateBtn);
+        final Button button2 = v.findViewById(R.id.navigateBtn);
 
-//        button1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.onButtonClicked("Button 1 clicked");
-//                dismiss();
-//            }
-//        });
-//        button2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.onButtonClicked("Button 2 clicked");
-//                dismiss();
-//            }
-//        });
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Locations")
+                .whereEqualTo("Owner", FirebaseUIActivity.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (task.getResult().size() == 1) { // only one owner exists per each location
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    if(document.getId().equals(locId)) {
+                                        button2.setVisibility(View.VISIBLE);
+                                    } else {
+                                        button2.setVisibility(View.GONE);
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+    });
+
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                orderMenuIntent.putExtra("locationID", locId);
+                startActivity(orderMenuIntent);
+            }
+        });
+
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editLocIntent = new Intent(getContext(), Edit_Location.class);
+                editLocIntent.putExtra("locationID", locId);
+                startActivity(editLocIntent);
+            }
+        });
 
         return v;
     }

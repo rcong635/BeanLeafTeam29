@@ -32,6 +32,7 @@
         android:layout_marginBottom="12dp"
         android:layout_marginRight="370dp"
         android:elevation="2dp"
-        android:src="@android:drawable/ic_menu_add" />
+        android:src="@android:drawable/ic_menu_add"
+        android:onClick="ShowPopup"/>
 
 </RelativeLayout>

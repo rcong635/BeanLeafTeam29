@@ -15,8 +15,14 @@ import java.util.HashMap;
 
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private List<String> values;
-    private Map<String, Object> menu;
+    private List<Map<String, Object> > print;
+    // Provide a suitable constructor (depends on the kind of dataset)
+//    public MyAdapter(List<String> myDataset) {
+//        values = myDataset;
+//    }
+    public MyAdapter(List<Map<String, Object> >p) {
+        print = p;
+    }
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
@@ -34,24 +40,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public void add(int position, String item) {
-        values.add(position, item);
+    public void add(int position, Map<String,Object> item) {
+        print.add(position, item);
         notifyItemInserted(position);
     }
 
     public void remove(int position) {
-        values.remove(position);
+        print.remove(position);
         notifyItemRemoved(position);
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(List<String> myDataset) {
-        values = myDataset;
-    }
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(Map<String, Object> m) {
-        menu = m;
-    }
+
 
     // Create new views (invoked by the layout manager)
     @Override
@@ -72,9 +71,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        final String name = values.get(position);
-        String price = "14.99";
-        String caf = "70";
+        final String name = print.get(position).get("Name").toString();
+        String price = print.get(position).get("Price").toString();;
+        String caf = print.get(position).get("Caffeine").toString();;
         holder.txtHeader.setText(name);
         holder.txtHeader.setOnClickListener(new OnClickListener() {
             @Override
@@ -89,7 +88,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return values.size();
+        return print.size();
     }
 
 }

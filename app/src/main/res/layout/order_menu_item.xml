@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:paddingBottom="8dp" android:paddingLeft="8dp" android:paddingRight="8dp" >
+    android:paddingBottom="5dp" android:paddingLeft="5dp" android:paddingRight="5dp">
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 
     <TextView
         android:id="@+id/ItemName"
@@ -11,20 +17,8 @@
         android:textSize="16dp"
         android:textColor="@color/colorBlack"
         android:textStyle="bold"
+        android:layout_toRightOf="@id/checkbox"
         />
-    <TextView
-        android:id="@+id/ItemLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ItemTime"
-        />
-    <TextView
-        android:id="@+id/ItemTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ItemName"
-        />
-
     <TextView
         android:id="@+id/ItemPrice"
         android:layout_width="wrap_content"
@@ -38,8 +32,9 @@
         android:id="@+id/ItemCaffeine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ItemLocation"
+        android:layout_below="@id/ItemName"
         android:paddingBottom="5dp"
+        android:layout_alignLeft="@id/ItemName"
         />
 
     <View

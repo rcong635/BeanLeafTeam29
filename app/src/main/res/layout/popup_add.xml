@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="350dp"
+    android:layout_height="475dp"
+    android:background="@color/colorPrimaryDark"
+    android:padding="5dp"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/txtclose"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:gravity="center"
+        android:src="@android:drawable/radiobutton_on_background"
+        android:text="X"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+    <!-- Item Label -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/input_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/white"
+            android:backgroundTint="@color/white"
+            android:hint="Menu Item" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Price Label -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/input_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress"
+            android:textColorHint="@color/white"
+            android:backgroundTint="@color/white"
+            android:hint="Price"
+            android:importantForAutofill="yes" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Caffeine Label -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/input_caff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/white"
+            android:backgroundTint="@color/white"
+            android:hint="Caffeine Amount" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Add Menu Item Button -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_menu"
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="fill_parent"
+        android:layout_height="63dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:padding="12dp"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:text="Add Menu Item" />
+
+
+</LinearLayout>
