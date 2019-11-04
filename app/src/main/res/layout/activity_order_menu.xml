@@ -8,15 +8,14 @@
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="start"
         android:layout_centerHorizontal="true"
-        android:textSize="24sp"
-        android:textColor="#ffffff"
-        android:text="User History"
+        android:layout_gravity="start"
         android:background="@color/colorPrimary"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
-        />
+        android:text="Menu"
+        android:textColor="#ffffff"
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/noItems"
