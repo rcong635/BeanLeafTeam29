@@ -13,18 +13,6 @@
         android:textStyle="bold"
         />
     <TextView
-        android:id="@+id/ItemTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ItemName"
-        />
-    <TextView
-        android:id="@+id/ItemLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ItemTime"
-        />
-    <TextView
         android:id="@+id/ItemPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,7 +25,7 @@
         android:id="@+id/ItemCaffeine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ItemLocation"
+        android:layout_below="@id/ItemName"
         android:paddingBottom="5dp"
         />
 

@@ -1,6 +1,7 @@
 package com.example.beanleafteam29;
 //import android.support.v4.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 //import android.support.annotation.Nullable;
 //import android.support.design.widget.BottomSheetDialogFragment;
@@ -39,13 +40,13 @@ public class BottomPanel extends BottomSheetDialogFragment {
         Button button1 = v.findViewById(R.id.menuBtn);
         Button button2 = v.findViewById(R.id.navigateBtn);
 
-//        button1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.onButtonClicked("Button 1 clicked");
-//                dismiss();
-//            }
-//        });
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent menuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                startActivity(menuIntent);
+            }
+        });
 //        button2.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
