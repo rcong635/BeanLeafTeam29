@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,11 +21,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
 public class OrderMenuActivity extends AppCompatActivity {
+
+    ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+    Map<String, Object> order = new HashMap<>();
+
+    String locationName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +43,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String locationID = getIntent().getStringExtra("locationID");
+            locationName = getIntent().getStringExtra("locationName");
             db.collection("Locations/" + locationID + "/Menu")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -67,6 +77,8 @@ public class OrderMenuActivity extends AppCompatActivity {
 
                                         menuView.addView(itemView, 0);
 
+                                        checkBoxes.add((CheckBox) itemView.findViewById(R.id.checkbox));
+
                                         System.out.println(task.getResult().size());
                                     }
                                 } else {
@@ -79,5 +91,23 @@ public class OrderMenuActivity extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+    //TODO: add timestamp, prica and caffeine as double
+    public void OnBuyButtonClicked(View v) {
+        for (int i = 0; i < checkBoxes.size(); i++) {
+            boolean checked = checkBoxes.get(i).isChecked();
+            if (checked) {
+                RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
+                order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
+                order.put("LocationName", locationName);
+                String priceString = (String) ((TextView) itemLayout.getChildAt(2)).getText();
+                priceString = priceString.substring(1);
+                order.put("Price", Double.valueOf(priceString));
+                String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
+                order.put("Caffeine", 150);
+            }
+        }
+        FirebaseUIActivity.addElementToUserHistory(order);
     }
 }
