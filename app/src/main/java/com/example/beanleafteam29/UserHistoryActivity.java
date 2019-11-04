@@ -44,6 +44,7 @@ public class UserHistoryActivity extends AppCompatActivity {
                                     TextView noItems = findViewById(R.id.noItems);
                                     noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
+
                                         Map<String, Object> myData = document.getData();
                                         System.out.println(document);
 
@@ -51,28 +52,30 @@ public class UserHistoryActivity extends AppCompatActivity {
                                         View itemView = inflater.inflate(R.layout.user_history_item, null);
                                         ViewGroup historyView = findViewById(R.id.History);
 
-                                        String name = (String) myData.get("Name");
+                                        String name = document.getString("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
-                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
-                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
-                                        String timeString = sfd.format(timeStamp.toDate());;
-                                        timeView.setText(timeString);
+//                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
+//                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
+//                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
+//                                        String timeString = sfd.format(timeStamp.toDate());
+//                                        timeView.setText(timeString);
 
-                                        String location = (String) myData.get("LocationName");
+                                        String location = document.getString("LocationName");
                                         TextView locationView = itemView.findViewById(R.id.ItemLocation);
                                         locationView.setText(location);
 
-                                        Double price = (Double) myData.get("Price");
+                                        double price = document.getDouble("Price");
+                                        //double price = Double.valueOf((String) myData.get("Price"));
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
-                                        String priceString = "$" + price.toString();
+                                        String priceString = "$" + price;
                                         priceView.setText(priceString);
 
-                                        Long caffeine = (Long) myData.get("Caffeine");
+                                        double caffeine = document.getDouble("Caffeine");
+                                        //long caffeine = Long.valueOf((String) myData.get("Caffeine"));
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
-                                        String caffeineString = caffeine.toString() + "mg caffeine";
+                                        String caffeineString = caffeine + "mg caffeine";
                                         caffeineView.setText(caffeineString);
 
                                         historyView.addView(itemView, 0);
