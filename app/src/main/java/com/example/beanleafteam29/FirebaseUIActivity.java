@@ -44,7 +44,7 @@ public class FirebaseUIActivity {
 
 
     public static void openFbReference(String ref, final MapsActivity callerActivity) {
-        Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
         if (firebaseUtil == null) {
             firebaseUtil = new FirebaseUIActivity();
             mFirebaseAuth = FirebaseAuth.getInstance();
@@ -79,7 +79,7 @@ public class FirebaseUIActivity {
     }
 
     public static void logout(final MapsActivity callerActivity) {
-        Toast.makeText(callerActivity.getBaseContext(), "logout() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(callerActivity.getBaseContext(), "logout() called", Toast.LENGTH_SHORT).show();
         AuthUI.getInstance().signOut(callerActivity)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -165,7 +165,7 @@ public class FirebaseUIActivity {
     }
 
     private static void signIn(final MapsActivity callerActivity) {
-        Toast.makeText(callerActivity.getBaseContext(), "signIn() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(callerActivity.getBaseContext(), "signIn() called", Toast.LENGTH_SHORT).show();
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),

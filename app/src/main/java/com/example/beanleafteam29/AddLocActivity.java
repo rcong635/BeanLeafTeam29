@@ -14,6 +14,7 @@ public class AddLocActivity extends AppCompatActivity {
     private EditText Name;
     private EditText Address;
     private Button Add;
+
     private static final String TAG = "AddLocActivity";
 
     @Override
