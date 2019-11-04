@@ -55,7 +55,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult().size() == 1) { // only one owner exists per each location
+                            if (task.getResult().size() == 1) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     if(document.getId().equals(locId)) {
                                         button2.setVisibility(View.VISIBLE);
@@ -63,7 +63,8 @@ public class BottomPanel extends BottomSheetDialogFragment {
                                         button2.setVisibility(View.GONE);
                                     }
                                 }
-
+                            } else { // user does not own any restaurant
+                                button2.setVisibility(View.GONE);
                             }
                         }
                     }

@@ -55,11 +55,11 @@ public class UserHistoryActivity extends AppCompatActivity {
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-//                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
-//                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
-//                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
-//                                        String timeString = sfd.format(timeStamp.toDate());
-//                                        timeView.setText(timeString);
+                                        /*Timestamp timeStamp = document.getTimestamp("Date");
+                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
+                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
+                                        String timeString = sfd.format(timeStamp.toDate());
+                                        timeView.setText(timeString);*/
 
                                         String location = document.getString("LocationName");
                                         TextView locationView = itemView.findViewById(R.id.ItemLocation);
