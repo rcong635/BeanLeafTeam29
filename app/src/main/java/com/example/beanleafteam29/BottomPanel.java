@@ -43,18 +43,18 @@ public class BottomPanel extends BottomSheetDialogFragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent menuIntent = new Intent(getContext(), OrderMenuActivity.class);
-                menuIntent.putExtra("locationID", locId);
-                startActivity(menuIntent);
+                Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                orderMenuIntent.putExtra("locationID", locId);
+                startActivity(orderMenuIntent);
             }
         });
-//        button2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mListener.onButtonClicked("Button 2 clicked");
-//                dismiss();
-//            }
-//        });
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                startActivity(editMenuIntent);
+            }
+        });
 
         return v;
     }
