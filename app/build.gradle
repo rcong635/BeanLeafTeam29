@@ -20,6 +20,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.android.material:material:1.0.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
@@ -35,6 +36,8 @@ dependencies {
     implementation group: 'com.google.android.material', name: 'material', version: '1.2.0-alpha01'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
+    implementation 'com.google.maps:google-maps-services:0.1.20'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
 }
 
 apply plugin: 'com.google.gms.google-services'
