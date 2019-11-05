@@ -56,11 +56,12 @@ public class BottomPanel extends BottomSheetDialogFragment {
         final Button button2 = v.findViewById(R.id.navigateBtn);
 
         HashMap<String, QueryDocumentSnapshot> myLocations = FirebaseUIActivity.getUserLocations();
-        if(myLocations.containsKey(locId)) {
+        if (myLocations.containsKey(locId)) {
             button2.setVisibility(View.VISIBLE);
         } else {
             button2.setVisibility(View.GONE);
         }
+
 
        /* FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Locations")
@@ -83,7 +84,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                             }
                         }
                     }
-    });
+    });*/
 
 
         button1.setOnClickListener(new View.OnClickListener() {
