@@ -30,7 +30,6 @@ import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 public class OrderMenuActivity extends AppCompatActivity {
 
     ArrayList<CheckBox> checkBoxes = new ArrayList<>();
-    Map<String, Object> order = new HashMap<>();
 
     String locationName;
 
@@ -96,6 +95,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         for (int i = 0; i < checkBoxes.size(); i++) {
             boolean checked = checkBoxes.get(i).isChecked();
             if (checked) {
+                Map<String, Object> order = new HashMap<>();
                 RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
                 order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
                 order.put("LocationName", locationName);
@@ -105,9 +105,9 @@ public class OrderMenuActivity extends AppCompatActivity {
                 String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
                 order.put("Caffeine", caffeineToLong(caffeineString));
                 order.put("Date", Timestamp.now());
+                FirebaseUIActivity.addElementToUserHistory(order);
             }
         }
-        FirebaseUIActivity.addElementToUserHistory(order);
         finish();
     }
 
