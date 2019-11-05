@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -33,11 +34,16 @@ public class OrderMenuActivity extends AppCompatActivity {
 
     String locationName;
 
+    double userLat;
+    double userLng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_menu);
+        userLat = getIntent().getDoubleExtra("userLat", 0);
+        userLng = getIntent().getDoubleExtra("userLng", 0);
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -92,23 +98,25 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        for (int i = 0; i < checkBoxes.size(); i++) {
-            boolean checked = checkBoxes.get(i).isChecked();
-            if (checked) {
-                Map<String, Object> order = new HashMap<>();
-                RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
-                order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
-                order.put("LocationName", locationName);
-                String priceString = (String) ((TextView) itemLayout.getChildAt(2)).getText();
-                priceString = priceString.substring(1);
-                order.put("Price", Double.valueOf(priceString));
-                String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
-                order.put("Caffeine", caffeineToLong(caffeineString));
-                order.put("Date", Timestamp.now());
-                FirebaseUIActivity.addElementToUserHistory(order);
+        if (checkDistance() < 50) {
+            for (int i = 0; i < checkBoxes.size(); i++) {
+                boolean checked = checkBoxes.get(i).isChecked();
+                if (checked) {
+                    Map<String, Object> order = new HashMap<>();
+                    RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
+                    order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
+                    order.put("LocationName", locationName);
+                    String priceString = (String) ((TextView) itemLayout.getChildAt(2)).getText();
+                    priceString = priceString.substring(1);
+                    order.put("Price", Double.valueOf(priceString));
+                    String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
+                    order.put("Caffeine", caffeineToLong(caffeineString));
+                    order.put("Date", Timestamp.now());
+                    FirebaseUIActivity.addElementToUserHistory(order);
+                }
             }
+            finish();
         }
-        finish();
     }
 
     public long caffeineToLong(String caffeineString) {
@@ -119,6 +127,26 @@ public class OrderMenuActivity extends AppCompatActivity {
             }
         }
         return -1;
+    }
+
+    public float checkDistance(String locId) {
+        LatLng location = getLatLng(locId);
+        double lat_a = location.latitude;
+        double lng_a = location.longitude;
+        double lat_b = userLat;
+        double lng_b = userLng;
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(lat_b-lat_a);
+        double lngDiff = Math.toRadians(lng_b-lng_a);
+        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c;
+
+        int meterConversion = 1609;
+
+        return new Float(distance * meterConversion).floatValue();
     }
 
 }

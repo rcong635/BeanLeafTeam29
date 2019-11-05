@@ -20,6 +20,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -32,10 +33,12 @@ public class BottomPanel extends BottomSheetDialogFragment {
     BottomPanel self = null;
     String titleStr = new String();
     String locId = new String();
+    LatLng userLocation = null;
 
-    public BottomPanel(String _titleStr, String _locId){
+    public BottomPanel(String _titleStr, String _locId, LatLng _userLocation){
         titleStr = _titleStr;
         locId = _locId;
+        userLocation = _userLocation;
     }
 
     @Nullable
@@ -76,14 +79,13 @@ public class BottomPanel extends BottomSheetDialogFragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkDistance(locId)) {
-                    Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
-                    orderMenuIntent.putExtra("locationID", locId);
-                    orderMenuIntent.putExtra("locationName", titleStr);
-                    startActivity(orderMenuIntent);
-                    self.dismiss();
-                }
-
+                Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                orderMenuIntent.putExtra("locationID", locId);
+                orderMenuIntent.putExtra("locationName", titleStr);
+                orderMenuIntent.putExtra("userLat", userLocation.latitude);
+                orderMenuIntent.putExtra("userLng", userLocation.longitude);
+                startActivity(orderMenuIntent);
+                self.dismiss();
             }
         });
 
@@ -98,10 +100,6 @@ public class BottomPanel extends BottomSheetDialogFragment {
         });
 
         return v;
-    }
-
-    public boolean checkDistance(String locId) {
-        return true;
     }
 
 //    public interface BottomSheetListener {

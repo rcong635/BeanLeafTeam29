@@ -85,6 +85,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
 
+    private LatLng userLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +95,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
 
         FirebaseUIActivity.openFbReference("some_data", this);
         if(FirebaseUIActivity.isUserLoggedIn()) {
@@ -133,10 +134,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                public boolean onMarkerClick(Marker marker) {
                    BottomPanel bottomSheet = null;
                    if (markerToLocId.containsKey(marker)) {
-                       bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker));
+                       bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker), userLocation);
                    }
                    else {
-                       bottomSheet = new BottomPanel("Ooops, sorry!", "");
+                       bottomSheet = new BottomPanel("Ooops, sorry!", "", userLocation);
 
                    }
                    bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
@@ -251,9 +252,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //currentLocation = latLng;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(userLocation, 10);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }
