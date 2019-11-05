@@ -102,7 +102,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        if (checkDistance() < 50) {
+        if (checkDistance() < 150) {
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
                 if (checked) {
@@ -119,7 +119,10 @@ public class OrderMenuActivity extends AppCompatActivity {
                     FirebaseUIActivity.addElementToUserHistory(order);
                 }
             }
+            Toast.makeText(this, "Purchase completed", Toast.LENGTH_SHORT).show();
             finish();
+        } else {
+            Toast.makeText(this, "Too far from location to order", Toast.LENGTH_SHORT).show();
         }
     }
 
