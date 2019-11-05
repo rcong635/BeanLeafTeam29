@@ -102,7 +102,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        if (checkDistance() < 150) {
+        if (checkDistance() < 50) {
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
                 if (checked) {
