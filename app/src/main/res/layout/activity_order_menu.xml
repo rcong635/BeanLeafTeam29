@@ -29,7 +29,6 @@
         android:textSize="20dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:paddingTop="200dp"
         android:visibility="invisible"
         />
 
@@ -42,13 +41,15 @@
     </LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Buy selected"
+        android:layout_width="114dp"
+        android:layout_height="78dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:paddingBottom="10dp"
+        android:layout_marginBottom="114dp"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
         android:onClick="OnBuyButtonClicked"
-        />
+        android:paddingBottom="20dp"
+        android:text="Buy Items" />
 
 </RelativeLayout>
