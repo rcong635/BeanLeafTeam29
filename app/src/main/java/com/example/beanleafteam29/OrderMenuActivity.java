@@ -54,7 +54,6 @@ public class OrderMenuActivity extends AppCompatActivity {
                                     TextView noItems = findViewById(R.id.noItems);
                                     noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> myData = document.getData();
                                         System.out.println(document);
 
                                         LayoutInflater inflater = getLayoutInflater();
@@ -70,7 +69,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         String priceString = "$" + price;
                                         priceView.setText(priceString);
 
-                                        double caffeine = document.getDouble("Caffeine");
+                                        long caffeine = document.getLong("Caffeine");
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
@@ -93,7 +92,6 @@ public class OrderMenuActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: add timestamp, price and caffeine as double
     public void OnBuyButtonClicked(View v) {
         for (int i = 0; i < checkBoxes.size(); i++) {
             boolean checked = checkBoxes.get(i).isChecked();
@@ -105,10 +103,22 @@ public class OrderMenuActivity extends AppCompatActivity {
                 priceString = priceString.substring(1);
                 order.put("Price", Double.valueOf(priceString));
                 String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
-                order.put("Caffeine", 150);
+                order.put("Caffeine", caffeineToLong(caffeineString));
+                order.put("Date", Timestamp.now());
             }
         }
         FirebaseUIActivity.addElementToUserHistory(order);
         finish();
     }
+
+    public long caffeineToLong(String caffeineString) {
+        for (int i = 0; i < caffeineString.length(); i++) {
+            if (!Character.isDigit(caffeineString.charAt(i))) {
+                caffeineString = caffeineString.substring(0, i);
+                return Long.valueOf(caffeineString);
+            }
+        }
+        return -1;
+    }
+
 }
