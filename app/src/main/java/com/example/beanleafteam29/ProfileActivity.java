@@ -3,11 +3,10 @@ package com.example.beanleafteam29;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class ProfileActivity extends AppCompatActivity {
-    private EditText Name;
+    private TextView Name;
     private TextView header;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,7 +15,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         header = findViewById(R.id.profileHeader);
-        Name = findViewById(R.id.profileName);
+        Name = findViewById(R.id.profileQuestion);
 //        val name = findViewById< EditText >(R.id.profile);
 //        val header = findViewById<TextView>(R.id.profileHeader);
     }

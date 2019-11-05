@@ -1,43 +1,49 @@
 package com.example.beanleafteam29;
-//import android.support.v4.app.DialogFragment;
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.annotation.Nullable;
-//import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-//import android.support.design.widget.BottomSheetDialog;
-
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+//import android.support.annotation.Nullable;
+//import android.support.design.widget.BottomSheetDialogFragment;
+//import android.support.design.widget.BottomSheetDialog;
+//import android.content.Context;
+//import android.os.Bundle;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup
+//import android.support.v4.app.DialogFragment;
+//import android.content.Context;
 
 import java.util.HashMap;
 
 public class BottomPanel extends BottomSheetDialogFragment {
 //    private BottomSheetListener mListener;
     BottomPanel self = null;
-    String titleStr = new String();
-    String locId = new String();
+    String titleStr;
+    String locId;
+    GeoPoint coordinate;
+    LatLng userLocation;
 
-    public BottomPanel(String _titleStr, String _locId){
+    public BottomPanel(String _titleStr, String _locId, GeoPoint _coordinate, LatLng _userLocation){
         titleStr = _titleStr;
         locId = _locId;
+        coordinate = _coordinate;
+        userLocation = _userLocation;
     }
 
     @Nullable
@@ -64,7 +70,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            if (task.getResult().size() == 1) {
+                            if (task.getResult().size() != 0) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     if(document.getId().equals(locId)) {
                                         button2.setVisibility(View.VISIBLE);
@@ -77,7 +83,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                             }
                         }
                     }
-    });*/
+    });
 
 
         button1.setOnClickListener(new View.OnClickListener() {
@@ -86,6 +92,10 @@ public class BottomPanel extends BottomSheetDialogFragment {
                 Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
                 orderMenuIntent.putExtra("locationID", locId);
                 orderMenuIntent.putExtra("locationName", titleStr);
+                orderMenuIntent.putExtra("userLat", userLocation.latitude);
+                orderMenuIntent.putExtra("userLng", userLocation.longitude);
+                orderMenuIntent.putExtra("locationLat", coordinate.getLatitude());
+                orderMenuIntent.putExtra("locationLng", coordinate.getLongitude());
                 startActivity(orderMenuIntent);
                 self.dismiss();
             }

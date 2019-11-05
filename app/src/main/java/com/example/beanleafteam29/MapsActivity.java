@@ -21,41 +21,38 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import java.util.HashMap;
+import java.util.Map;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
@@ -65,6 +62,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private HashMap<String, Marker> locIdToMarker = new HashMap<>();
     private HashMap<Marker, String> markerToLocId = new HashMap<>();
     private HashMap<Marker, String> markerToName = new HashMap<>();
+    private HashMap<Marker, GeoPoint> markerToCoord = new HashMap<>();
+
 
 
     private GoogleMap mMap;
@@ -84,6 +83,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
+
+    private LatLng userLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +111,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         //Toast.makeText(this, "onMapReady() called", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-        LatLng location = new LatLng(400, -118);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         enableMyLocation();
         try {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
@@ -133,11 +132,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                public boolean onMarkerClick(Marker marker) {
                    BottomPanel bottomSheet = null;
                    if (markerToLocId.containsKey(marker)) {
-                       bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker));
+                       bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker), markerToCoord.get(marker), userLocation);
                    }
                    else {
-                       bottomSheet = new BottomPanel("Ooops, sorry!", "");
-
+                       bottomSheet = new BottomPanel("Ooops, sorry!", "", null, null);
                    }
                    bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
                    bottomSheet.self = bottomSheet;
@@ -203,10 +201,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(addIntent);
                 return true;
 
-/*            case R.id.profileBtn:
+            case R.id.profileBtn:
                 Intent intent2 = new Intent(this, ProfileActivity.class);
                 startActivity(intent2);
-                return true;*/
+                return true;
 
             case R.id.View_History:
                 //Toast.makeText(MapsActivity.this, "View_History", Toast.LENGTH_LONG).show();
@@ -251,9 +249,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //currentLocation = latLng;
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+        userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(userLocation, 10);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
     }
@@ -292,6 +289,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 locIdToMarker.put(document.getId(), newMarker);
                                 markerToLocId.put(newMarker, document.getId());
                                 markerToName.put(newMarker, location_name);
+                                markerToCoord.put(newMarker, coordinates);
 
                             }
                         } else {
