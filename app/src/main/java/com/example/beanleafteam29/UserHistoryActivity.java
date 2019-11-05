@@ -45,7 +45,6 @@ public class UserHistoryActivity extends AppCompatActivity {
                                     noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
 
-                                        Map<String, Object> myData = document.getData();
                                         System.out.println(document);
 
                                         LayoutInflater inflater = getLayoutInflater();
@@ -55,11 +54,11 @@ public class UserHistoryActivity extends AppCompatActivity {
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-//                                        Timestamp timeStamp = (Timestamp) myData.get("Date");
-//                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
-//                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
-//                                        String timeString = sfd.format(timeStamp.toDate());
-//                                        timeView.setText(timeString);
+                                        Timestamp timeStamp = document.getTimestamp("Date");
+                                        SimpleDateFormat sfd = new SimpleDateFormat("MM/dd/yyyy   HH:mm");
+                                        TextView timeView = itemView.findViewById(R.id.ItemTime);
+                                        String timeString = sfd.format(timeStamp.toDate());
+                                        timeView.setText(timeString);
 
                                         String location = document.getString("LocationName");
                                         TextView locationView = itemView.findViewById(R.id.ItemLocation);
@@ -70,7 +69,7 @@ public class UserHistoryActivity extends AppCompatActivity {
                                         String priceString = "$" + price;
                                         priceView.setText(priceString);
 
-                                        double caffeine = document.getDouble("Caffeine");
+                                        long caffeine = document.getLong("Caffeine");
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + "mg caffeine";
                                         caffeineView.setText(caffeineString);
@@ -89,10 +88,6 @@ public class UserHistoryActivity extends AppCompatActivity {
                         }
                     });
         }
-
-    }
-
-    public static void getUserHistory() {
 
     }
 
