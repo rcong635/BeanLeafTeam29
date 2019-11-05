@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +38,7 @@ public class FirebaseUIActivity {
     private static MapsActivity caller;
     private static boolean isAdmin = false;
     private static FirebaseFirestore db;
+    private static HashMap<String, QueryDocumentSnapshot> userLocations = new HashMap<>();
 
     public FirebaseUIActivity() {
 
@@ -126,8 +128,6 @@ public class FirebaseUIActivity {
                 });
     }
 
-
-    // check admin does not work
     public static void checkAdmin(final MapsActivity callerActivity) {
         db = FirebaseFirestore.getInstance();
         final String userID = FirebaseUIActivity.getUid();
@@ -154,6 +154,35 @@ public class FirebaseUIActivity {
                         }
                     }
                 });
+    }
+
+    public static HashMap<String, QueryDocumentSnapshot> getUserLocations() {
+        return userLocations;
+    }
+
+    public static String getUserName() {
+        return mFirebaseAuth.getCurrentUser().getDisplayName();
+    }
+
+    public static void queryDatabaseForCurrentUserLocations() {
+        if (isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            db.collection("Locations")
+                    //.whereEqualTo("Owner", getUid())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    if (document.getString("Owner").equals(getUid()))
+                                        userLocations.put(document.getId(), document);
+                                }
+                            }
+                        }
+                    });
+
+        }
     }
 
     public static void attachListener() {
@@ -295,12 +324,6 @@ public class FirebaseUIActivity {
                                                     Log.w("FirebaseUIActivity", "Error writing document", e);
                                                 }
                                             });
-                                    /*data.clear();
-                                    db.collection("Users")
-                                            .document(uid)
-                                            .collection("History")
-                                            .document()
-                                            .set(data);*/
                                 }
                             } else {
                                 Log.d("checkAdmin", "Error getting documents: ", task.getException());

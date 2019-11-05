@@ -27,6 +27,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+
 public class BottomPanel extends BottomSheetDialogFragment {
 //    private BottomSheetListener mListener;
     BottomPanel self = null;
@@ -47,8 +49,14 @@ public class BottomPanel extends BottomSheetDialogFragment {
         Button button1 = v.findViewById(R.id.menuBtn);
         final Button button2 = v.findViewById(R.id.navigateBtn);
 
+        HashMap<String, QueryDocumentSnapshot> myLocations = FirebaseUIActivity.getUserLocations();
+        if(myLocations.containsKey(locId)) {
+            button2.setVisibility(View.VISIBLE);
+        } else {
+            button2.setVisibility(View.GONE);
+        }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+       /* FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Locations")
                 .whereEqualTo("Owner", FirebaseUIActivity.getUid())
                 .get()
@@ -69,7 +77,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
                             }
                         }
                     }
-    });
+    });*/
 
 
         button1.setOnClickListener(new View.OnClickListener() {
