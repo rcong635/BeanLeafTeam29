@@ -8,9 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -19,21 +22,37 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
 public class OrderMenuActivity extends AppCompatActivity {
 
+    ArrayList<CheckBox> checkBoxes = new ArrayList<>();
+
+    String locationName;
+
+    double userLat;
+    double userLng;
+    double locationLat;
+    double locationLng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_menu);
+        userLat = getIntent().getDoubleExtra("userLat", 0);
+        userLng = getIntent().getDoubleExtra("userLng", 0);
+        locationLat = getIntent().getDoubleExtra("locationLat", 0);
+        locationLng = getIntent().getDoubleExtra("locationLng", 0);
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String locationID = getIntent().getStringExtra("locationID");
+            locationName = getIntent().getStringExtra("locationName");
             db.collection("Locations/" + locationID + "/Menu")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -44,30 +63,31 @@ public class OrderMenuActivity extends AppCompatActivity {
                                     TextView noItems = findViewById(R.id.noItems);
                                     noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> myData = document.getData();
                                         System.out.println(document);
 
                                         LayoutInflater inflater = getLayoutInflater();
                                         View itemView = inflater.inflate(R.layout.order_menu_item, null);
                                         ViewGroup menuView = findViewById(R.id.Menu);
 
-                                        String name = (String) myData.get("Name");
+                                        String name = document.getString("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
 
-                                        Double price = (Double) myData.get("Price");
+                                        double price = document.getDouble("Price");
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
-                                        String priceString = "$" + price.toString();
+                                        String priceString = "$" + String.format("%.2f", price);
                                         priceView.setText(priceString);
 
-                                        Long caffeine = (Long) myData.get("Caffeine");
+                                        long caffeine = document.getLong("Caffeine");
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
-                                        String caffeineString = caffeine.toString() + "mg caffeine";
+                                        String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
 
                                         menuView.addView(itemView, 0);
 
-                                        System.out.println(task.getResult().size());
+                                        checkBoxes.add((CheckBox) itemView.findViewById(R.id.checkbox));
+
+                                        //System.out.println(task.getResult().size());
                                     }
                                 } else {
                                     TextView noItems = findViewById(R.id.noItems);
@@ -80,4 +100,55 @@ public class OrderMenuActivity extends AppCompatActivity {
                     });
         }
     }
+
+    public void OnBuyButtonClicked(View v) {
+        if (checkDistance() < 50) {
+            for (int i = 0; i < checkBoxes.size(); i++) {
+                boolean checked = checkBoxes.get(i).isChecked();
+                if (checked) {
+                    Map<String, Object> order = new HashMap<>();
+                    RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
+                    order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
+                    order.put("LocationName", locationName);
+                    String priceString = (String) ((TextView) itemLayout.getChildAt(2)).getText();
+                    priceString = priceString.substring(1);
+                    order.put("Price", Double.valueOf(priceString));
+                    String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
+                    order.put("Caffeine", caffeineToLong(caffeineString));
+                    order.put("Date", Timestamp.now());
+                    FirebaseUIActivity.addElementToUserHistory(order);
+                }
+            }
+            Toast.makeText(this, "Purchase completed", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            Toast.makeText(this, "Too far from location to order", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public long caffeineToLong(String caffeineString) {
+        for (int i = 0; i < caffeineString.length(); i++) {
+            if (!Character.isDigit(caffeineString.charAt(i))) {
+                caffeineString = caffeineString.substring(0, i);
+                return Long.valueOf(caffeineString);
+            }
+        }
+        return -1;
+    }
+
+    public float checkDistance() {
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(userLat-locationLat);
+        double lngDiff = Math.toRadians(userLng-locationLng);
+        double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
+                Math.cos(Math.toRadians(locationLat)) * Math.cos(Math.toRadians(userLat)) *
+                        Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = earthRadius * c;
+
+        int meterConversion = 1609;
+
+        return new Float(distance * meterConversion).floatValue();
+    }
+
 }

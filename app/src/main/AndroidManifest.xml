@@ -17,12 +17,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".Edit_Location"/>
         <activity android:name=".OrderMenuActivity" />
         <activity android:name=".UserHistoryActivity" />
         <activity android:name=".ProfileActivity" />
-
         <activity android:name=".AddLocActivity" />
         <activity android:name=".FirebaseUIActivity" />
         <!--

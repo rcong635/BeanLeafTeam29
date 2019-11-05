@@ -20,6 +20,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="24sp"
         android:text="User History"
+        android:textColor="#ffffff"
         android:background="@color/colorPrimary"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
@@ -35,7 +36,6 @@
         android:textSize="20dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:paddingTop="200dp"
         android:visibility="invisible"
         />
 

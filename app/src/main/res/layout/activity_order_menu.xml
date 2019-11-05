@@ -2,17 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".OrderMenuActivity">
 
     <TextView
         android:id="@+id/Header"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="start"
         android:layout_centerHorizontal="true"
         android:textSize="24sp"
         android:textColor="#ffffff"
-        android:text="User History"
+        android:text="Menu"
         android:background="@color/colorPrimary"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
@@ -28,7 +29,6 @@
         android:textSize="20dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:paddingTop="200dp"
         android:visibility="invisible"
         />
 
@@ -39,5 +39,17 @@
         android:layout_below="@id/Header"
         android:orientation="vertical">
     </LinearLayout>
+
+    <Button
+        android:layout_width="114dp"
+        android:layout_height="78dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="114dp"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:onClick="OnBuyButtonClicked"
+        android:paddingBottom="20dp"
+        android:text="Buy Items" />
 
 </RelativeLayout>
