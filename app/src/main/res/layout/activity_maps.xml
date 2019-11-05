@@ -21,7 +21,7 @@
             android:layout_centerVertical="true"
             android:textSize="24sp"
             android:textColor="#ffffff"
-            android:text="BeanLeafTeam29"
+            android:text="Bean&amp;Leaf"
             />
 
         <ImageButton

@@ -1,41 +1,43 @@
 package com.example.beanleafteam29;
-//import android.support.v4.app.DialogFragment;
-import android.content.Context;
+
 import android.content.Intent;
 import android.os.Bundle;
-//import android.support.annotation.Nullable;
-//import android.support.design.widget.BottomSheetDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-//import android.support.design.widget.BottomSheetDialog;
-
-import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+//import android.support.annotation.Nullable;
+//import android.support.design.widget.BottomSheetDialogFragment;
+//import android.support.design.widget.BottomSheetDialog;
+//import android.content.Context;
+//import android.os.Bundle;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup
+//import android.support.v4.app.DialogFragment;
+//import android.content.Context;
 
 public class BottomPanel extends BottomSheetDialogFragment {
 //    private BottomSheetListener mListener;
     BottomPanel self = null;
     String titleStr = new String();
     String locId = new String();
+    GeoPoint coordinate;
 
-    public BottomPanel(String _titleStr, String _locId){
+    public BottomPanel(String _titleStr, String _locId, GeoPoint _coordinate){
         titleStr = _titleStr;
         locId = _locId;
+        coordinate = _coordinate;
     }
 
     @Nullable
