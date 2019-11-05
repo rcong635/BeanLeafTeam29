@@ -76,11 +76,14 @@ public class BottomPanel extends BottomSheetDialogFragment {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
-                orderMenuIntent.putExtra("locationID", locId);
-                orderMenuIntent.putExtra("locationName", titleStr);
-                startActivity(orderMenuIntent);
-                self.dismiss();
+                if (checkDistance(locId)) {
+                    Intent orderMenuIntent = new Intent(getContext(), OrderMenuActivity.class);
+                    orderMenuIntent.putExtra("locationID", locId);
+                    orderMenuIntent.putExtra("locationName", titleStr);
+                    startActivity(orderMenuIntent);
+                    self.dismiss();
+                }
+
             }
         });
 
@@ -95,6 +98,10 @@ public class BottomPanel extends BottomSheetDialogFragment {
         });
 
         return v;
+    }
+
+    public boolean checkDistance(String locId) {
+        return true;
     }
 
 //    public interface BottomSheetListener {

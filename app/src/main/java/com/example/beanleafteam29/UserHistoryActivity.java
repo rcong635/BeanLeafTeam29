@@ -19,7 +19,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
-import java.util.Map;
 
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
@@ -35,6 +34,7 @@ public class UserHistoryActivity extends AppCompatActivity {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
             db.collection("Users/" + uid + "/History")
+                    .orderBy("Date")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
