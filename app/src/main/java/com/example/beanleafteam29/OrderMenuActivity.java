@@ -65,7 +65,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
                                         double price = document.getDouble("Price");
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
-                                        String priceString = "$" + price;
+                                        String priceString = "$" + String.format("%.2f", price);
                                         priceView.setText(priceString);
 
                                         long caffeine = document.getLong("Caffeine");
