@@ -36,7 +36,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_menu);
 
@@ -79,7 +79,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
                                         checkBoxes.add((CheckBox) itemView.findViewById(R.id.checkbox));
 
-                                        System.out.println(task.getResult().size());
+                                        //System.out.println(task.getResult().size());
                                     }
                                 } else {
                                     TextView noItems = findViewById(R.id.noItems);
@@ -93,7 +93,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: add timestamp, prica and caffeine as double
+    //TODO: add timestamp, price and caffeine as double
     public void OnBuyButtonClicked(View v) {
         for (int i = 0; i < checkBoxes.size(); i++) {
             boolean checked = checkBoxes.get(i).isChecked();
@@ -109,5 +109,6 @@ public class OrderMenuActivity extends AppCompatActivity {
             }
         }
         FirebaseUIActivity.addElementToUserHistory(order);
+        finish();
     }
 }

@@ -295,12 +295,12 @@ public class FirebaseUIActivity {
                                                     Log.w("FirebaseUIActivity", "Error writing document", e);
                                                 }
                                             });
-                                    data.clear();
+                                    /*data.clear();
                                     db.collection("Users")
                                             .document(uid)
                                             .collection("History")
                                             .document()
-                                            .set(data);
+                                            .set(data);*/
                                 }
                             } else {
                                 Log.d("checkAdmin", "Error getting documents: ", task.getException());
