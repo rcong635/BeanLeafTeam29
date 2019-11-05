@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import android.app.Dialog;
 import android.widget.Toast;
-import android.view.LayoutInflater;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Context;
@@ -30,22 +31,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
-
 public class Edit_Location extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    //input values for our map
     private EditText item;
     private EditText caff;
     private EditText price;
     private Button confirm;
+    private ImageButton delete;
     private static final String TAG = "Edit_Location";
     Dialog myDialog; //used for pop-ups
     private String myLocation = new String();
     private static List<Map<String, Object> > input;
+    private static List<Map<String, Object> > deleteTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +53,16 @@ public class Edit_Location extends AppCompatActivity {
         setContentView(R.layout.activity_edit__location);
         myDialog = new Dialog(this);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
-        System.out.println(myLocation); //check if it works
 
         // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView //recyclerView.setHasFixedSize(true);
-
+        // in content do not change the layout size of the RecyclerView
+        //recyclerView.setHasFixedSize(true);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        input = new ArrayList<>();
         getLocMenu(myLocation);
         mAdapter = new MyAdapter(input);
         recyclerView.setAdapter(mAdapter);
@@ -119,9 +116,7 @@ public class Edit_Location extends AppCompatActivity {
         m.put("Name", item_name);
         m.put("Price", item_price);
         FirebaseUIActivity.addElementToMenu(m, myLocation); //update first
-        input.add(m);
-        mAdapter = new MyAdapter(input); //try looking into the notify method
-        recyclerView.setAdapter(mAdapter); //Add items to the front-end
+        mAdapter.notifyItemChanged(mAdapter.getItemCount(), m);
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -136,13 +131,17 @@ public class Edit_Location extends AppCompatActivity {
 
     }
 
-    public void deleteMenu(String removeItem){
-        FirebaseUIActivity.deleteElementFromMenu(myLocation, removeItem);
-        //delete from Adapter
-        int pos = 2;
-        input.remove(pos);
-        mAdapter = new MyAdapter(input);
-        recyclerView.setAdapter(mAdapter); //Add items to the front-end
+    public void deleteMenu(View v){
+        deleteTracker = new ArrayList<>();
+    deleteTracker.addAll(MyAdapter.delete_list());
+        mAdapter = new MyAdapter(deleteTracker);
+        recyclerView.setAdapter(mAdapter);
+        for (Map<String, Object> map : MyAdapter.FireBaseTracker) {
+
+            FirebaseUIActivity.deleteElementFromMenu(myLocation, map.get("Name").toString());
+
+        }
+
     }
 
     public void AddSuccess() {
@@ -214,7 +213,7 @@ public class Edit_Location extends AppCompatActivity {
 
     //used to intailize the menu items
     public static void getLocMenu(String myLocation) {
-        int counter = 0;
+        input = new ArrayList<>();
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("Locations/" + myLocation + "/Menu")
@@ -227,8 +226,6 @@ public class Edit_Location extends AppCompatActivity {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         Map<String, Object> myData = document.getData();
                                         input.add(myData);
-                                        System.out.println(document);
-                                        System.out.println(task.getResult().size());
                                     }
 
                                 }
@@ -239,6 +236,7 @@ public class Edit_Location extends AppCompatActivity {
                     });
         }
     }
+
 
 }
 //To Do -- Make sure Adapter doesn't print the edit menu screen for multiple locations

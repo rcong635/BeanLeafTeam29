@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,9 @@
         android:layout_marginBottom="12dp"
         android:layout_marginRight="12dp"
         android:elevation="2dp"
-        android:src="@android:drawable/ic_menu_delete" />
+        android:src="@android:drawable/ic_menu_delete"
+        android:onClick="deleteMenu"/>
+
 
     <ImageView
         android:id="@+id/imageView2"
