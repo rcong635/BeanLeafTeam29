@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/profileRadio"
+        android:id="@+id/profileRadioGroup"
         android:layout_width="327dp"
         android:layout_height="34dp"
         android:layout_marginTop="16dp"
@@ -65,14 +65,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/caffeineAmount" />
 
-    <ProgressBar
+    <TextView
         android:id="@+id/profileProgressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="187dp"
-        android:layout_height="128dp"
+        android:layout_width="188dp"
+        android:layout_height="117dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
+        android:text="123"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="80sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileHeader" />
