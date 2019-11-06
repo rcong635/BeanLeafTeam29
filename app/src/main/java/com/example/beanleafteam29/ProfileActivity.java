@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -131,7 +132,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void OnEditButtonClicked(View v) {
-        RelativeLayout editLayout = (RelativeLayout) v.getParent();
+        ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
 
         TextView location = (TextView) editLayout.getChildAt(0);
         String locationName = location.getText().toString();
@@ -147,7 +148,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
 
-        Intent editLocationIntent = new Intent(this, OrderMenuActivity.class);
+        Intent editLocationIntent = new Intent(this, Edit_Location.class);
         editLocationIntent.putExtra("locationID", locationID);
         startActivity(editLocationIntent);
     }

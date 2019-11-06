@@ -33,6 +33,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -106,6 +108,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
         LatLng USC = new LatLng(34.0202, -118.2858);
+        userLocation = USC;
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(USC, 10);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
@@ -249,17 +252,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onStatusChanged (String provider,int status, Bundle extras){
 
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
+    public void onProviderEnabled (String provider){
 
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onProviderDisabled (String provider){
 
     }
 

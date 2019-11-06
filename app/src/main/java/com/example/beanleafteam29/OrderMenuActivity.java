@@ -111,7 +111,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         Map<String, Object> order = new HashMap<>();
         if (checkDistance() < distanceThreshold) {
             long caffeineInOrder = 0;
-            long caffeineConsumed = 0;
+            long caffeineConsumed = getCaffeineAmount();
 
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
