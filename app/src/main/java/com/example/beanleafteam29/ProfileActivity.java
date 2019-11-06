@@ -30,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
         viewHistBtn = findViewById(R.id.profileViewHistBtn);
         rg = findViewById(R.id.profileRadioGroup);
 
-
+        header.setText("Hello " + FirebaseUIActivity.getUserName());
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
