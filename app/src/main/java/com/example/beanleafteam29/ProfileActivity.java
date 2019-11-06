@@ -1,7 +1,9 @@
 package com.example.beanleafteam29;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -72,7 +74,17 @@ public class ProfileActivity extends AppCompatActivity {
             Map.Entry mapElement = (Map.Entry)locationsIterator.next();
             String owner = locations.get(mapElement.getKey()).getString("Owner");
             if (owner == getUid()) {
-                myLocations.put((String) mapElement.getKey(), locations.get(mapElement.getKey()).getString("Name"));
+                LayoutInflater inflater = getLayoutInflater();
+                View locationView = inflater.inflate(R.layout.editable_location, null);
+                ViewGroup locationsView = findViewById(R.id.locations);
+                String id = (String) mapElement.getKey();
+                String name = locations.get(mapElement.getKey()).getString("Name");
+                myLocations.put(id, name);
+
+                TextView nameView = locationView.findViewById(R.id.locationName);
+                nameView.setText(name);
+
+                locationsView.addView(locationView, 0);
             }
         }
     }
