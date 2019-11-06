@@ -153,10 +153,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
-
         FirebaseUIActivity.openFbReference("some_data", this);
         if (FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
@@ -194,7 +193,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseUIActivity.checkAdmin(this);
+            if(FirebaseUIActivity.getNewSignIn()) {
+                FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+                FirebaseUIActivity.setNewSignIn(false);
+                FirebaseUIActivity.checkAdmin(this);
+            }
             displayLocations();
         }
 
