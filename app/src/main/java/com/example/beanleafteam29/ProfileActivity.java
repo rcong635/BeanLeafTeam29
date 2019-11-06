@@ -3,6 +3,7 @@ package com.example.beanleafteam29;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -16,6 +17,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView caffeineAmount;
     private Button viewHistBtn;
     private RadioGroup rg;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,13 @@ public class ProfileActivity extends AppCompatActivity {
         rg = findViewById(R.id.profileRadioGroup);
 
         header.setText("Hello " + FirebaseUIActivity.getUserName());
+
+        if (FirebaseUIActivity.getIsAdmin()){
+            question.setText("You are a Merchant! :)");
+            rg.setVisibility(View.GONE);
+        }
+
+
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
@@ -41,6 +51,8 @@ public class ProfileActivity extends AppCompatActivity {
                     case R.id.radioBtnYes:
 
                         Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
+                        question.setText("You are a Merchant! :)");
+                        rg.setVisibility(View.GONE);
                         break;
                     case R.id.radioBtnNo:
                         Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();

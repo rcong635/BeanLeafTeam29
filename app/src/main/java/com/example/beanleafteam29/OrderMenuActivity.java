@@ -38,6 +38,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     double userLng;
     double locationLat;
     double locationLng;
+    float distanceThreshold = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +103,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        if (checkDistance() < 50) {
+        if (checkDistance() < distanceThreshold) {
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
                 if (checked) {
@@ -122,7 +123,7 @@ public class OrderMenuActivity extends AppCompatActivity {
             Toast.makeText(this, "Purchase completed", Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(this, "Too far from location to order", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Too far from the location to order", Toast.LENGTH_SHORT).show();
         }
     }
 
