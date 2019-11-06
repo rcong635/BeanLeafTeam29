@@ -203,6 +203,7 @@ public class FirebaseUIActivity {
             });
         }
         FirebaseUIActivity.isAdmin = true;
+        caller.showAddLocationButton();
     }
 
     public static void checkAdmin(final MapsActivity callerActivity) {

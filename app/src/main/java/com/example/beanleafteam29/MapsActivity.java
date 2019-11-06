@@ -165,6 +165,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (FirebaseUIActivity.isUserLoggedIn()) {
             if (FirebaseUIActivity.getNewSignIn()) {
                 FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+                FirebaseUIActivity.addUserToFirestore();
                 FirebaseUIActivity.setNewSignIn(false);
                 FirebaseUIActivity.checkAdmin(this);
             }
