@@ -4,6 +4,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -90,7 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
 
-//    Flag indicating whether a requested permission has been denied after returning in
+    //    Flag indicating whether a requested permission has been denied after returning in
 //    {@link #onRequestPermissionsResult(int, String[], int[])}.
     private boolean mPermissionDenied = false;
 
@@ -113,7 +121,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
 
         FirebaseUIActivity.openFbReference("some_data", this);
-        if(FirebaseUIActivity.isUserLoggedIn()) {
+        if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
@@ -121,7 +129,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             FirebaseUIActivity.attachListener();
         }
     }
-
 
 
     /*
@@ -157,21 +164,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 //      Creating listeners for markers on the map to show their data
 //        mMap.setOnMarkerClickListener(this);
-        mMap.setOnMarkerClickListener( new GoogleMap.OnMarkerClickListener() {
-               @Override
-               public boolean onMarkerClick(Marker marker) {
-                   BottomPanel bottomSheet = null;
-                   if (markerToLocId.containsKey(marker)) {
-                       bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker), markerToCoord.get(marker), userLocation);
-                   }
-                   else {
-                       bottomSheet = new BottomPanel("Ooops, sorry!", "", null, null);
-                   }
-                   bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
-                   bottomSheet.self = bottomSheet;
-                   return false;
-               }
-           }
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                          @Override
+                                          public boolean onMarkerClick(Marker marker) {
+                                              BottomPanel bottomSheet = null;
+                                              if (markerToLocId.containsKey(marker)) {
+                                                  bottomSheet = new BottomPanel(markerToName.get(marker), markerToLocId.get(marker), markerToCoord.get(marker), userLocation);
+                                              } else {
+                                                  bottomSheet = new BottomPanel("Ooops, sorry!", "", null, null);
+                                              }
+                                              bottomSheet.show(getSupportFragmentManager(), marker.getTitle());
+                                              bottomSheet.self = bottomSheet;
+                                              return false;
+                                          }
+                                      }
         );
 
     }
@@ -208,7 +214,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
         popup.setOnMenuItemClickListener(this);
-        if(addLocationButton)
+        if (addLocationButton)
             popup.inflate(R.menu.admin_menu);
         else
             popup.inflate(R.menu.user_menu);
@@ -245,35 +251,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-        public void hideButton () {
-            addLocationButton = false;
-        }
+    public void hideButton() {
+        addLocationButton = false;
+    }
 
-        public void showButton () {
-            addLocationButton = true;
-        }
+    public void showButton() {
+        addLocationButton = true;
+    }
 
-        private void enableMyLocation () {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // Permission to access the location is missing.
-                PermissionsUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                        Manifest.permission.ACCESS_FINE_LOCATION, true);
-            } else if (mMap != null) {
-                // Access to the location has been granted to the app.
-                mMap.setMyLocationEnabled(true);
-            }
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionsUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
         }
+    }
 
-        @Override
-        protected void onResumeFragments () {
-            super.onResumeFragments();
-            if (mPermissionDenied) {
-                // Permission was not granted, display error dialog.
-                showMissingPermissionError();
-                mPermissionDenied = false;
-            }
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mPermissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            mPermissionDenied = false;
         }
+    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -284,103 +290,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-        @Override
-        public void onStatusChanged (String provider,int status, Bundle extras){
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-        }
-
-        @Override
-        public void onProviderEnabled (String provider){
-
-        }
-
-        @Override
-        public void onProviderDisabled (String provider){
-
-        }
-
-        private void displayLocations () {
-            db = FirebaseFirestore.getInstance();
-            db.collection("Locations")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    String location_name = document.getString("Name");
-                                    GeoPoint coordinates = document.getGeoPoint("Coordinates");
-                                    LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
-                                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
-                                    locIdToMarker.put(document.getId(), newMarker);
-                                    markerToLocId.put(newMarker, document.getId());
-                                    markerToName.put(newMarker, location_name);
-                                    markerToCoord.put(newMarker, coordinates);
-                                }
-                            } else {
-                                Log.d("Some string", "Error getting documents: ", task.getException());
-                            }
-                        }
-                    });
-        }
-
-        private void showMissingPermissionError() {
-            PermissionsUtils.PermissionDeniedDialog
-                    .newInstance(true).show(getSupportFragmentManager(), "dialog");
-        }
     }
 
-    /*
-    //Geofence creation process --> create Geofence --> create Request --> add request to geofence
+    @Override
+    public void onProviderEnabled(String provider) {
 
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-
-        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
-        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
-        // is already inside that geofence.
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-
-        // Add the geofences to be monitored by geofencing service.
-        builder.addGeofences(mGeofenceList);
-
-        // Return a GeofencingRequest.
-        return builder.build();
     }
 
-    //Create the Geofence Object
-    @SuppressWarnings("MissingPermission")
-    private void addGeofences() {
+    @Override
+    public void onProviderDisabled(String provider) {
 
-        //create Geofence
-        mGeofenceList.add(new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId(reqId)
-
-                .setCircularRegion(
-                        lat,
-                        lon,
-                        rad
-                )
-                .setExpirationDuration(3000) //expires after 30 seconds
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                        Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setLoiteringDelay(3000) //check every 30 seconds
-                .build());
-        mPendingGeofenceTask = PendingGeofenceTask.ADD;
-        //create Request
-
-        //Add Request to GeoFence
-        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnCompleteListener(this);
-    }
-
-
-    @SuppressWarnings("MissingPermission")
-    private void removeGeofences() {
-        mPendingGeofenceTask = PendingGeofenceTask.REMOVE;
-        geofencingClient.removeGeofences(getGeofencePendingIntent()).addOnCompleteListener(this);
     }
 
     private void displayLocations() {
@@ -396,14 +318,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 GeoPoint coordinates = document.getGeoPoint("Coordinates");
                                 LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
 
+//                                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
                                 Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected")
                                         .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.coffee, location_name))));
-                                newMarker.setTag("location_name");
                                 locIdToMarker.put(document.getId(), newMarker);
                                 markerToLocId.put(newMarker, document.getId());
                                 markerToName.put(newMarker, location_name);
                                 markerToCoord.put(newMarker, coordinates);
-
                             }
                         } else {
                             Log.d("Some string", "Error getting documents: ", task.getException());
@@ -412,6 +333,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 });
     }
 
+
+
+    private void showMissingPermissionError() {
+        PermissionsUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
 
     private Bitmap writeTextOnDrawable(int drawableId, String text) {
 
@@ -451,31 +378,126 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-    public static int convertToPixels(Context context, int nDP)
-    {
+    public static int convertToPixels(Context context, int nDP) {
         final float conversionScale = context.getResources().getDisplayMetrics().density;
-
-        return (int) ((nDP * conversionScale) + 0.5f) ;
+        return (int) ((nDP * conversionScale) + 0.5f);
 
     }
+}
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return;
-        }
 
-        if (PermissionsUtils.isPermissionGranted(permissions, grantResults,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            // Enable the my location layer if the permission has been granted.
-            enableMyLocation();
-        } else {
-            // Display the missing permission error dialog when the fragments resume.
-            mPermissionDenied = true;
-        }
-    }
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+//    //Geofence creation process --> create Geofence --> create Request --> add request to geofence
+//
+//    private GeofencingRequest getGeofencingRequest() {
+//        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+//
+//        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
+//        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
+//        // is already inside that geofence.
+//        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+//
+//        // Add the geofences to be monitored by geofencing service.
+//        builder.addGeofences(mGeofenceList);
+//
+//        // Return a GeofencingRequest.
+//        return builder.build();
+//    }
+//
+//    //Create the Geofence Object
+//    @SuppressWarnings("MissingPermission")
+//    private void addGeofences() {
+//
+//        //create Geofence
+//        mGeofenceList.add(new Geofence.Builder()
+//                // Set the request ID of the geofence. This is a string to identify this
+//                // geofence.
+//                .setRequestId(reqId)
+//
+//                .setCircularRegion(
+//                        lat,
+//                        lon,
+//                        rad
+//                )
+//                .setExpirationDuration(3000) //expires after 30 seconds
+//                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+//                        Geofence.GEOFENCE_TRANSITION_EXIT)
+//                .setLoiteringDelay(3000) //check every 30 seconds
+//                .build());
+//        mPendingGeofenceTask = PendingGeofenceTask.ADD;
+//        //create Request
+//
+//        //Add Request to GeoFence
+//        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
+//                .addOnCompleteListener(this);
+//    }
+//
+//
+//    @SuppressWarnings("MissingPermission")
+//    private void removeGeofences() {
+//        mPendingGeofenceTask = PendingGeofenceTask.REMOVE;
+//        geofencingClient.removeGeofences(getGeofencePendingIntent()).addOnCompleteListener(this);
+//    }
+//
+//    private void displayLocations() {
+//        db = FirebaseFirestore.getInstance();
+//        db.collection("Locations")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            for (QueryDocumentSnapshot document : task.getResult()) {
+//                                String location_name = document.getString("Name");
+//                                GeoPoint coordinates = document.getGeoPoint("Coordinates");
+//                                LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
+//
+//                                Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected")
+//                                        .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.coffee, location_name))));
+//                                newMarker.z("location_name");
+//                                locIdToMarker.put(document.getId(), newMarker);
+//                                markerToLocId.put(newMarker, document.getId());
+//                                markerToName.put(newMarker, location_name);
+//                                markerToCoord.put(newMarker, coordinates);
+//
+//                            }
+//                        } else {
+//                            Log.d("Some string", "Error getting documents: ", task.getException());
+//                        }
+//                    }
+//                });
+//    }
+//
+//
+//
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+//            return;
+//        }
+//
+//        if (PermissionsUtils.isPermissionGranted(permissions, grantResults,
+//                Manifest.permission.ACCESS_FINE_LOCATION)) {
+//            // Enable the my location layer if the permission has been granted.
+//            enableMyLocation();
+//        } else {
+//            // Display the missing permission error dialog when the fragments resume.
+//            mPermissionDenied = true;
+//        }
+//    }
 //    @Override
 //    public boolean onMarkerClick(Marker marker) {
 //        String origin = latLngToString(currentLocation);
