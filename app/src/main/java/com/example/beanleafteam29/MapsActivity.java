@@ -105,11 +105,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } catch (SecurityException se) {
 
         }
+        LatLng USC = new LatLng(34.0202, -118.2858);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(USC, 10);
+        mMap.animateCamera(cameraUpdate);
+        locationManager.removeUpdates(this);
         mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
             if (FirebaseUIActivity.getNewSignIn()) {
                 FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+                FirebaseUIActivity.addUserToFirestore();
                 FirebaseUIActivity.setNewSignIn(false);
                 FirebaseUIActivity.checkAdmin(this);
             }
