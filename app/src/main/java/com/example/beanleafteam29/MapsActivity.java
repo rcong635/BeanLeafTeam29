@@ -108,7 +108,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
-            if(FirebaseUIActivity.getNewSignIn()) {
+            if (FirebaseUIActivity.getNewSignIn()) {
                 FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
                 FirebaseUIActivity.setNewSignIn(false);
                 FirebaseUIActivity.checkAdmin(this);
@@ -133,7 +133,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
               }
           }
         );
-
     }
 
     @Override
@@ -205,13 +204,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-        public void hideAddLocationButton() {
-            addLocationButton = false;
-        }
+    public void hideAddLocationButton() {
+        addLocationButton = false;
+    }
 
-        public void showAddLocationButton() {
-            addLocationButton = true;
-        }
+    public void showAddLocationButton() {
+        addLocationButton = true;
+    }
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -244,20 +243,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-        @Override
-        public void onStatusChanged (String provider,int status, Bundle extras){
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-        }
+    }
 
-        @Override
-        public void onProviderEnabled (String provider){
+    @Override
+    public void onProviderEnabled(String provider) {
 
-        }
+    }
 
-        @Override
-        public void onProviderDisabled (String provider){
+    @Override
+    public void onProviderDisabled(String provider) {
 
-        }
+    }
 
     private void displayLocations() {
         db = FirebaseFirestore.getInstance();
@@ -288,7 +287,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     private void showMissingPermissionError() {
         PermissionsUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
@@ -316,25 +314,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         rectPaint.setColor(Color.WHITE);
 
         paint.getTextBounds(text, 0, text.length(), textRect);
-        int text_width =  textRect.width();
+        int text_width = textRect.width();
 
 //        textRect.offsetTo(0, 30);
         Bitmap bitmap = Bitmap.createBitmap(text_width, 220, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawRect(0,0,text_width,65,rectPaint);
-        canvas.drawBitmap(bm, (text_width/2) - 70, 65, paint);
+        canvas.drawRect(0, 0, text_width, 65, rectPaint);
+        canvas.drawBitmap(bm, (text_width / 2) - 70, 65, paint);
 
 
-        canvas.drawText(text, (text_width/2), 50, paint);
+        canvas.drawText(text, (text_width / 2), 50, paint);
 
-        return  bitmap;
+        return bitmap;
     }
-
 
 
     public static int convertToPixels(Context context, int nDP) {
         final float conversionScale = context.getResources().getDisplayMetrics().density;
-        return (int) ((nDP * conversionScale) + 0.5f) ;
+        return (int) ((nDP * conversionScale) + 0.5f);
 
     }
 }
