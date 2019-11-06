@@ -45,6 +45,7 @@ public class FirebaseUIActivity {
     private static FirebaseFirestore db;
     private static HashMap<String, QueryDocumentSnapshot> userLocations = new HashMap<>();
     private static long caffeineAmount = 0;
+    private static boolean newSignIn = false;
 
     public FirebaseUIActivity() {
 
@@ -52,6 +53,14 @@ public class FirebaseUIActivity {
 
     public static boolean getIsAdmin() {
         return FirebaseUIActivity.isAdmin;
+    }
+
+    public static boolean getNewSignIn() {
+        return FirebaseUIActivity.newSignIn;
+    }
+
+    public static void setNewSignIn(boolean value) {
+        FirebaseUIActivity.newSignIn = false;
     }
 
     public static void openFbReference(String ref, final MapsActivity callerActivity) {
@@ -63,6 +72,8 @@ public class FirebaseUIActivity {
             mAuthListener = new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    //Toast.makeText(callerActivity.getBaseContext(), "Auth state changed!!", Toast.LENGTH_SHORT).show();
+                    newSignIn = true;
                     if (firebaseAuth.getCurrentUser() == null) {
                         FirebaseUIActivity.signIn(callerActivity);
                     } else {
@@ -171,6 +182,29 @@ public class FirebaseUIActivity {
                 });
     }
 
+    public static void makeAdmin() {
+        if (isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            final String uid = getUid();
+            Map<String, Object> data = new HashMap<>();
+            data.put("Admin", true);
+            db.collection("Users")
+                    .document(uid)
+                    .update(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w("FirebaseUIActivity", "Error writing document", e); }
+            });
+        }
+        FirebaseUIActivity.isAdmin = true;
+    }
+
     public static void checkAdmin(final MapsActivity callerActivity) {
         db = FirebaseFirestore.getInstance();
         final String userID = FirebaseUIActivity.getUid();
@@ -209,6 +243,7 @@ public class FirebaseUIActivity {
 
     public static void queryDatabaseForCurrentUserLocations() {
         if (isUserLoggedIn()) {
+            userLocations.clear();
             final String uid = getUid();
             db = FirebaseFirestore.getInstance();
             db.collection("Locations")
@@ -228,9 +263,9 @@ public class FirebaseUIActivity {
                             }
                         }
                     });
-
         }
     }
+
 
     public static void attachListener() {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
