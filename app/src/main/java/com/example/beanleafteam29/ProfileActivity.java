@@ -94,14 +94,15 @@ public class ProfileActivity extends AppCompatActivity {
                 switch(checkedId)
                 {
                     case R.id.radioBtnYes:
-                        //TO DO: Add owner to DB
-                        //
-                        Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
+                        FirebaseUIActivity.makeAdmin();
+//                      Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
                         question.setText("You are a Merchant! :)");
                         rg.setVisibility(View.GONE);
+                        scroller.setVisibility(View.VISIBLE);
+                        yourLocationsTV.setVisibility(View.VISIBLE);
                         break;
                     case R.id.radioBtnNo:
-                        Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();
                         break;
 
                 }
