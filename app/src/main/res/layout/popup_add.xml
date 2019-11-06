@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="350dp"
     android:layout_height="475dp"
-    android:background="@color/colorPrimaryDark"
-    android:padding="5dp"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/txtclose"
@@ -24,13 +24,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
-        <EditText android:id="@+id/input_item"
+
+        <EditText
+            android:id="@+id/input_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:textColorHint="@color/white"
             android:backgroundTint="@color/white"
-            android:hint="Menu Item" />
+            android:hint="Menu Item"
+            android:inputType="textPersonName"
+            android:textColorHint="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Price Label -->
@@ -39,14 +41,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
-        <EditText android:id="@+id/input_price"
+
+        <EditText
+            android:id="@+id/input_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPostalAddress"
-            android:textColorHint="@color/white"
             android:backgroundTint="@color/white"
             android:hint="Price"
-            android:importantForAutofill="yes" />
+            android:importantForAutofill="yes"
+            android:inputType="textPostalAddress"
+            android:textColorHint="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Caffeine Label -->
@@ -55,27 +59,29 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
-        <EditText android:id="@+id/input_caff"
+
+        <EditText
+            android:id="@+id/input_caff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:textColorHint="@color/white"
             android:backgroundTint="@color/white"
-            android:hint="Caffeine Amount" />
+            android:hint="Caffeine Amount"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Add Menu Item Button -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_menu"
-        android:background="@color/colorPrimaryDark"
         android:layout_width="fill_parent"
         android:layout_height="63dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
+        android:background="#536DFE"
         android:padding="12dp"
+        android:text="Add Menu Item"
         android:textColor="@color/white"
-        android:textSize="22dp"
-        android:text="Add Menu Item" />
+        android:textSize="22dp" />
 
 
 </LinearLayout>
