@@ -11,20 +11,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
-
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
@@ -40,16 +31,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import android.content.Intent;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-//GeoFence Libraries
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,6 +44,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
+//GeoFence Libraries
 //GeoFence Libraries
 /*
 import android.app.PendingIntent;
@@ -71,27 +57,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 */
-
-import java.util.HashMap;
-import java.util.Map;
-
-import java.util.HashMap;
-import java.util.Map;
-import android.content.Intent;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import java.util.ArrayList;
-import java.util.Map;
 //, OnCompleteListener<Void>
-
-import java.util.HashMap;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         LocationListener, PopupMenu.OnMenuItemClickListener, OnMarkerClickListener {
@@ -153,10 +119,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
-
         FirebaseUIActivity.openFbReference("some_data", this);
         if (FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
@@ -198,7 +163,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseUIActivity.checkAdmin(this);
+            if (FirebaseUIActivity.getNewSignIn()) {
+                FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+                FirebaseUIActivity.setNewSignIn(false);
+                FirebaseUIActivity.checkAdmin(this);
+            }
             displayLocations();
         }
 
@@ -219,7 +188,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                           }
                                       }
         );
-
     }
 
     @Override
@@ -291,13 +259,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-        public void hideAddLocationButton() {
-            addLocationButton = false;
-        }
+    public void hideAddLocationButton() {
+        addLocationButton = false;
+    }
 
-        public void showAddLocationButton() {
-            addLocationButton = true;
-        }
+    public void showAddLocationButton() {
+        addLocationButton = true;
+    }
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -374,7 +342,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-
     private void showMissingPermissionError() {
         PermissionsUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
@@ -402,40 +369,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         rectPaint.setColor(Color.WHITE);
 
         paint.getTextBounds(text, 0, text.length(), textRect);
-        int text_width =  textRect.width();
+        int text_width = textRect.width();
 
 //        textRect.offsetTo(0, 30);
         Bitmap bitmap = Bitmap.createBitmap(text_width, 220, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawRect(0,0,text_width,65,rectPaint);
-        canvas.drawBitmap(bm, (text_width/2) - 70, 65, paint);
+        canvas.drawRect(0, 0, text_width, 65, rectPaint);
+        canvas.drawBitmap(bm, (text_width / 2) - 70, 65, paint);
 
 
-        canvas.drawText(text, (text_width/2), 50, paint);
+        canvas.drawText(text, (text_width / 2), 50, paint);
 
-        return  bitmap;
+        return bitmap;
     }
-
 
 
     public static int convertToPixels(Context context, int nDP) {
         final float conversionScale = context.getResources().getDisplayMetrics().density;
-        return (int) ((nDP * conversionScale) + 0.5f) ;
+        return (int) ((nDP * conversionScale) + 0.5f);
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //    //Geofence creation process --> create Geofence --> create Request --> add request to geofence
