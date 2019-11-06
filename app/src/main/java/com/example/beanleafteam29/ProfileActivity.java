@@ -68,24 +68,22 @@ public class ProfileActivity extends AppCompatActivity {
 //        val name = findViewById< EditText >(R.id.profile);
 //        val header = findViewById<TextView>(R.id.profileHeader);
 
+        myLocations = new HashMap<>();
         locations = getUserLocations();
         Iterator locationsIterator = locations.entrySet().iterator();
         while (locationsIterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)locationsIterator.next();
-            String owner = locations.get(mapElement.getKey()).getString("Owner");
-            if (owner == getUid()) {
-                LayoutInflater inflater = getLayoutInflater();
-                View locationView = inflater.inflate(R.layout.editable_location, null);
-                ViewGroup locationsView = findViewById(R.id.locations);
-                String id = (String) mapElement.getKey();
-                String name = locations.get(mapElement.getKey()).getString("Name");
-                myLocations.put(id, name);
+            LayoutInflater inflater = getLayoutInflater();
+            View locationView = inflater.inflate(R.layout.editable_location, null);
+            ViewGroup locationsView = findViewById(R.id.locations);
+            String id = (String) mapElement.getKey();
+            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            String name = value.getString("Name");
+            myLocations.put(id, name);
+            TextView nameView = locationView.findViewById(R.id.locationName);
+            nameView.setText(name);
 
-                TextView nameView = locationView.findViewById(R.id.locationName);
-                nameView.setText(name);
-
-                locationsView.addView(locationView, 0);
-            }
+            locationsView.addView(locationView, 0);
         }
     }
 
