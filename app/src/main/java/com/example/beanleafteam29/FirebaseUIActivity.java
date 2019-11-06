@@ -44,6 +44,9 @@ public class FirebaseUIActivity {
 
     }
 
+    public static boolean getIsAdmin() {
+        return isAdmin;
+    }
 
     public static void openFbReference(String ref, final MapsActivity callerActivity) {
         //Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
@@ -61,7 +64,7 @@ public class FirebaseUIActivity {
                         //Toast.makeText(callerActivity.getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
                     }
                     FirebaseUIActivity.detachListener();
-                    //checkAdmin(callerActivity);
+                    checkAdmin(callerActivity);
                 }
             };
         }
@@ -140,12 +143,8 @@ public class FirebaseUIActivity {
                         if (task.isSuccessful()) {
                             if(task.getResult().size() != 0) {
                                 FirebaseUIActivity.isAdmin = true;
-                                callerActivity.showButton();
-                                //Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
                             } else {
                                 FirebaseUIActivity.isAdmin = false;
-                                callerActivity.hideButton();
-                                //Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             //Toast.makeText(callerActivity.getBaseContext(), "Task is NOT successful!", Toast.LENGTH_SHORT).show();
