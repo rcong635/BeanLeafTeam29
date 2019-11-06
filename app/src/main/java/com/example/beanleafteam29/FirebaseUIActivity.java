@@ -256,7 +256,7 @@ public class FirebaseUIActivity {
                 RC_SIGN_IN);
     }
 
-/*    public static void addElementToUserHistory(Map m) {
+    public static void addElementToUserHistory(Map m) {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
@@ -265,7 +265,7 @@ public class FirebaseUIActivity {
                     .collection("History")
                     .add(m);
         }
-    }*/
+    }
 
     public static void addElementToMenu(Map m, String locationId) {
         if(isUserLoggedIn()) {
