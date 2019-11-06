@@ -202,6 +202,7 @@ public class FirebaseUIActivity {
                     Log.w("FirebaseUIActivity", "Error writing document", e); }
             });
         }
+        FirebaseUIActivity.isAdmin = true;
     }
 
     public static void checkAdmin(final MapsActivity callerActivity) {

@@ -204,8 +204,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 FirebaseUIActivity.checkAdmin(this);
             }
             displayLocations();
-            if (!FirebaseUIActivity.getIsAdmin())
-                FirebaseUIActivity.makeAdmin();
         }
 
 //      Creating listeners for markers on the map to show their data
