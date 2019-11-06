@@ -118,11 +118,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
-            if(FirebaseUIActivity.getIsAdmin())
+/*            if(FirebaseUIActivity.getIsAdmin())
                 showAddLocationButton();
             else
-                hideAddLocationButton();
+                hideAddLocationButton();*/
             displayLocations();
+            FirebaseUIActivity.computeCaffeineAmount();
         } else {
             FirebaseUIActivity.attachListener();
         }
@@ -156,11 +157,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMinZoomPreference(15);
 
         if (FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseUIActivity.addUserToFirestore();
-            if(FirebaseUIActivity.getIsAdmin())
-                showAddLocationButton();
-            else
-                hideAddLocationButton();
+            FirebaseUIActivity.checkAdmin(this);
             displayLocations();
         }
 

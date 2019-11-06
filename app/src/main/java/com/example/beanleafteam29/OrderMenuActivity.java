@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.beanleafteam29.FirebaseUIActivity.getCaffeineAmount;
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
 public class OrderMenuActivity extends AppCompatActivity {
@@ -79,6 +80,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         priceView.setText(priceString);
 
                                         long caffeine = document.getLong("Caffeine");
+                                        FirebaseUIActivity.setCaffeine(FirebaseUIActivity.getCaffeineAmount() + caffeine);
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
