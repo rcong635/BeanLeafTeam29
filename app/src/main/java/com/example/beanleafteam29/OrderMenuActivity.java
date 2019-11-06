@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.beanleafteam29.FirebaseUIActivity.getCaffeineAmount;
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
 public class OrderMenuActivity extends AppCompatActivity {
@@ -41,6 +42,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     double userLng;
     double locationLat;
     double locationLng;
+    float distanceThreshold = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         priceView.setText(priceString);
 
                                         long caffeine = document.getLong("Caffeine");
+                                        FirebaseUIActivity.setCaffeine(FirebaseUIActivity.getCaffeineAmount() + caffeine);
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
@@ -106,9 +109,10 @@ public class OrderMenuActivity extends AppCompatActivity {
 
     public void OnBuyButtonClicked(View v) {
         Map<String, Object> order = new HashMap<>();
-        if (checkDistance() < 50) {
+        if (checkDistance() < distanceThreshold) {
             long caffeineInOrder = 0;
             long caffeineConsumed = 0;
+
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
                 if (checked) {
@@ -158,7 +162,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                 finish();
             }
         } else {
-            Toast.makeText(this, "Too far from location to order", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Too far from the location to order", Toast.LENGTH_SHORT).show();
         }
     }
 

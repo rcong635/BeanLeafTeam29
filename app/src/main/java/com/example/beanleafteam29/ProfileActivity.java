@@ -2,9 +2,13 @@ package com.example.beanleafteam29;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+
 import android.view.View;
+
+import android.view.LayoutInflater;
+
 import android.view.ViewGroup;
+
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -50,6 +54,13 @@ public class ProfileActivity extends AppCompatActivity {
         rg = findViewById(R.id.profileRadioGroup);
 
         header.setText("Hello " + FirebaseUIActivity.getUserName());
+
+        if (FirebaseUIActivity.getIsAdmin()){
+            question.setText("You are a Merchant! :)");
+            rg.setVisibility(View.GONE);
+        }
+
+
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
             @Override
@@ -60,6 +71,8 @@ public class ProfileActivity extends AppCompatActivity {
                     case R.id.radioBtnYes:
 
                         Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
+                        question.setText("You are a Merchant! :)");
+                        rg.setVisibility(View.GONE);
                         break;
                     case R.id.radioBtnNo:
                         Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();

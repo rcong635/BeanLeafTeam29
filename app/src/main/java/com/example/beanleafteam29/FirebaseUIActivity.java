@@ -3,6 +3,7 @@ package com.example.beanleafteam29;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -14,8 +15,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,8 +27,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import android.location.Address;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +44,15 @@ public class FirebaseUIActivity {
     private static boolean isAdmin = false;
     private static FirebaseFirestore db;
     private static HashMap<String, QueryDocumentSnapshot> userLocations = new HashMap<>();
+    private static long caffeineAmount = 0;
 
     public FirebaseUIActivity() {
 
     }
 
+    public static boolean getIsAdmin() {
+        return FirebaseUIActivity.isAdmin;
+    }
 
     public static void openFbReference(String ref, final MapsActivity callerActivity) {
         //Toast.makeText(callerActivity.getBaseContext(), "openFbReference() called", Toast.LENGTH_SHORT).show();
@@ -61,12 +70,46 @@ public class FirebaseUIActivity {
                         //Toast.makeText(callerActivity.getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
                     }
                     FirebaseUIActivity.detachListener();
-                    //checkAdmin(callerActivity);
                 }
             };
         }
     }
 
+    public static void setCaffeine(long amount) {
+        FirebaseUIActivity.caffeineAmount = amount;
+    }
+
+    public static void computeCaffeineAmount() {
+        db = FirebaseFirestore.getInstance();
+        final SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+        final String uid = getUid();
+        db.collection("Users")
+                .document(uid)
+                .collection("History")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().size() != 0) {
+                                for(QueryDocumentSnapshot document : task.getResult()) {
+                                    Date queryDate = document.getTimestamp("Date").toDate();
+                                    if(fmt.format(queryDate).equals(fmt.format(new Date()))) {
+                                        FirebaseUIActivity.caffeineAmount += document.getLong("Caffeine");
+                                    }
+                                }
+                            }
+                        } else {
+                            //Toast.makeText(callerActivity.getBaseContext(), "Task is NOT successful!", Toast.LENGTH_SHORT).show();
+                            Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public static long getCaffeineAmount() {
+        return FirebaseUIActivity.caffeineAmount;
+    }
 
     public static boolean isUserLoggedIn() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null)
@@ -110,6 +153,7 @@ public class FirebaseUIActivity {
         GeoPoint latLong = new GeoPoint(latitude, longitude);
         locations.put("Coordinates", latLong);
         locations.put("Name", locationName);
+        locations.put("Owner", getUid());
         db = FirebaseFirestore.getInstance();
         db.collection("Locations").document()
                 .set(locations)
@@ -140,11 +184,11 @@ public class FirebaseUIActivity {
                         if (task.isSuccessful()) {
                             if(task.getResult().size() != 0) {
                                 FirebaseUIActivity.isAdmin = true;
-                                callerActivity.showButton();
+                                callerActivity.showAddLocationButton();
                                 //Toast.makeText(callerActivity.getBaseContext(), "User is admin", Toast.LENGTH_SHORT).show();
                             } else {
                                 FirebaseUIActivity.isAdmin = false;
-                                callerActivity.hideButton();
+                                callerActivity.hideAddLocationButton();
                                 //Toast.makeText(callerActivity.getBaseContext(), "User is NOT admin", Toast.LENGTH_SHORT).show();
                             }
                         } else {
@@ -165,6 +209,7 @@ public class FirebaseUIActivity {
 
     public static void queryDatabaseForCurrentUserLocations() {
         if (isUserLoggedIn()) {
+            final String uid = getUid();
             db = FirebaseFirestore.getInstance();
             db.collection("Locations")
                     //.whereEqualTo("Owner", getUid())
@@ -173,9 +218,12 @@ public class FirebaseUIActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if (document.getString("Owner").equals(getUid()))
-                                        userLocations.put(document.getId(), document);
+                                if (task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String ownerUid = document.getString("Owner");
+                                        if (ownerUid.equals(uid))
+                                            userLocations.put(document.getId(), document);
+                                    }
                                 }
                             }
                         }
@@ -208,7 +256,7 @@ public class FirebaseUIActivity {
                 RC_SIGN_IN);
     }
 
-    public static void addElementToUserHistory(Map m) {
+/*    public static void addElementToUserHistory(Map m) {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
@@ -217,7 +265,7 @@ public class FirebaseUIActivity {
                     .collection("History")
                     .add(m);
         }
-    }
+    }*/
 
     public static void addElementToMenu(Map m, String locationId) {
         if(isUserLoggedIn()) {
