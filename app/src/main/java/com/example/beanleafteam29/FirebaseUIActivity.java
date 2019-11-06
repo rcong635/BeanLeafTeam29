@@ -182,6 +182,28 @@ public class FirebaseUIActivity {
                 });
     }
 
+    public static void makeAdmin() {
+        if (isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            final String uid = getUid();
+            Map<String, Object> data = new HashMap<>();
+            data.put("Admin", true);
+            db.collection("Users")
+                    .document(uid)
+                    .update(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w("FirebaseUIActivity", "Error writing document", e); }
+            });
+        }
+    }
+
     public static void checkAdmin(final MapsActivity callerActivity) {
         db = FirebaseFirestore.getInstance();
         final String userID = FirebaseUIActivity.getUid();
@@ -240,9 +262,9 @@ public class FirebaseUIActivity {
                             }
                         }
                     });
-
         }
     }
+
 
     public static void attachListener() {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
