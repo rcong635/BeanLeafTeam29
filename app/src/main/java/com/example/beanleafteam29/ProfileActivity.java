@@ -1,11 +1,13 @@
 package com.example.beanleafteam29;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +36,6 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView caffeineAmount;
     private Button viewHistBtn;
     private RadioGroup rg;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +86,29 @@ public class ProfileActivity extends AppCompatActivity {
             myLocations.put(id, name);
             TextView nameView = locationView.findViewById(R.id.locationName);
             nameView.setText(name);
-
             locationsView.addView(locationView, 0);
         }
     }
 
     public void OnEditButtonClicked(View v) {
+        RelativeLayout editLayout = (RelativeLayout) v.getParent();
 
+        TextView location = (TextView) editLayout.getChildAt(0);
+        String locationName = location.getText().toString();
+
+        Iterator locationsIterator = locations.entrySet().iterator();
+        String locationID = "";
+        while (locationsIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)locationsIterator.next();
+            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            String name = value.getString("Name");
+            if (name.equals(locationName)) {
+                locationID = (String) mapElement.getKey();
+            }
+        }
+
+        Intent editLocationIntent = new Intent(this, OrderMenuActivity.class);
+        editLocationIntent.putExtra("locationID", locationID);
+        startActivity(editLocationIntent);
     }
 }
