@@ -157,6 +157,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
         LatLng USC = new LatLng(34.0202, -118.2858);
+        userLocation = USC;
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(USC, 10);
         mMap.animateCamera(cameraUpdate);
         locationManager.removeUpdates(this);
