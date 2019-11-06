@@ -111,6 +111,7 @@ public class FirebaseUIActivity {
         GeoPoint latLong = new GeoPoint(latitude, longitude);
         locations.put("Coordinates", latLong);
         locations.put("Name", locationName);
+        locations.put("Owner", getUid());
         db = FirebaseFirestore.getInstance();
         db.collection("Locations").document()
                 .set(locations)
@@ -166,6 +167,7 @@ public class FirebaseUIActivity {
 
     public static void queryDatabaseForCurrentUserLocations() {
         if (isUserLoggedIn()) {
+            final String uid = getUid();
             db = FirebaseFirestore.getInstance();
             db.collection("Locations")
                     //.whereEqualTo("Owner", getUid())
@@ -174,9 +176,12 @@ public class FirebaseUIActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if (document.getString("Owner").equals(getUid()))
-                                        userLocations.put(document.getId(), document);
+                                if (task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String ownerUid = document.getString("Owner");
+                                        if (ownerUid.equals(uid))
+                                            userLocations.put(document.getId(), document);
+                                    }
                                 }
                             }
                         }
