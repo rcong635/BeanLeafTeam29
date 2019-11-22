@@ -95,7 +95,9 @@ public class AddLocActivity extends AppCompatActivity {
         String address = Address.getText().toString();
 
         FirebaseUIActivity.addLocation(name, address, this);
-        //for
+
+        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {

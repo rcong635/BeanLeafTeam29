@@ -7,44 +7,50 @@
 <!--    tools:context=".UserHistoryActivity">-->
 
 <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/Header"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="start"
-        android:layout_centerHorizontal="true"
-        android:textSize="24sp"
-        android:text="User History"
-        android:textColor="#ffffff"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        />
-
-    <TextView
-        android:id="@+id/noItems"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="No items purchased yet"
-        android:layout_below="@id/Header"
-        android:textColor="@color/colorBlack"
-        android:textSize="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible"
-        />
-
-    <LinearLayout
-        android:id="@+id/History"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Header"
         android:orientation="vertical">
-    </LinearLayout>
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/Header"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="start"
+            android:layout_centerHorizontal="true"
+            android:textSize="24sp"
+            android:text="User History"
+            android:textColor="#ffffff"
+            android:background="@color/colorPrimary"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            />
+
+        <TextView
+            android:id="@+id/noItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No items purchased yet"
+            android:layout_below="@id/Header"
+            android:textColor="@color/colorBlack"
+            android:textSize="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="invisible"
+            />
+
+        <LinearLayout
+            android:id="@+id/History"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Header"
+            android:orientation="vertical">
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

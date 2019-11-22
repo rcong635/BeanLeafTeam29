@@ -4,34 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     tools:context=".ProfileActivity">
 
     <TextView
-        android:id="@+id/profileHeader"
+        android:id="@+id/caffeineAmount2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:text="Recommended Daily Limit: 400mg"
+        android:textAlignment="center"
+        android:textColor="#E4000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileProgressBar" />
+
+    <TextView
+        android:id="@+id/profileHeader"
+        android:layout_width="292dp"
+        android:layout_height="48dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
+        android:fontFamily="cursive"
         android:inputType="textPersonName"
         android:text="Profile"
         android:textAlignment="center"
         android:textColor="#1F1D1D"
-        android:textSize="24sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
-        android:id="@+id/profileRadio"
-        android:layout_width="327dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="16dp"
+        android:id="@+id/profileRadioGroup"
+        android:layout_width="204dp"
+        android:layout_height="30dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.344"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileQuestion">
 
@@ -53,7 +68,7 @@
         android:layout_width="197dp"
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="#447DDD"
         android:text="View Purchases"
@@ -61,44 +76,114 @@
         android:textColor="#FFFFFF"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.522"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/caffeineAmount2" />
 
-    <ProgressBar
+    <TextView
         android:id="@+id/profileProgressBar"
-        style="?android:attr/progressBarStyle"
         android:layout_width="187dp"
-        android:layout_height="128dp"
+        android:layout_height="102dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="123"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="80sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileHeader" />
 
     <TextView
         android:id="@+id/profileQuestion"
-        android:layout_width="375dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="377dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Would you like to become a Merchant?"
-        android:textAlignment="viewStart"
+        android:textAlignment="center"
         android:textColor="#0A0A0A"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+
+    <TextView
+        android:id="@+id/caffeineAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="Caffeine Amount"
+        android:textAlignment="center"
+        android:textColor="#DF000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileProgressBar" />
+
+    <TextView
+        android:id="@+id/profileYourLocationsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Your Locations:"
+        android:textColor="#0C0C0C"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+    <ScrollView
+        android:id="@+id/profileScroller"
+        android:layout_width="478dp"
+        android:layout_height="388dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileYourLocationsTV">
+
+        <LinearLayout
+            android:id="@+id/locations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="477dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileViewHistBtn" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="477dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="42dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profileRadioGroup" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Caffeine Amount"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@+id/profileProgressBar"
-        tools:layout_editor_absoluteX="186dp" />
+        android:layout_marginEnd="8dp"
+        android:text="Account Type"
+        android:textColor="#424141"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

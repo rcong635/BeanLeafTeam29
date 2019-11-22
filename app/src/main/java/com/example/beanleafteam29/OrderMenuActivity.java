@@ -1,8 +1,11 @@
 package com.example.beanleafteam29;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.beanleafteam29.FirebaseUIActivity.getCaffeineAmount;
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
 public class OrderMenuActivity extends AppCompatActivity {
@@ -38,6 +42,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     double userLng;
     double locationLat;
     double locationLng;
+    float distanceThreshold = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         priceView.setText(priceString);
 
                                         long caffeine = document.getLong("Caffeine");
+                                        FirebaseUIActivity.setCaffeine(FirebaseUIActivity.getCaffeineAmount() + caffeine);
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
@@ -102,11 +108,14 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        if (checkDistance() < 50) {
+        Map<String, Object> order = new HashMap<>();
+        if (checkDistance() < distanceThreshold) {
+            long caffeineInOrder = 0;
+            long caffeineConsumed = getCaffeineAmount();
+
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
                 if (checked) {
-                    Map<String, Object> order = new HashMap<>();
                     RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
                     order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
                     order.put("LocationName", locationName);
@@ -114,15 +123,46 @@ public class OrderMenuActivity extends AppCompatActivity {
                     priceString = priceString.substring(1);
                     order.put("Price", Double.valueOf(priceString));
                     String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
-                    order.put("Caffeine", caffeineToLong(caffeineString));
+                    long caffeine = caffeineToLong(caffeineString);
+                    order.put("Caffeine", caffeine);
+                    caffeineInOrder += caffeine;
                     order.put("Date", Timestamp.now());
                     FirebaseUIActivity.addElementToUserHistory(order);
                 }
             }
-            Toast.makeText(this, "Purchase completed", Toast.LENGTH_SHORT).show();
-            finish();
+            if (order.isEmpty()) {
+                Toast.makeText(this, "No items selected", Toast.LENGTH_SHORT).show();
+            }
+            else if (caffeineInOrder + caffeineConsumed > 400) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setTitle("Caffeine Warning");
+                alertDialogBuilder
+                        .setMessage("After this purchase, you will have exceeded the recommended daily caffeine limit (400mg). Are you sure you want to continue?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                Toast.makeText(getBaseContext(), "Purchase completed", Toast.LENGTH_SHORT).show();
+                                OrderMenuActivity.this.finish();
+                            }
+                        })
+                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+            else {
+                Toast.makeText(this, "Purchase completed", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         } else {
-            Toast.makeText(this, "Too far from location to order", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Too far from the location to order", Toast.LENGTH_SHORT).show();
         }
     }
 

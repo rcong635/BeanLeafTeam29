@@ -1,55 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    tools:context=".OrderMenuActivity">
 
-    <TextView
-        android:id="@+id/Header"
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_centerHorizontal="true"
-        android:textSize="24sp"
-        android:textColor="#ffffff"
-        android:text="Menu"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="10dp"
-        android:paddingTop="10dp"
-        />
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/noItems"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No items on the menu yet"
-        android:layout_below="@id/Header"
-        android:textColor="@color/colorBlack"
-        android:textSize="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible"
-        />
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="vertical"
+            tools:context=".OrderMenuActivity"
+            android:id="@+id/menu">
 
-    <LinearLayout
-        android:id="@+id/Menu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/Header"
-        android:orientation="vertical">
-    </LinearLayout>
+            <TextView
+                android:id="@+id/Header"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:textSize="24sp"
+                android:textColor="#ffffff"
+                android:text="Menu"
+                android:background="@color/colorPrimary"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                />
 
-    <Button
-        android:layout_width="114dp"
-        android:layout_height="78dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="114dp"
-        android:background="@color/colorPrimary"
-        android:textColor="#ffffff"
-        android:onClick="OnBuyButtonClicked"
-        android:paddingBottom="20dp"
-        android:text="Buy Items" />
+            <TextView
+                android:id="@+id/noItems"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No items on the menu yet"
+                android:layout_below="@id/Header"
+                android:textColor="@color/colorBlack"
+                android:textSize="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="invisible"
+                />
 
-</RelativeLayout>
+            <LinearLayout
+                android:id="@+id/Menu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Header"
+                android:orientation="vertical">
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="114dp"
+            android:layout_height="78dp"
+            android:layout_below="@id/menu"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="114dp"
+            android:background="@color/colorPrimary"
+            android:textColor="#ffffff"
+            android:onClick="OnBuyButtonClicked"
+            android:paddingBottom="20dp"
+            android:text="Buy Items" />
+
+    </RelativeLayout>
+
+</ScrollView>
