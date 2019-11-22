@@ -40,7 +40,7 @@ public class AddLocActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
+    private MyAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +58,13 @@ public class AddLocActivity extends AppCompatActivity {
 
         //Menu Stuff
         totalMenu = new ArrayList<>();
+        adapter = new MyAdapter();
         myDialog = new Dialog(this);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
 //        List<Map<String, Object>> initial = new ArrayList<>();
 //        mAdapter = new MyAdapter(initial); //-- don't need to show initial items - pass in empty
 //        recyclerView.setAdapter(mAdapter);
@@ -189,15 +191,16 @@ public class AddLocActivity extends AppCompatActivity {
         Double item_caff = new Double(caff.getText().toString());
         Double item_price = new Double(price.getText().toString());
 
-//        //Adding Menu to Data Base
+        //Adding Menu to Data Base
         Map<String, Object> m = new HashMap<>();
         m.put("Caffeine", item_caff);
         m.put("Name", item_name);
         m.put("Price", item_price);
-        totalMenu.add(m); //update to send to firebase later
+        //totalMenu.add(m); //update to send to firebase later
 //        FirebaseUIActivity.addElementToMenu(m, myLocation); //update first
-        mAdapter = new MyAdapter(totalMenu); //-- don't need to show initial items - pass in empty
-        recyclerView.setAdapter(mAdapter);
+        //mAdapter = new MyAdapter(totalMenu); //-- don't need to show initial items - pass in empty
+        //recyclerView.setAdapter(mAdapter);
+        adapter.add(adapter.getItemCount(), m);
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -215,19 +218,23 @@ public class AddLocActivity extends AppCompatActivity {
     //delete Menu Items
     public void deleteMenu(View v){
 
-        List<Map<String, Object>> temp = new ArrayList<>();
-
-        for(int i = 0; i < MyAdapter.itemStateArray.size(); i++) {
-            if (!MyAdapter.itemStateArray.valueAt(i)) {
-                int key = MyAdapter.itemStateArray.keyAt(i);
-                Map<String, Object> m = totalMenu.get(key);
-                temp.add(m);
-            }
+        totalMenu = adapter.delete_list();
+        if(totalMenu.size() == 0)
+        {
+            Toast.makeText(getBaseContext(), "Delete Menu Item Failed", Toast.LENGTH_LONG).show();
         }
-
-        mAdapter = new MyAdapter(temp);
-        recyclerView.setAdapter(mAdapter);
-        totalMenu = temp;
+        //update fire base
+//        for(int i = 0; i < MyAdapter.itemStateArray.size(); i++) {
+//            if (!MyAdapter.itemStateArray.valueAt(i)) {
+//                int key = MyAdapter.itemStateArray.keyAt(i);
+//                Map<String, Object> m = totalMenu.get(key);
+//                temp.add(m);
+//            }
+//        }
+//
+//        mAdapter = new MyAdapter(temp);
+//        recyclerView.setAdapter(mAdapter);
+//        totalMenu = temp;
     }
 
     public void AddSuccessM() {

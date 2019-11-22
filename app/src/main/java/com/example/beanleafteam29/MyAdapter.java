@@ -11,47 +11,42 @@ import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 import java.util.Map;
-import java.util.HashMap;
 import android.util.SparseBooleanArray;
-import java.lang.Integer;
+
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private static List<Map<String, Object> > print = new ArrayList<>();
-    private static List<Map<String, Object>> deleteTracker = new ArrayList<>();
-    public static List<Map<String, Object>> FireBaseTracker = new ArrayList<>();
+    private List<Map<String, Object> > print = new ArrayList<>();
 
     // sparse boolean array for checking the state of the items
-    public static SparseBooleanArray itemStateArray = new SparseBooleanArray();
+    private SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
     // Provide a suitable constructor (depends on the kind of dataset)
+    public MyAdapter(){
+
+    }
+
     public MyAdapter(List<Map<String, Object> >p) {
         print = p;
     }
 
-    public List<Map<String, Object> > delete_list(){
+    public List<Map<String, Object> > delete_list(){ //returns the updated list after deletion
         System.out.println("itemCheck size: " + itemStateArray.size());
         System.out.println("Current size: " + print.size());
         for(int i = 0; i < itemStateArray.size(); i++) {
-            if(!itemStateArray.valueAt(i)) {
-                int key = itemStateArray.keyAt(i);
-                Map<String, Object> m = print.get(key);
-                FireBaseTracker.add(m);
-            }
-            else{
-                int key = itemStateArray.keyAt(i);
-                Map<String, Object> m = print.get(key);
-                deleteTracker.add(m);
+            if(itemStateArray.valueAt(i)) { //delete this item
+                remove(i);
+                itemStateArray.delete(i);
             }
 
         }
-        System.out.println("itemCheck size: " + FireBaseTracker.size());
-        System.out.println("Firebase size: " + FireBaseTracker.size());
-        return FireBaseTracker;
+        System.out.println("itemCheck size: " + itemStateArray.size());
+        System.out.println("Return size: " + print.size());
+        return print;
     }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder implements OnClickListener
-    public class ViewHolder extends RecyclerView.ViewHolder  {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         //not in the row_layout.xml
         // each data item is just a string in this case
         public TextView txtHeader;
@@ -65,8 +60,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             txtHeader = (TextView) v.findViewById(R.id.firstLine);
             txtFooter = (TextView) v.findViewById(R.id.secondLine);
             chk_box = (CheckBox) v.findViewById(R.id.checkbox);
-            //listener = v.setOnClickListener(this);
-            //chk_box.setOnClickListener(this);
+            //v.setOnClickListener(this);
         }
 
         void bind(int position) {
@@ -77,6 +71,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 chk_box.setChecked(true);
             }
         }
+
+//        @Override
+//        public void onClick(View v){
+//            int adaptPos = getAdapterPosition();
+//            if(!itemStateArray.get(adaptPos, false)) {
+//                chk_box.setChecked(true);
+//            }
+//            else {
+//                chk_box.setChecked(false);
+//                itemStateArray.put(adaptPos, false);
+//            }
+//        }
 
     }
 
@@ -116,9 +122,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.txtHeader.setText(name);
         holder.txtFooter.setText("Price: " + price + " Caffeine: " + caf);
 
-        holder.chk_box.setTag(name);
         holder.chk_box.setId(position);
         holder.bind(position);
+
         holder.chk_box.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
