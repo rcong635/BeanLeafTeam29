@@ -132,15 +132,15 @@ public class Edit_Location extends AppCompatActivity {
     }
 
     public void deleteMenu(View v){
-        deleteTracker = new ArrayList<>();
-    deleteTracker.addAll(MyAdapter.delete_list());
-        mAdapter = new MyAdapter(deleteTracker);
-        recyclerView.setAdapter(mAdapter);
-        for (Map<String, Object> map : MyAdapter.FireBaseTracker) {
-
-            FirebaseUIActivity.deleteElementFromMenu(myLocation, map.get("Name").toString());
-
-        }
+//        deleteTracker = new ArrayList<>();
+//    deleteTracker.addAll(MyAdapter.delete_list());
+//        mAdapter = new MyAdapter(deleteTracker);
+//        recyclerView.setAdapter(mAdapter);
+//        for (Map<String, Object> map : MyAdapter.FireBaseTracker) {
+//
+//            FirebaseUIActivity.deleteElementFromMenu(myLocation, map.get("Name").toString());
+//
+//        }
 
     }
 
@@ -212,7 +212,7 @@ public class Edit_Location extends AppCompatActivity {
     }
 
     //used to intailize the menu items
-    public static void getLocMenu(String myLocation) {
+    public void getLocMenu(String myLocation) {
         input = new ArrayList<>();
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();

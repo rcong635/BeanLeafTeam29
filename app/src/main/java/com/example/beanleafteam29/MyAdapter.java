@@ -15,47 +15,43 @@ import java.util.HashMap;
 import android.util.SparseBooleanArray;
 import java.lang.Integer;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private static List<Map<String, Object> > print;
-    private static List<Map<String, Object>> deleteTracker;
-    public static List<Map<String, Object>> FireBaseTracker;
+    private static List<Map<String, Object> > print = new ArrayList<>();
+    private static List<Map<String, Object>> deleteTracker = new ArrayList<>();
+    public static List<Map<String, Object>> FireBaseTracker = new ArrayList<>();
+
     // sparse boolean array for checking the state of the items
-    private static SparseBooleanArray itemStateArray = new SparseBooleanArray();
+    public static SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public MyAdapter(List<Map<String, Object> >p) {
         print = p;
-
     }
 
-    public static List<Map<String, Object> > delete_list(){
-        deleteTracker = new ArrayList<>();
-        FireBaseTracker = new ArrayList<>();
+    public List<Map<String, Object> > delete_list(){
+        System.out.println("itemCheck size: " + itemStateArray.size());
+        System.out.println("Current size: " + print.size());
         for(int i = 0; i < itemStateArray.size(); i++) {
             if(!itemStateArray.valueAt(i)) {
                 int key = itemStateArray.keyAt(i);
                 Map<String, Object> m = print.get(key);
-                deleteTracker.add(m);
+                FireBaseTracker.add(m);
             }
             else{
                 int key = itemStateArray.keyAt(i);
                 Map<String, Object> m = print.get(key);
-                FireBaseTracker.add(m);
+                deleteTracker.add(m);
             }
 
         }
-
-        // clear old list
-        print.clear();
-
-        print.addAll(deleteTracker);
-
-        return deleteTracker;
+        System.out.println("itemCheck size: " + FireBaseTracker.size());
+        System.out.println("Firebase size: " + FireBaseTracker.size());
+        return FireBaseTracker;
     }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    public class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener {
+    // you provide access to all the views for a data item in a view holder implements OnClickListener
+    public class ViewHolder extends RecyclerView.ViewHolder  {
         //not in the row_layout.xml
         // each data item is just a string in this case
         public TextView txtHeader;
@@ -69,7 +65,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             txtHeader = (TextView) v.findViewById(R.id.firstLine);
             txtFooter = (TextView) v.findViewById(R.id.secondLine);
             chk_box = (CheckBox) v.findViewById(R.id.checkbox);
-            v.setOnClickListener(this);
+            //listener = v.setOnClickListener(this);
+            //chk_box.setOnClickListener(this);
         }
 
         void bind(int position) {
@@ -81,18 +78,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             }
         }
 
-        @Override
-        public void onClick(View v) {
-            int adapterPosition = getAdapterPosition();
-            if (!itemStateArray.get(adapterPosition, false)) {
-                chk_box.setChecked(true);
-                itemStateArray.put(adapterPosition, true);
-            }
-            else  {
-                chk_box.setChecked(false);
-                itemStateArray.put(adapterPosition, false);
-            }
-        }
     }
 
     public void add(int position, Map<String,Object> item) {
@@ -121,19 +106,34 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.bind(position);
+
         final String name = print.get(position).get("Name").toString();
         String price = print.get(position).get("Price").toString();
         String caf = print.get(position).get("Caffeine").toString();
         holder.txtHeader.setText(name);
-        holder.txtFooter.setText("Price: " + price + "  Caffeine: " + caf);
+        holder.txtFooter.setText("Price: " + price + " Caffeine: " + caf);
 
-        holder.chk_box.setChecked(holder.chk_box.isChecked());
         holder.chk_box.setTag(name);
         holder.chk_box.setId(position);
+        holder.bind(position);
+        holder.chk_box.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                System.out.println("Entered");
+                int adapterPosition = position;
+                if (!itemStateArray.get(adapterPosition, false)) {
+                    holder.chk_box.setChecked(true);
+                    itemStateArray.put(adapterPosition, true);
+                }
+                else  {
+                    holder.chk_box.setChecked(false);
+                    itemStateArray.put(adapterPosition, false);
+                }
+            }
+        });
 
     }
 
