@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.view.View;
@@ -52,7 +55,7 @@ public class Edit_Location extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__location);
         myDialog = new Dialog(this);
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        //recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
@@ -61,11 +64,52 @@ public class Edit_Location extends AppCompatActivity {
         // in content do not change the layout size of the RecyclerView
         //recyclerView.setHasFixedSize(true);
         // use a linear layout manager
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        getLocMenu(myLocation);
-        mAdapter = new MyAdapter(input);
-        recyclerView.setAdapter(mAdapter);
+//        layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+//        getLocMenu(myLocation);
+//        mAdapter = new MyAdapter(input);
+//        recyclerView.setAdapter(mAdapter);
+
+        if(FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Locations/" + myLocation + "/Menu")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if (task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                        LayoutInflater inflater = getLayoutInflater();
+                                        View rowView = inflater.inflate(R.layout.row_layout, null);
+                                        ViewGroup editLocView = findViewById(R.id.my_linear_layout);
+
+                                        String name = document.getString("Name");
+                                        TextView nameView = rowView.findViewById(R.id.firstLine);
+                                        nameView.setText(name);
+
+                                        double price = document.getDouble("Price");
+                                        TextView secondLine = rowView.findViewById(R.id.secondLine);
+                                        String priceString = "$" + String.format("%.2f", price);
+
+
+                                        long caffeine = document.getLong("Caffeine");
+                                        String caffeineString = caffeine + " mg caffeine";
+
+                                        secondLine.setText(priceString + "  " + caffeineString);
+                                        editLocView.addView(rowView, 0);
+
+                                        //System.out.println(task.getResult().size());
+                                    }
+
+                                }
+                            } else {
+                                Log.d("getLocMenu", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
     }
 
     public void ShowPopup(View v) { //used to show popup
@@ -214,27 +258,7 @@ public class Edit_Location extends AppCompatActivity {
     //used to intailize the menu items
     public void getLocMenu(String myLocation) {
         input = new ArrayList<>();
-        if(FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Locations/" + myLocation + "/Menu")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                if(task.getResult().size() != 0) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> myData = document.getData();
-                                        input.add(myData);
-                                    }
 
-                                }
-                            } else {
-                                Log.d("getLocMenu", "Error getting documents: ", task.getException());
-                            }
-                        }
-                    });
-        }
     }
 
 
