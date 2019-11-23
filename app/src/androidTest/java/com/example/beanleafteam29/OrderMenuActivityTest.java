@@ -10,11 +10,14 @@ import static org.junit.Assert.*;
 
 public class OrderMenuActivityTest {
 
+    OrderMenuActivity mActivity;
+
     @Rule
     public ActivityTestRule<OrderMenuActivity> mActivityRule = new ActivityTestRule(OrderMenuActivity.class);
 
     @Before
     public void setUp() throws Exception {
+        mActivity = mActivityRule.getActivity();
     }
 
     @After
@@ -31,19 +34,20 @@ public class OrderMenuActivityTest {
 
     @Test
     public void caffeineToLong() {
-        assertEquals(150, mActivityRule.getActivity().caffeineToLong("150mg"));
-        assertEquals(10, mActivityRule.getActivity().caffeineToLong("10mg"));
-        assertEquals(200, mActivityRule.getActivity().caffeineToLong("200mg"));
-        assertEquals(50, mActivityRule.getActivity().caffeineToLong("50mg"));
-        assertEquals(15, mActivityRule.getActivity().caffeineToLong("15mg"));
-        assertEquals(20, mActivityRule.getActivity().caffeineToLong("20mg"));
-        assertEquals(300, mActivityRule.getActivity().caffeineToLong("300mg"));
-        assertEquals(75, mActivityRule.getActivity().caffeineToLong("75mg"));
-        assertEquals(333, mActivityRule.getActivity().caffeineToLong("333mg"));
-        assertEquals(0, mActivityRule.getActivity().caffeineToLong("0mg"));
+        assertEquals(150, mActivity.caffeineToLong("150mg"));
+        assertEquals(10, mActivity.caffeineToLong("10mg"));
+        assertEquals(200, mActivity.caffeineToLong("200mg"));
+        assertEquals(50, mActivity.caffeineToLong("50mg"));
+        assertEquals(15, mActivity.caffeineToLong("15mg"));
+        assertEquals(20, mActivity.caffeineToLong("20mg"));
+        assertEquals(300, mActivity.caffeineToLong("300mg"));
+        assertEquals(75, mActivity.caffeineToLong("75mg"));
+        assertEquals(333, mActivity.caffeineToLong("333mg"));
+        assertEquals(0, mActivity.caffeineToLong("0mg"));
     }
 
     @Test
     public void checkDistance() {
+
     }
 }
