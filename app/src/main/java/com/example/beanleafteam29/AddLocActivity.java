@@ -1,12 +1,10 @@
 package com.example.beanleafteam29;
-
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +31,10 @@ public class AddLocActivity extends AppCompatActivity {
     private ImageButton delete;
     Dialog myDialog; //used for pop-ups
     private static final String TAG = "AddLocActivity";
-    private List<Map<String, Object>> totalMenu; //used to add all the menu items to database
+    private List<Map<String, Object>> totalMenu = new ArrayList<>(); //used to add all the menu items to database
     private List<Map<String, Object>> deleteTracker;
     //For Recycler View
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private MyAdapter adapter;
     @Override
@@ -61,13 +57,11 @@ public class AddLocActivity extends AppCompatActivity {
         adapter = new MyAdapter();
         myDialog = new Dialog(this);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        recyclerView.setHasFixedSize(true);
+
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-//        List<Map<String, Object>> initial = new ArrayList<>();
-//        mAdapter = new MyAdapter(initial); //-- don't need to show initial items - pass in empty
-//        recyclerView.setAdapter(mAdapter);
 
     }
 
@@ -79,7 +73,7 @@ public class AddLocActivity extends AppCompatActivity {
             AddFailed();
             return;
         }
-
+        totalMenu = adapter.updated_list();
         //Make sure store owner can't add without an initial Menu
         if(totalMenu == null || totalMenu.size() == 0){
             AddFailed();
@@ -96,9 +90,7 @@ public class AddLocActivity extends AppCompatActivity {
         String name = Name.getText().toString();
         String address = Address.getText().toString();
 
-        FirebaseUIActivity.addLocation(name, address, this);
-
-        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+        FirebaseUIActivity.addLocnMenu(name, address, totalMenu, this);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -196,10 +188,6 @@ public class AddLocActivity extends AppCompatActivity {
         m.put("Caffeine", item_caff);
         m.put("Name", item_name);
         m.put("Price", item_price);
-        //totalMenu.add(m); //update to send to firebase later
-//        FirebaseUIActivity.addElementToMenu(m, myLocation); //update first
-        //mAdapter = new MyAdapter(totalMenu); //-- don't need to show initial items - pass in empty
-        //recyclerView.setAdapter(mAdapter);
         adapter.add(adapter.getItemCount(), m);
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -218,23 +206,10 @@ public class AddLocActivity extends AppCompatActivity {
     //delete Menu Items
     public void deleteMenu(View v){
 
-        totalMenu = adapter.delete_list();
-        if(totalMenu.size() == 0)
+        if(adapter.delete_list().size() == 0)
         {
             Toast.makeText(getBaseContext(), "Delete Menu Item Failed", Toast.LENGTH_LONG).show();
         }
-        //update fire base
-//        for(int i = 0; i < MyAdapter.itemStateArray.size(); i++) {
-//            if (!MyAdapter.itemStateArray.valueAt(i)) {
-//                int key = MyAdapter.itemStateArray.keyAt(i);
-//                Map<String, Object> m = totalMenu.get(key);
-//                temp.add(m);
-//            }
-//        }
-//
-//        mAdapter = new MyAdapter(temp);
-//        recyclerView.setAdapter(mAdapter);
-//        totalMenu = temp;
     }
 
     public void AddSuccessM() {

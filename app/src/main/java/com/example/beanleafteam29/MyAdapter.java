@@ -15,7 +15,7 @@ import android.util.SparseBooleanArray;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private List<Map<String, Object> > print = new ArrayList<>();
-
+    private List<Map<String, Object> > delete = new ArrayList<>();
     // sparse boolean array for checking the state of the items
     private SparseBooleanArray itemStateArray = new SparseBooleanArray();
 
@@ -33,15 +33,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         System.out.println("Current size: " + print.size());
         for(int i = 0; i < itemStateArray.size(); i++) {
             if(itemStateArray.valueAt(i)) { //delete this item
+                delete.add(print.get(i));
+            }
+
+        }
+        for(int i = 0; i < itemStateArray.size(); i++) {
+            if(itemStateArray.valueAt(i)) { //delete this item
                 remove(i);
-                itemStateArray.delete(i);
             }
 
         }
         System.out.println("itemCheck size: " + itemStateArray.size());
         System.out.println("Return size: " + print.size());
+        System.out.println("Delete List size:" + delete.size());
+        return delete;
+    }
+
+    public List<Map<String, Object> > updated_list() {
         return print;
     }
+
+    public boolean check_state(int pos){
+        return itemStateArray.get(pos);
+    }
+
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -60,7 +75,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             txtHeader = (TextView) v.findViewById(R.id.firstLine);
             txtFooter = (TextView) v.findViewById(R.id.secondLine);
             chk_box = (CheckBox) v.findViewById(R.id.checkbox);
-            //v.setOnClickListener(this);
         }
 
         void bind(int position) {
@@ -72,27 +86,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             }
         }
 
-//        @Override
-//        public void onClick(View v){
-//            int adaptPos = getAdapterPosition();
-//            if(!itemStateArray.get(adaptPos, false)) {
-//                chk_box.setChecked(true);
-//            }
-//            else {
-//                chk_box.setChecked(false);
-//                itemStateArray.put(adaptPos, false);
-//            }
-//        }
-
     }
 
     public void add(int position, Map<String,Object> item) {
         print.add(position, item);
+        itemStateArray.put(position, false);
         notifyItemInserted(position);
     }
 
     public void remove(int position) {
         print.remove(position);
+        itemStateArray.delete(position);
         notifyItemRemoved(position);
     }
 
@@ -110,7 +114,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+    // Replace the contents of a view (invoked by the layout manager) -- assigns the data
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context=".Edit_Location">
 
-    <!-- A RecyclerView with some commonly used attributes -->
+
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -25,7 +25,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/header"
-        android:orientation="vertical"/>
+        android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <!-- A RecyclerView with some commonly used attributes -->
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/my_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </RelativeLayout>
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/imageView1"
