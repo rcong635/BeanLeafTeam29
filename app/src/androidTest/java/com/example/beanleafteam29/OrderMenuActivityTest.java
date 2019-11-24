@@ -48,6 +48,20 @@ public class OrderMenuActivityTest {
 
     @Test
     public void checkDistance() {
-
+        mActivity.setCoordinates(0, 0, 0, 0);
+        assertEquals(0, mActivity.checkDistance(), 0);
+        mActivity.setCoordinates(0, 0, .01, .01);
+        assertEquals(1572.53, mActivity.checkDistance(), 1);
+        mActivity.setCoordinates(0, 0, .005, .005);
+        assertEquals(786.27, mActivity.checkDistance(), .5);
+        mActivity.setCoordinates(0, 0, -.01, -.01);
+        assertEquals(1572.53, mActivity.checkDistance(), 1);
+        mActivity.setCoordinates(0, 0, -.005, .005);
+        assertEquals(786.27, mActivity.checkDistance(), .5);
+        mActivity.setCoordinates(10, 0, 9.99, .01);
+        assertEquals(1560.65, mActivity.checkDistance(), 1);
+        mActivity.setCoordinates(100, 100, 100, 100);
+        assertEquals(0, mActivity.checkDistance(), 0);
     }
+
 }

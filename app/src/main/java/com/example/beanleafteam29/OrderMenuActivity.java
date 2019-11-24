@@ -191,4 +191,11 @@ public class OrderMenuActivity extends AppCompatActivity {
         return new Float(distance * meterConversion).floatValue();
     }
 
+    public void setCoordinates(double userLat, double userLng, double locationLat, double locationLng) {
+        this.userLat = userLat;
+        this.userLng = userLng;
+        this.locationLat = locationLat;
+        this.locationLng = locationLng;
+    }
+
 }
