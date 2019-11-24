@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -56,7 +56,6 @@
         android:layout_alignParentTop="true"
         android:textSize="16dp"
         android:textColor="@color/colorBlack"
-
         android:textStyle="bold"
         android:layout_toRightOf="@id/checkbox" />
 
@@ -65,15 +64,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
-        android:layout_alignLeft="@id/firstLine"
-        android:layout_below="@id/firstLine"
-        android:textSize="12sp" />
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:layout_toRightOf="@id/checkbox"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#c0c0c0"
-        android:layout_below="@id/secondLine"
-        />
-
-    </RelativeLayout>
+    </LinearLayout>
