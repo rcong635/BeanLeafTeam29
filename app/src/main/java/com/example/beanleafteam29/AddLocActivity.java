@@ -52,8 +52,7 @@ public class AddLocActivity extends AppCompatActivity {
         String name = Name.getText().toString();
         String address = Address.getText().toString();
 
-        FirebaseUIActivity.addLocation(name, address, this);
-        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+        FirebaseUIActivity.addLocation(name, address);
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -65,6 +64,8 @@ public class AddLocActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 3000);
+
+        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
     }
 
     public void AddSuccess() {
