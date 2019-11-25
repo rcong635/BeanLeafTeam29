@@ -78,6 +78,7 @@ public class FirebaseUIActivityTest {
                 caffeGialloExists = true;
         }
         assertTrue(caffeGialloExists);
+        removeCaffeGiallo();
     }
 
     @Test
@@ -134,8 +135,10 @@ public class FirebaseUIActivityTest {
 
     @Test
     public void testDeleteElementFromMenu() throws Exception {
-        testAddElementToMenu();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        removeCaffeGiallo();
+        testAddLocation();
+        testAddElementToMenu();
         db.collection("Locations/")
                 .whereEqualTo("Name", "Caffe Giallo")
                 .get()
@@ -160,6 +163,7 @@ public class FirebaseUIActivityTest {
         // test failed in a similar way to compute caffeine
         // need to wipe out data from variable every time you make a request to the database
         assertEquals(menu.size(), 0);
+        removeCaffeGiallo();
     }
 
     @Test
@@ -217,5 +221,28 @@ public class FirebaseUIActivityTest {
                         }
                     }
                 });
+    }
+
+    private void removeCaffeGiallo() throws  InterruptedException {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Locations")
+                .whereEqualTo("Name", "Caffe Giallo")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for(QueryDocumentSnapshot document : task.getResult()) {
+                                locationId = document.getId();
+                            }
+                        }
+                    }
+                });
+        Thread.sleep(2000);
+        if (locationId != null && !locationId.equals("") ) {
+            db.collection("Locations")
+                    .document(locationId)
+                    .delete();
+        }
     }
 }
