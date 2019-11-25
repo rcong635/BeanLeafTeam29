@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "351656405140",
+    "firebase_url": "https://beanleafteam29.firebaseio.com",
+    "project_id": "beanleafteam29",
+    "storage_bucket": "beanleafteam29.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351656405140:android:8c70dfffab39e6e1226c81",
+        "android_client_info": {
+          "package_name": "com.example.beanleafteam29"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "351656405140-9pparl5bruffb4pl06rbm7v0bj3grpu6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSwVwOCfbUXDSzDavNDTZy3kbE7LG5i38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "351656405140-9pparl5bruffb4pl06rbm7v0bj3grpu6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">BeanLeafTeam29</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="permission_rationale_location">Access to the location service is required to access the map.</string>
+    <string name="permission_required_toast">Location permission is required to access the map.</string>
+    <string name="location_permission_denied">Location permission is required to access the map. Please try again and grant access to use the location.\\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt;</string>
+    <string name="geofence_transition_notification_text">
+        Click notification to return to app
+    </string>
+    <string name="insufficient_permissions">Insufficient permissions.</string>
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core
+        functionality.</string>
+    <string name="settings">Settings</string>
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:paddingBottom="8dp" android:paddingLeft="8dp" android:paddingRight="8dp" >
+
+    <TextView
+        android:id="@+id/ItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="16dp"
+        android:textColor="@color/colorBlack"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/ItemLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ItemTime"
+        />
+    <TextView
+        android:id="@+id/ItemTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ItemName"
+        />
+
+    <TextView
+        android:id="@+id/ItemPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        />
+    <TextView
+        android:id="@+id/ItemCaffeine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ItemLocation"
+        android:paddingBottom="5dp"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"
+        android:layout_below="@id/ItemCaffeine"
+        />
+
+</RelativeLayout>
