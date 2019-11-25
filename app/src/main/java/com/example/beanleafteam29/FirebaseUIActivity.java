@@ -381,6 +381,39 @@ public class FirebaseUIActivity {
         }
     }
 
+    // deletes user that is currently logged in from Firebase Authentication
+    public static void deleteUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("deleteUser", "User account deleted.");
+                        }
+                    }
+                });
+
+        String uid = mFirebaseAuth.getUid();
+        db = FirebaseFirestore.getInstance();
+        db.collection("Users")
+                .document(uid)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("deleteUser", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("deleteUser", "Error deleting document", e);
+                    }
+                });
+
+    }
+
     public static void getUserHistoryFb() {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
