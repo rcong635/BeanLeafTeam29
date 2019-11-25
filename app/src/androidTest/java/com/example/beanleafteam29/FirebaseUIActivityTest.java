@@ -81,8 +81,10 @@ public class FirebaseUIActivityTest {
     }
 
     @Test
-    public void testMakeAdmin() throws Exception {
-
+    public void testMakeAdmin() {
+        FirebaseUIActivity.makeAdmin();
+        boolean isAdmin = FirebaseUIActivity.getIsAdmin();
+        assertTrue(isAdmin);
     }
 
     @Test
@@ -130,33 +132,35 @@ public class FirebaseUIActivityTest {
         assertTrue(cappuccinoExists);
     }
 
-//    @Test
-//    public void testDeleteElementFromMenu() throws Exception {
-//        testAddElementToMenu();
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        db.collection("Locations/")
-//                .whereEqualTo("Name", "Caffe Giallo")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            for(QueryDocumentSnapshot document : task.getResult()) {
-//                                locationId = document.getId();
-//                            }
-//                        } else {
-//                            Log.d("testDeleteElementFromMenu", "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-//        Thread.sleep(3000);
-//        FirebaseUIActivity.deleteElementFromMenu(locationId, "Cappuccino con panna");
-//        Thread.sleep(3000);
-//        FirebaseUIActivity.getLocationMenuFb(locationId); // retrieves from database and place into variable
-//        Thread.sleep(3000);
-//        List<Map<String, Object> > menu = FirebaseUIActivity.getLocationMenu();
-//        assertTrue(menu.size() == 0);
-//    }
+    @Test
+    public void testDeleteElementFromMenu() throws Exception {
+        testAddElementToMenu();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Locations/")
+                .whereEqualTo("Name", "Caffe Giallo")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for(QueryDocumentSnapshot document : task.getResult()) {
+                                locationId = document.getId();
+                            }
+                        } else {
+                            Log.d("testDeleteElementFromMenu", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+        Thread.sleep(4000);
+        FirebaseUIActivity.deleteElementFromMenu(locationId, "Cappuccino con panna");
+        Thread.sleep(4000);
+        FirebaseUIActivity.getLocationMenuFb(locationId); // retrieves from database and place into variable
+        Thread.sleep(4000);
+        List<Map<String, Object> > menu = FirebaseUIActivity.getLocationMenu();
+        // test failed in a similar way to compute caffeine
+        // need to wipe out data from variable every time you make a request to the database
+        assertEquals(menu.size(), 0);
+    }
 
     @Test
     public void testGetUid() {
@@ -166,5 +170,52 @@ public class FirebaseUIActivityTest {
         }
         assertNotNull(uid);
         assertNotEquals("", uid);
+    }
+
+    @Test
+    public void testGetUserHistory() throws Exception {
+        testComputeCaffeine();
+        FirebaseUIActivity.getUserHistoryFb();
+        Thread.sleep(2000);
+        HashMap<String, QueryDocumentSnapshot> userHistory = FirebaseUIActivity.getUserHistory();
+        // iterate through userHistory to find data
+        assertTrue(userHistory.size() > 0);
+        Collection<QueryDocumentSnapshot> userHistoryItems = userHistory.values();
+
+        boolean espressoExists = false;
+        for (Map.Entry mapElement : userHistory.entrySet()) {
+            String key = (String) mapElement.getKey();
+            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            String name = value.getString("Name");
+            if(name.equals("Espresso"))
+                espressoExists = true;
+        }
+        assertTrue(espressoExists);
+    }
+
+    @Test
+    public void testAddUserToFirestore() {
+        FirebaseUIActivity.addUserToFirestore();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final String uid = FirebaseUIActivity.getUid();
+        db.collection("Users")
+                .whereEqualTo("UID", uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for(QueryDocumentSnapshot document : task.getResult()) {
+                                String name = document.getString("Name");
+                                String retrievedUid = document.getString("UID");
+                                boolean isAdmin = document.getBoolean("Admin");
+                                assertNotNull(name);
+                                assertNotNull(retrievedUid);
+                                assertNotNull(isAdmin);
+                                assertEquals(retrievedUid, uid);
+                            }
+                        }
+                    }
+                });
     }
 }

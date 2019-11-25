@@ -50,6 +50,7 @@ public class FirebaseUIActivity {
     private static long caffeineAmount = 0;
     private static boolean newSignIn = false;
     private static  List<Map<String, Object> > menu = new ArrayList<>();
+    private static HashMap<String, QueryDocumentSnapshot> userHistory = new HashMap<>();
 
     public FirebaseUIActivity() {
 
@@ -329,12 +330,12 @@ public class FirebaseUIActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
+                                menu.clear();
                                 if(task.getResult().size() != 0) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         Map<String, Object> myData = document.getData();
                                         menu.add(myData);
                                     }
-
                                 }
                             } else {
                                 Log.d("getLocMenu", "Error getting documents: ", task.getException());
@@ -343,7 +344,6 @@ public class FirebaseUIActivity {
                     });
         }
     }
-
 
     public static List<Map<String, Object> > getLocationMenu() {
         return menu;
@@ -381,7 +381,7 @@ public class FirebaseUIActivity {
         }
     }
 
-    public static void getUserHistory() {
+    public static void getUserHistoryFb() {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
@@ -391,13 +391,11 @@ public class FirebaseUIActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
+                                userHistory.clear();
                                 if(task.getResult().size() != 0) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> myData = document.getData();
-                                        System.out.println(document);
-                                        System.out.println(task.getResult().size());
+                                        userHistory.put(document.getId(), document);
                                     }
-
                                 }
                             } else {
                                 Log.d("getUserHistory", "Error getting documents: ", task.getException());
@@ -405,6 +403,10 @@ public class FirebaseUIActivity {
                         }
                     });
         }
+    }
+
+    public static HashMap<String, QueryDocumentSnapshot> getUserHistory() {
+        return userHistory;
     }
 
     public static void addUserToFirestore() {
@@ -445,7 +447,7 @@ public class FirebaseUIActivity {
                                             });
                                 }
                             } else {
-                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                                Log.d("addUserToFirestore", "Error getting documents: ", task.getException());
                             }
                         }
                     });
