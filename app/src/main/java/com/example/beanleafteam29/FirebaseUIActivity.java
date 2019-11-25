@@ -213,6 +213,30 @@ public class FirebaseUIActivity {
         caller.showAddLocationButton();
     }
 
+    public static void makeNonAdmin() {
+        if (isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            final String uid = getUid();
+            Map<String, Object> data = new HashMap<>();
+            data.put("Admin", false);
+            db.collection("Users")
+                    .document(uid)
+                    .update(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w("FirebaseUIActivity", "Error writing document", e); }
+            });
+        }
+        FirebaseUIActivity.isAdmin = false;
+        caller.hideAddLocationButton();
+    }
+
     public static void checkAdmin(final MapsActivity callerActivity) {
         db = FirebaseFirestore.getInstance();
         final String userID = FirebaseUIActivity.getUid();
@@ -379,6 +403,39 @@ public class FirebaseUIActivity {
                         }
                     });
         }
+    }
+
+    // deletes user that is currently logged in from Firebase Authentication
+    public static void deleteUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("deleteUser", "User account deleted.");
+                        }
+                    }
+                });
+
+        String uid = mFirebaseAuth.getUid();
+        db = FirebaseFirestore.getInstance();
+        db.collection("Users")
+                .document(uid)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("deleteUser", "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("deleteUser", "Error deleting document", e);
+                    }
+                });
+
     }
 
     public static void getUserHistoryFb() {
