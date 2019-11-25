@@ -61,8 +61,6 @@ public class ProfileActivity extends AppCompatActivity {
         header.setText("Hello " + FirebaseUIActivity.getUserName());
 
 
-
-
         //set the name
         caffeineAmount.setText("" + FirebaseUIActivity.getCaffeineAmount());
 
@@ -76,8 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
             scroller.setVisibility(View.GONE);
             yourLocationsTV.setVisibility(View.GONE);
         }
-
-
 
         viewHistBtn.setOnClickListener(new View.OnClickListener() {
             @Override

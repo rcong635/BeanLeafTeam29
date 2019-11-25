@@ -53,6 +53,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         userLng = getIntent().getDoubleExtra("userLng", 0);
         locationLat = getIntent().getDoubleExtra("locationLat", 0);
         locationLng = getIntent().getDoubleExtra("locationLng", 0);
+        
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();

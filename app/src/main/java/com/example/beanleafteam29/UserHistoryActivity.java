@@ -26,7 +26,7 @@ public class UserHistoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_history);
 
