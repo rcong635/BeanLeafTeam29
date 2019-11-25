@@ -12,8 +12,10 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.matcher.RootMatchers.isDialog;
+import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static org.junit.Assert.*;
 import androidx.test.espresso.action.ViewActions;
@@ -31,13 +33,15 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import androidx.test.InstrumentationRegistry;
 import android.content.Intent;
-
+import androidx.test.espresso.intent.Intents;
+import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import androidx.test.espresso.IdlingResource;
 import static org.hamcrest.Matcher.*;
 @RunWith(AndroidJUnit4.class)
 public class Edit_LocationTest {
 
-    private IdlingResource mIdlingResource;
+    String usernameAdmin = new String("phaman@usc.edu");
+    String passwordAdmin = new String("PhamThien32697");
 
     @Rule
     public ActivityTestRule<Edit_Location> mActivityTestRule = new ActivityTestRule<Edit_Location>(Edit_Location.class, false, false);
@@ -47,6 +51,7 @@ public class Edit_LocationTest {
     @Before
     public void setUp() throws Exception {
         //different locations would have different locId
+
         Intent i = new Intent();
         i.putExtra("locationID", "7vufQOykpFmHKM0Itlm4");
         mActivityTestRule.launchActivity(i);
@@ -64,19 +69,21 @@ public class Edit_LocationTest {
     public void initial () throws InterruptedException //data is loaded and pop works
     {
 
+        Thread.sleep(3000);
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
                 .inRoot(isDialog()) // <---
                 .check(matches(isDisplayed()));
         Espresso.onView(withId(R.id.input_item)).perform(click());
         closeSoftKeyboard();
-        Thread.sleep(2000);
+        //Thread.sleep(2000);
         Espresso.onView(withId(R.id.txtclose)).perform(click());
 
     }
 
     @Test
     public void testDelete() throws InterruptedException {
+        Thread.sleep(3000);
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
                 .inRoot(isDialog()) // <---
@@ -84,7 +91,10 @@ public class Edit_LocationTest {
         Espresso.onView(withId(R.id.input_item)).perform(click());
         closeSoftKeyboard();
         Espresso.onView(withId(R.id.txtclose)).perform(click());
-
+//        onView(withRecyclerView(R.id.scroll_view).atPosition(3)).perform(click());
+//        //onData()).atPosition(4).onChildView(withId(R.id.checkbox)).perform(click());
+//        Thread.sleep(1000);
+//        onData(withText("Red Bull")).atPosition(4).onChildView(withId(R.id.checkbox)).check(matches(isChecked()));
 //        onData(hasEntry(equalTo(ListViewSample.ROW_TEXT),is("List item: 25")))
 //                .onChildView(withId(R.id.rowToggleButton)).perform(click());
 //        Thread.sleep(1000);
@@ -95,6 +105,7 @@ public class Edit_LocationTest {
     @Test
     public void testAdd() throws InterruptedException
     {
+        Thread.sleep(3000);
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
                 .inRoot(isDialog()) // <---
@@ -110,5 +121,15 @@ public class Edit_LocationTest {
 
     @After
     public void tearDown() throws Exception {
+        //Intents.release();
+        //FirebaseUIActivity.logout(mActivityTestRule.getActivity());
     }
+
+//    private void loginAdmin(){
+//        onView(withText("Sign in with email")).perform(click());
+//        onView(withHint("Email")).perform(typeText(usernameAdmin));
+//        onView(withText("Next")).perform(click());
+//        onView(withHint("Password")).perform(typeText(passwordAdmin));
+//        onView(withText("SIGN IN")).perform(click());
+//    }
 }
