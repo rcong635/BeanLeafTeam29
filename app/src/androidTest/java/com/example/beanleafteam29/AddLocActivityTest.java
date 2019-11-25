@@ -41,6 +41,7 @@ public class AddLocActivityTest {
     public ActivityTestRule<AddLocActivity> mActivityTestRule = new ActivityTestRule<AddLocActivity>(AddLocActivity.class);
     private String name = "BBCM Cafe";
     private String address = "3301 S Hoover St, Los Angeles, CA 90007";
+    private String user = "qeKjeRhtpZNQZUAN5Y6wE8qjDBo1";
 
     @Before
     public void setUp() throws Exception {
@@ -63,7 +64,7 @@ public class AddLocActivityTest {
     }
 
     @Test //This one tests the recycleview
-    public void menuInput(){
+    public void menuInput() throws InterruptedException {
         //Opens the popup
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
@@ -83,46 +84,34 @@ public class AddLocActivityTest {
         Espresso.onView(withId(R.id.btn_menu)).perform(click());
 
         onView(withId(R.id.btn_menu)).inRoot(isDialog()).check(doesNotExist());
+        Thread.sleep(3000);
+        Espresso.onView(withId(R.id.btn_add)).perform(click());
     }
 
     @Test //Successful Input of a new location with menu item -- goes back to map to check menu
-    public void successful()
+    public void successful() throws InterruptedException
     {
         //Make sure we cannot add without necessary fields
         Espresso.onView(withId(R.id.input_name)).perform(typeText(name));
-        Espresso.closeSoftKeyboard();
-        Espresso.onView(withId(R.id.btn_add)).perform(click());
-
-        //We still cannot add without the initial menu
         Espresso.onView(withId(R.id.input_address)).perform(typeText(address));
         Espresso.closeSoftKeyboard();
-        Espresso.onView(withId(R.id.btn_add)).perform(click());
+
 
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
                 .inRoot(isDialog()) // <---
                 .check(matches(isDisplayed()));
 
-        //Close the popup -- prematurely
-        Espresso.onView(withId(R.id.txtclose)).perform(click());
-        onView(withText("ADD MENU ITEM")).check(doesNotExist());
+        //give some inputs
+        Espresso.onView(withId(R.id.input_item)).perform(typeText("Color Burst Latte"));
+        Espresso.onView(withId(R.id.input_price)).perform(typeText("7.00"));
+        Espresso.onView(withId(R.id.input_caff)).perform(typeText("125"));
+        Espresso.onView(withId(R.id.btn_menu)).perform(click());
 
+        onView(withId(R.id.btn_menu)).inRoot(isDialog()).check(doesNotExist());
+        Thread.sleep(3000);
         Espresso.onView(withId(R.id.btn_add)).perform(click());
-
-
-        //reopen with inputs this time
-//        Espresso.onView(withId(R.id.imageView2)).perform(click());
-//
-//        //give some inputs
-//        Espresso.onView(withId(R.id.input_item)).perform(typeText("Black Coffee"));
-//        Espresso.onView(withId(R.id.input_price)).perform(typeText("2.25"));
-//        Espresso.onView(withId(R.id.btn_menu)).perform(click());
-//
-//        //give rest of the inputs
-//        Espresso.onView(withId(R.id.input_caff)).perform(typeText("75"));
-//
-//        //click add btn + give assertion success
-//        Espresso.onView(withId(R.id.btn_menu)).perform(click());
+        //should add to our database
 
     }
 

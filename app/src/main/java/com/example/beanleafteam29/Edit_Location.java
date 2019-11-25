@@ -64,7 +64,7 @@ public class Edit_Location extends AppCompatActivity {
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        //recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(true);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -73,7 +73,16 @@ public class Edit_Location extends AppCompatActivity {
         mAdapter = new MyAdapter(input);
         recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
-
+        final ProgressDialog progressDialog = new ProgressDialog(Edit_Location.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Loading Data...");
+        progressDialog.show();
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        progressDialog.dismiss();
+                    }
+                }, 3000);
     }
 
     public void ShowPopup(View v) { //used to show popup

@@ -31,8 +31,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import androidx.test.InstrumentationRegistry;
 import android.content.Intent;
+
 import androidx.test.espresso.IdlingResource;
-import androidx.test.espresso.IdlingRegistry;
+import static org.hamcrest.Matcher.*;
 @RunWith(AndroidJUnit4.class)
 public class Edit_LocationTest {
 
@@ -40,8 +41,8 @@ public class Edit_LocationTest {
 
     @Rule
     public ActivityTestRule<Edit_Location> mActivityTestRule = new ActivityTestRule<Edit_Location>(Edit_Location.class, false, false);
-    @Rule
-    public IntentsTestRule<Edit_Location> intentsTestRule = new IntentsTestRule<>(Edit_Location.class);
+//    @Rule
+//    public IntentsTestRule<Edit_Location> intentsTestRule = new IntentsTestRule<>(Edit_Location.class);
 
     @Before
     public void setUp() throws Exception {
@@ -60,11 +61,22 @@ public class Edit_LocationTest {
     }
 
     @Test
-    public void initial()
+    public void initial () throws InterruptedException //data is loaded and pop works
     {
-        Intent i = new Intent();
-        i.putExtra("locationID", "7vufQOykpFmHKM0Itlm4");
-        mActivityTestRule.launchActivity(i);
+
+        Espresso.onView(withId(R.id.imageView2)).perform(click());
+        onView(withId(R.id.btn_menu))
+                .inRoot(isDialog()) // <---
+                .check(matches(isDisplayed()));
+        Espresso.onView(withId(R.id.input_item)).perform(click());
+        closeSoftKeyboard();
+        Thread.sleep(2000);
+        Espresso.onView(withId(R.id.txtclose)).perform(click());
+
+    }
+
+    @Test
+    public void testDelete() throws InterruptedException {
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
                 .inRoot(isDialog()) // <---
@@ -72,26 +84,28 @@ public class Edit_LocationTest {
         Espresso.onView(withId(R.id.input_item)).perform(click());
         closeSoftKeyboard();
         Espresso.onView(withId(R.id.txtclose)).perform(click());
+
+//        onData(hasEntry(equalTo(ListViewSample.ROW_TEXT),is("List item: 25")))
+//                .onChildView(withId(R.id.rowToggleButton)).perform(click());
+//        Thread.sleep(1000);
+//        onData(hasEntry(equalTo(ListViewSample.ROW_TEXT),is("List item: 25")))
+//                .onChildView(withId(R.id.rowToggleButton)).check(matches(isChecked()));
     }
 
     @Test
-    public void testDelete()
+    public void testAdd() throws InterruptedException
     {
         Espresso.onView(withId(R.id.imageView2)).perform(click());
         onView(withId(R.id.btn_menu))
                 .inRoot(isDialog()) // <---
                 .check(matches(isDisplayed()));
-        Espresso.onView(withId(R.id.input_item)).perform(click());
-        closeSoftKeyboard();
-        Espresso.onView(withId(R.id.txtclose)).perform(click());
-        Espresso.onView(withId(R.id.my_recycler_view))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-    }
+        Espresso.onView(withId(R.id.input_item)).perform(typeText("Red Bull"));
+        Espresso.onView(withId(R.id.input_price)).perform(typeText("3.25"));
+        Espresso.onView(withId(R.id.input_caff)).perform(typeText("120"));
+        Espresso.onView(withId(R.id.btn_menu)).perform(click());
 
-    @Test
-    public void testAdd()
-    {
-
+        onView(withId(R.id.btn_menu)).inRoot(isDialog()).check(doesNotExist());
+        Thread.sleep(3000);
     }
 
     @After

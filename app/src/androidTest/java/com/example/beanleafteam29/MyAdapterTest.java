@@ -24,7 +24,19 @@ public class MyAdapterTest {
     }
 
     @Test
-    public void delete_list() {
+    public void delete_list() { //returns the item we want to delete -- send to firebase
+        fill_val();
+        tester.remove(tester.getItemCount() - 1);
+        tester.remove(tester.getItemCount() - 1);
+        tester.remove(tester.getItemCount() - 1);
+        List<Map<String, Object>> p = new ArrayList<>(tester.delete_list());
+        int i =0;
+        for (Map<String, Object> map : p) {
+            assertEquals("Name: " + i, "Testing "+ i, map.get("Name"));
+            assertEquals("Caffiene: " + i, i, map.get("Caffeine"));
+            assertEquals("Price: " + i, i, map.get("Price"));
+            i++;
+        }
     }
 
     @Test
@@ -49,14 +61,6 @@ public class MyAdapterTest {
 
     @Test
     public void remove() { //tests for correctly re-indexing
-    }
-
-    @Test
-    public void onCreateViewHolder() {
-    }
-
-    @Test
-    public void onBindViewHolder() {
     }
 
     @Test
