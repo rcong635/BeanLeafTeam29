@@ -18,6 +18,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static org.junit.Assert.*;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -47,48 +48,76 @@ public class ProfileActivityTest {
 
     @Rule
     public ActivityTestRule<MapsActivity> mMapActivityTestRule = new ActivityTestRule<>(MapsActivity.class);
-    @Rule
-    public ActivityTestRule<ProfileActivity> mActivityTestRule = new ActivityTestRule<>(ProfileActivity.class);
 //    @Rule
-//    public IntentsTestRule<UserHistoryActivity> intentsTestRule = new IntentsTestRule<>(UserHistoryActivity.class);
+//    public ActivityTestRule<ProfileActivity> mActivityTestRule = new ActivityTestRule<>(ProfileActivity.class);
+
+    String usernameAdmin = new String("testadmin@gmail.com");
+    String passwordAdmin = new String("12345678");
+
+    String usernameCustomer = new String("testcustomer@gmail.com");
+    String passwordCustomer = new String("12345678");
 
     private String merchantText = "You are a Merchant! :)";
     private String customerText = "Would you like to become a Merchant?";
 
+
     @Before
     public void setUp() throws Exception {
         Intents.init();
+
     }
 
+//    @Test
+//    public void a0() throws InterruptedException {
+//        Thread.sleep(3000);
+//
+//    }
+
     @Test
-    public void a0() throws InterruptedException {
+    public void test1_ChangingAccountTypeAdmin() throws InterruptedException {
+        //log in as admin and go to profile page
+        loginAdmin();
+        Thread.sleep(3000);
+        onView(withId(R.id.map_menu)).perform(click());
+        onView(withText("Profile")).perform(click());
+        intended(hasComponent(ProfileActivity.class.getName()));
+        Espresso.onView(withId(R.id.profileQuestion)).check(matches(withText(merchantText)));
+        Espresso.onView(withId(R.id.radioBtnYes)).check(matches(not(isDisplayed())));
+        Espresso.onView(withId(R.id.radioBtnNo)).check(matches(not(isDisplayed())));
         Thread.sleep(3000);
 
-    }
-
-    @Test
-    public void test1_ChangingAccountType(){
-
-        try {
-            onView(withText(customerText)).check(matches(isDisplayed()));
-            Espresso.onView(withId(R.id.radioBtnYes)).perform(click());
-            Espresso.onView(withId(R.id.profileQuestion)).check(matches(withText(merchantText)));
-            Espresso.onView(withId(R.id.radioBtnYes)).check(matches(not(isDisplayed())));
-            Espresso.onView(withId(R.id.radioBtnNo)).check(matches(not(isDisplayed())));
-
-            //view is displayed logic
-        } catch (NoMatchingViewException e) {
-            Espresso.onView(withId(R.id.profileQuestion)).check(matches(withText(merchantText)));
-            Espresso.onView(withId(R.id.radioBtnYes)).check(matches(not(isDisplayed())));
-            Espresso.onView(withId(R.id.radioBtnNo)).check(matches(not(isDisplayed())));
-
-        }
 
     }
 
     @Test
-    public void test2_ViewHistoryInProfile()
-    {
+    public void test2_ChangingAccountTypeCustomer() throws InterruptedException {
+        //log in as customer and go to the profile page
+        loginCustomer();
+        Thread.sleep(3000);
+        onView(withId(R.id.map_menu)).perform(click());
+        onView(withText("Profile")).perform(click());
+        intended(hasComponent(ProfileActivity.class.getName()));
+        Thread.sleep(2000);
+
+        onView(withText(customerText)).check(matches(isDisplayed()));
+        Espresso.onView(withId(R.id.radioBtnYes)).perform(click());
+        Espresso.onView(withId(R.id.profileQuestion)).check(matches(withText(merchantText)));
+        Espresso.onView(withId(R.id.radioBtnYes)).check(matches(not(isDisplayed())));
+        Espresso.onView(withId(R.id.radioBtnNo)).check(matches(not(isDisplayed())));
+        Thread.sleep(3000);
+        //make the user back to customer so that we can run this test again.
+        FirebaseUIActivity.makeNonAdmin();
+
+
+    }
+
+    @Test
+    public void test3_ViewHistoryInProfile() throws InterruptedException {
+        loginCustomer();
+        Thread.sleep(3000);
+        onView(withId(R.id.map_menu)).perform(click());
+        onView(withText("Profile")).perform(click());
+        intended(hasComponent(ProfileActivity.class.getName()));
         onView(withId(R.id.profileViewHistBtn)).perform(click());
         intended(hasComponent(UserHistoryActivity.class.getName()));
 
@@ -98,5 +127,27 @@ public class ProfileActivityTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
+        try {
+            FirebaseUIActivity.logout(mMapActivityTestRule.getActivity());
+        }
+        catch(Exception e) {
+
+        }
+    }
+
+    private void loginAdmin(){
+        onView(withText("Sign in with email")).perform(click());
+        onView(withHint("Email")).perform(typeText(usernameAdmin));
+        onView(withText("Next")).perform(click());
+        onView(withHint("Password")).perform(typeText(passwordAdmin));
+        onView(withText("SIGN IN")).perform(click());
+    }
+
+    private void loginCustomer(){
+        onView(withText("Sign in with email")).perform(click());
+        onView(withHint("Email")).perform(typeText(usernameCustomer));
+        onView(withText("Next")).perform(click());
+        onView(withHint("Password")).perform(typeText(passwordCustomer));
+        onView(withText("SIGN IN")).perform(click());
     }
 }

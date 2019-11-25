@@ -147,7 +147,7 @@ public class MapsActivityTest {
         Thread.sleep(3000);
 
         onView(withId(R.id.map_menu)).perform(click());
-        onView(withText("Add Location")).check(doesNotExist());
+        Espresso.onView(withText("Add Location")).check(doesNotExist());
 
     }
 
@@ -163,12 +163,12 @@ public class MapsActivityTest {
 
 
             onView(withId(R.id.map_menu)).perform(click());
-            onView(withText("Add Location")).check(matches(isDisplayed()));
+            Espresso.onView(withText("Add Location")).check(matches(isDisplayed()));
             onView(withText("Add Location")).perform(click());
             intended(hasComponent(AddLocActivity.class.getName()));
 
         } catch (NoMatchingViewException e) { // if user is not an admin
-            onView(withText("Add Location")).check(doesNotExist());
+            Espresso.onView(withText("Add Location")).check(doesNotExist());
 
         }
 
@@ -196,11 +196,11 @@ public class MapsActivityTest {
         onView(withHint("Password")).perform(typeText(passwordAdmin));
         Espresso.closeSoftKeyboard();
         onView(withText("SAVE")).perform(click());
-        Thread.sleep(5000);
-        onView(withId(R.id.map)).check(matches(isDisplayed()));
-
-
-
+        Thread.sleep(3000);
+        Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()));
+        //delete the user so that we can run this test again
+        FirebaseUIActivity.deleteUser();
+        logoutBlackBox();
 
     }
 
@@ -208,7 +208,12 @@ public class MapsActivityTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
-        FirebaseUIActivity.logout(mMapActivityTestRule.getActivity());
+        try {
+            FirebaseUIActivity.logout(mMapActivityTestRule.getActivity());
+        }
+        catch(Exception e) {
+
+        }
     }
 
 
