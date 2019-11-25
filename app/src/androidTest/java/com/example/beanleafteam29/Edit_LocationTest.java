@@ -8,10 +8,12 @@ import org.junit.runner.RunWith;
 
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static org.junit.Assert.*;
 import androidx.test.espresso.action.ViewActions;
@@ -27,25 +29,63 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-
+import androidx.test.InstrumentationRegistry;
+import android.content.Intent;
+import androidx.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingRegistry;
 @RunWith(AndroidJUnit4.class)
 public class Edit_LocationTest {
+
+    private IdlingResource mIdlingResource;
+
     @Rule
-    public ActivityTestRule<Edit_Location> mActivityTestRule = new ActivityTestRule<Edit_Location>(Edit_Location.class);
+    public ActivityTestRule<Edit_Location> mActivityTestRule = new ActivityTestRule<Edit_Location>(Edit_Location.class, false, false);
+    @Rule
+    public IntentsTestRule<Edit_Location> intentsTestRule = new IntentsTestRule<>(Edit_Location.class);
 
     @Before
     public void setUp() throws Exception {
+        //different locations would have different locId
+        Intent i = new Intent();
+        i.putExtra("locationID", "7vufQOykpFmHKM0Itlm4");
+        mActivityTestRule.launchActivity(i);
+//        mActivityTestRule.onActivity(new mActivityTestRule.ActivityAction<Edit_Location>() {
+//            @Override
+//            public void perform(Edit_Location activity) {
+//                mIdlingResource = activity.getIdlingResource();
+//                // To prove that the test fails, omit this call:
+//                IdlingRegistry.getInstance().register(mIdlingResource);
+//            }
+//        });
+    }
+
+    @Test
+    public void initial()
+    {
+        Intent i = new Intent();
+        i.putExtra("locationID", "7vufQOykpFmHKM0Itlm4");
+        mActivityTestRule.launchActivity(i);
+        Espresso.onView(withId(R.id.imageView2)).perform(click());
+        onView(withId(R.id.btn_menu))
+                .inRoot(isDialog()) // <---
+                .check(matches(isDisplayed()));
+        Espresso.onView(withId(R.id.input_item)).perform(click());
+        closeSoftKeyboard();
+        Espresso.onView(withId(R.id.txtclose)).perform(click());
     }
 
     @Test
     public void testDelete()
     {
-
+        Espresso.onView(withId(R.id.imageView2)).perform(click());
+        onView(withId(R.id.btn_menu))
+                .inRoot(isDialog()) // <---
+                .check(matches(isDisplayed()));
+        Espresso.onView(withId(R.id.input_item)).perform(click());
+        closeSoftKeyboard();
+        Espresso.onView(withId(R.id.txtclose)).perform(click());
+        Espresso.onView(withId(R.id.my_recycler_view))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
     }
 
     @Test

@@ -199,8 +199,6 @@ public class AddLocActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 3000);
-
-
     }
 
     //delete Menu Items
