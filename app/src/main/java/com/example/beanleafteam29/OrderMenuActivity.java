@@ -178,10 +178,10 @@ public class OrderMenuActivity extends AppCompatActivity {
 
     public static float checkDistance() {
         double earthRadius = 3958.75;
-        double latDiff = Math.toRadians(mUserLat-mLocationLat);
-        double lngDiff = Math.toRadians(mUserLng-mLocationLng);
+        double latDiff = Math.toRadians(getUserLat()-getLocationLat());
+        double lngDiff = Math.toRadians(getUserLng()-getLocationLng());
         double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
-                Math.cos(Math.toRadians(mLocationLat)) * Math.cos(Math.toRadians(mUserLat)) *
+                Math.cos(Math.toRadians(getLocationLat())) * Math.cos(Math.toRadians(getUserLat())) *
                         Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double distance = earthRadius * c;
@@ -196,6 +196,22 @@ public class OrderMenuActivity extends AppCompatActivity {
         mUserLng = userLng;
         mLocationLat = locationLat;
         mLocationLng = locationLng;
+    }
+
+    public static double getUserLat() {
+        return mUserLat;
+    }
+
+    public static double getUserLng() {
+        return mUserLng;
+    }
+
+    public static double getLocationLat() {
+        return mLocationLat;
+    }
+
+    public static double getLocationLng() {
+        return mLocationLng;
     }
 
 }
