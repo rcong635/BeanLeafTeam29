@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import androidx.annotation.VisibleForTesting;
 
 public class Edit_Location extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -246,6 +247,18 @@ public class Edit_Location extends AppCompatActivity {
                     });
         }
     }
+
+    /**
+     * Only called from test
+     */
+//    @VisibleForTesting
+//    @NonNull
+//    public IdlingResource getIdlingResource() {
+//        if (mIdlingResource == null) {
+//            mIdlingResource = new SimpleIdlingResource();
+//        }
+//        return mIdlingResource;
+//    }
 
 }
 
