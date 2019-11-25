@@ -213,6 +213,30 @@ public class FirebaseUIActivity {
         caller.showAddLocationButton();
     }
 
+    public static void makeNonAdmin() {
+        if (isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            final String uid = getUid();
+            Map<String, Object> data = new HashMap<>();
+            data.put("Admin", false);
+            db.collection("Users")
+                    .document(uid)
+                    .update(data)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w("FirebaseUIActivity", "Error writing document", e); }
+            });
+        }
+        FirebaseUIActivity.isAdmin = false;
+        caller.hideAddLocationButton();
+    }
+
     public static void checkAdmin(final MapsActivity callerActivity) {
         db = FirebaseFirestore.getInstance();
         final String userID = FirebaseUIActivity.getUid();

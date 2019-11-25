@@ -183,11 +183,11 @@ public class MapsActivityTest {
         onView(withHint("Password")).perform(typeText(passwordAdmin));
         Espresso.closeSoftKeyboard();
         onView(withText("SAVE")).perform(click());
-        Thread.sleep(5000);
+        Thread.sleep(3000);
         Espresso.onView(withId(R.id.map)).check(matches(isDisplayed()));
-
-
-
+        //delete the user so that we can run this test again
+        FirebaseUIActivity.deleteUser();
+        logoutBlackBox();
 
     }
 
@@ -195,7 +195,12 @@ public class MapsActivityTest {
     @After
     public void tearDown() throws Exception {
         Intents.release();
-        FirebaseUIActivity.logout(mMapActivityTestRule.getActivity());
+        try {
+            FirebaseUIActivity.logout(mMapActivityTestRule.getActivity());
+        }
+        catch(Exception e) {
+
+        }
     }
 
 
