@@ -89,7 +89,7 @@ public class OrderMenuActivity extends AppCompatActivity {
                                         String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
 
-                                        menuView.addView(itemView, 0);
+                                        menuView.addView(itemView,0);
 
                                         checkBoxes.add((CheckBox) itemView.findViewById(R.id.checkbox));
 

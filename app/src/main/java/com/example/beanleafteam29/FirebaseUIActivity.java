@@ -415,4 +415,48 @@ public class FirebaseUIActivity {
                     });
         }
     }
+
+    public static void addLocnMenu(String locationName, String address, List<Map<String, Object>> menu, final AddLocActivity callerActivity) {
+        Geocoder coder = new Geocoder(callerActivity);
+        double latitude = 0, longitude = 0;
+        try {
+            ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(address, 5);
+            for(Address add : adresses){
+                longitude = add.getLongitude();
+                latitude = add.getLatitude();
+            }
+        } catch(IOException ex) {
+            System.err.println (ex.toString());
+            System.err.println("IOException thrown in method addLocation()");
+            System.exit(1);
+        }
+        Map<String, Object> locations = new HashMap<>();
+        GeoPoint latLong = new GeoPoint(latitude, longitude);
+        locations.put("Coordinates", latLong);
+        locations.put("Name", locationName);
+        locations.put("Owner", getUid());
+        db = FirebaseFirestore.getInstance();
+        String id = db.collection("Locations").document().getId();
+        db.collection("Locations").document(id)
+                .set(locations)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("FirebaseUIActivity", "Error writing document", e);
+                    }
+                });
+        for (Map<String, Object> map : menu) {
+            db.collection("Locations")
+                    .document(id)
+                    .collection("Menu")
+                    .add(map);
+        }
+    }
+
 }

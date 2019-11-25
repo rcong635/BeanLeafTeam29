@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,8 +40,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView caffeineCaption;
     private TextView caffeineAmount;
+    private TextView yourLocationsTV;
     private Button viewHistBtn;
     private RadioGroup rg;
+    private ScrollView scroller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +56,36 @@ public class ProfileActivity extends AppCompatActivity {
         caffeineAmount = findViewById(R.id.profileProgressBar);
         viewHistBtn = findViewById(R.id.profileViewHistBtn);
         rg = findViewById(R.id.profileRadioGroup);
-
+        yourLocationsTV = findViewById(R.id.profileYourLocationsTV);
+        scroller = findViewById(R.id.profileScroller);
         header.setText("Hello " + FirebaseUIActivity.getUserName());
 
+
+
+
+        //set the name
+        caffeineAmount.setText("" + FirebaseUIActivity.getCaffeineAmount());
+
+
+        // if user is and admin change the question otherwise hide the non admin stuff
         if (FirebaseUIActivity.getIsAdmin()){
             question.setText("You are a Merchant! :)");
             rg.setVisibility(View.GONE);
         }
+        else {
+            scroller.setVisibility(View.GONE);
+            yourLocationsTV.setVisibility(View.GONE);
+        }
 
+
+
+        viewHistBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent historyIntent = new Intent(getBaseContext(), UserHistoryActivity.class);
+                startActivity(historyIntent);
+            }
+        });
 
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -70,13 +95,15 @@ public class ProfileActivity extends AppCompatActivity {
                 switch(checkedId)
                 {
                     case R.id.radioBtnYes:
-
-                        Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
+                        FirebaseUIActivity.makeAdmin();
+//                      Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
                         question.setText("You are a Merchant! :)");
                         rg.setVisibility(View.GONE);
+                        scroller.setVisibility(View.VISIBLE);
+                        yourLocationsTV.setVisibility(View.VISIBLE);
                         break;
                     case R.id.radioBtnNo:
-                        Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();
                         break;
 
                 }
