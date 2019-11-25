@@ -7,6 +7,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 
@@ -35,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 public class FirebaseUIActivity {
     private static FirebaseUIActivity firebaseUtil;
     public static FirebaseAuth mFirebaseAuth;
@@ -46,6 +49,8 @@ public class FirebaseUIActivity {
     private static HashMap<String, QueryDocumentSnapshot> userLocations = new HashMap<>();
     private static long caffeineAmount = 0;
     private static boolean newSignIn = false;
+    private static  List<Map<String, Object> > menu = new ArrayList<>();
+    private static HashMap<String, QueryDocumentSnapshot> userHistory = new HashMap<>();
 
     public FirebaseUIActivity() {
 
@@ -102,6 +107,7 @@ public class FirebaseUIActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            FirebaseUIActivity.caffeineAmount = 0;
                             if(task.getResult().size() != 0) {
                                 for(QueryDocumentSnapshot document : task.getResult()) {
                                     Date queryDate = document.getTimestamp("Date").toDate();
@@ -146,8 +152,9 @@ public class FirebaseUIActivity {
                 });
     }
 
-    public static void addLocation(String locationName, String address, final AddLocActivity callerActivity) {
-        Geocoder coder = new Geocoder(callerActivity);
+    public static void addLocation(String locationName, String address) {
+        Context myContext = MapsActivity.getAppContext();
+        Geocoder coder = new Geocoder(myContext);
         double latitude = 0, longitude = 0;
         try {
             ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(address, 5);
@@ -313,6 +320,35 @@ public class FirebaseUIActivity {
         }
     }
 
+    //used to initialize the menu items
+    public static void getLocationMenuFb(String locationId) {
+        if(FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Locations/" + locationId + "/Menu")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                menu.clear();
+                                if(task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Map<String, Object> myData = document.getData();
+                                        menu.add(myData);
+                                    }
+                                }
+                            } else {
+                                Log.d("getLocMenu", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+    }
+
+    public static List<Map<String, Object> > getLocationMenu() {
+        return menu;
+    }
+
     public static void deleteElementFromMenu(final String locationId, String itemToBeDeleted) {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
@@ -345,7 +381,7 @@ public class FirebaseUIActivity {
         }
     }
 
-    public static void getUserHistory() {
+    public static void getUserHistoryFb() {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
@@ -355,13 +391,11 @@ public class FirebaseUIActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
+                                userHistory.clear();
                                 if(task.getResult().size() != 0) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> myData = document.getData();
-                                        System.out.println(document);
-                                        System.out.println(task.getResult().size());
+                                        userHistory.put(document.getId(), document);
                                     }
-
                                 }
                             } else {
                                 Log.d("getUserHistory", "Error getting documents: ", task.getException());
@@ -369,6 +403,10 @@ public class FirebaseUIActivity {
                         }
                     });
         }
+    }
+
+    public static HashMap<String, QueryDocumentSnapshot> getUserHistory() {
+        return userHistory;
     }
 
     public static void addUserToFirestore() {
@@ -409,7 +447,7 @@ public class FirebaseUIActivity {
                                             });
                                 }
                             } else {
-                                Log.d("checkAdmin", "Error getting documents: ", task.getException());
+                                Log.d("addUserToFirestore", "Error getting documents: ", task.getException());
                             }
                         }
                     });

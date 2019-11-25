@@ -61,19 +61,18 @@ public class Edit_Location extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
-
+        FirebaseUIActivity.getLocationMenuFb(myLocation);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         //recyclerView.setHasFixedSize(true);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        getLocMenu(myLocation);
+
+
+        input = FirebaseUIActivity.getLocationMenu();
         mAdapter = new MyAdapter(input);
         recyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
-
     }
 
     public void ShowPopup(View v) { //used to show popup
@@ -124,7 +123,7 @@ public class Edit_Location extends AppCompatActivity {
         m.put("Name", item_name);
         m.put("Price", item_price);
         FirebaseUIActivity.addElementToMenu(m, myLocation); //update first
-        mAdapter.add(mAdapter.getItemCount(), m);
+        mAdapter.notifyItemChanged(mAdapter.getItemCount(), m);
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -136,20 +135,19 @@ public class Edit_Location extends AppCompatActivity {
                     }
                 }, 3000);
 
+
     }
 
     public void deleteMenu(View v){
         deleteTracker = new ArrayList<>();
-        deleteTracker.addAll(mAdapter.delete_list()); //mAdapter.delete_list -- should update UI via adapter class
-        if(deleteTracker == null){
-            Toast.makeText(getBaseContext(), "Delete Menu Item Failed", Toast.LENGTH_LONG).show();
-        }
-        for (Map<String, Object> map : deleteTracker) {
+        deleteTracker.addAll(MyAdapter.delete_list());
+        mAdapter = new MyAdapter(deleteTracker);
+        recyclerView.setAdapter(mAdapter);
+        for (Map<String, Object> map : MyAdapter.FireBaseTracker) {
 
             FirebaseUIActivity.deleteElementFromMenu(myLocation, map.get("Name").toString());
 
         }
-        input = new ArrayList<>(mAdapter.updated_list());
 
     }
 
@@ -220,45 +218,32 @@ public class Edit_Location extends AppCompatActivity {
         return valid;
     }
 
-    //used to intailize the menu items
-    public static void getLocMenu(String myLocation) {
-        int counter = 0;
-        if (FirebaseUIActivity.isUserLoggedIn()) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("Locations/" + myLocation + "/Menu")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                if (task.getResult().size() != 0) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        Map<String, Object> myData = document.getData();
-                                        input.add(myData);
-                                        System.out.println(document);
-                                        System.out.println(task.getResult().size());
-                                    }
-
-                                }
-                            } else {
-                                Log.d("getLocMenu", "Error getting documents: ", task.getException());
-                            }
-                        }
-                    });
-        }
-    }
-
-    /**
-     * Only called from test
-     */
-//    @VisibleForTesting
-//    @NonNull
-//    public IdlingResource getIdlingResource() {
-//        if (mIdlingResource == null) {
-//            mIdlingResource = new SimpleIdlingResource();
+    //used to initialize the menu items
+//    public static void getLocMenu(String myLocation) {
+//        input = new ArrayList<>();
+//        if(FirebaseUIActivity.isUserLoggedIn()) {
+//            FirebaseFirestore db = FirebaseFirestore.getInstance();
+//            db.collection("Locations/" + myLocation + "/Menu")
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                if(task.getResult().size() != 0) {
+//                                    for (QueryDocumentSnapshot document : task.getResult()) {
+//                                        Map<String, Object> myData = document.getData();
+//                                        input.add(myData);
+//                                    }
+//
+//                                }
+//                            } else {
+//                                Log.d("getLocMenu", "Error getting documents: ", task.getException());
+//                            }
+//                        }
+//                    });
 //        }
-//        return mIdlingResource;
 //    }
+
 
 }
 
