@@ -38,10 +38,10 @@ public class OrderMenuActivity extends AppCompatActivity {
 
     String locationName;
 
-    double userLat;
-    double userLng;
-    double locationLat;
-    double locationLng;
+    static double mUserLat;
+    static double mUserLng;
+    static double mLocationLat;
+    static double mLocationLng;
     float distanceThreshold = 100;
 
     @Override
@@ -49,11 +49,10 @@ public class OrderMenuActivity extends AppCompatActivity {
         //Toast.makeText(this, "onCreate() called", Toast.LENGTH_SHORT).show();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_menu);
-        userLat = getIntent().getDoubleExtra("userLat", 0);
-        userLng = getIntent().getDoubleExtra("userLng", 0);
-        locationLat = getIntent().getDoubleExtra("locationLat", 0);
-        locationLng = getIntent().getDoubleExtra("locationLng", 0);
-        
+        mUserLat = getIntent().getDoubleExtra("userLat", 0);
+        mUserLng = getIntent().getDoubleExtra("userLng", 0);
+        mLocationLat = getIntent().getDoubleExtra("locationLat", 0);
+        mLocationLng = getIntent().getDoubleExtra("locationLng", 0);
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -167,7 +166,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         }
     }
 
-    public long caffeineToLong(String caffeineString) {
+    public static long caffeineToLong(String caffeineString) {
         for (int i = 0; i < caffeineString.length(); i++) {
             if (!Character.isDigit(caffeineString.charAt(i))) {
                 caffeineString = caffeineString.substring(0, i);
@@ -177,12 +176,12 @@ public class OrderMenuActivity extends AppCompatActivity {
         return -1;
     }
 
-    public float checkDistance() {
+    public static float checkDistance() {
         double earthRadius = 3958.75;
-        double latDiff = Math.toRadians(userLat-locationLat);
-        double lngDiff = Math.toRadians(userLng-locationLng);
+        double latDiff = Math.toRadians(getUserLat()-getLocationLat());
+        double lngDiff = Math.toRadians(getUserLng()-getLocationLng());
         double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
-                Math.cos(Math.toRadians(locationLat)) * Math.cos(Math.toRadians(userLat)) *
+                Math.cos(Math.toRadians(getLocationLat())) * Math.cos(Math.toRadians(getUserLat())) *
                         Math.sin(lngDiff /2) * Math.sin(lngDiff /2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double distance = earthRadius * c;
@@ -190,6 +189,29 @@ public class OrderMenuActivity extends AppCompatActivity {
         int meterConversion = 1609;
 
         return new Float(distance * meterConversion).floatValue();
+    }
+
+    public static void setCoordinates(double userLat, double userLng, double locationLat, double locationLng) {
+        mUserLat = userLat;
+        mUserLng = userLng;
+        mLocationLat = locationLat;
+        mLocationLng = locationLng;
+    }
+
+    public static double getUserLat() {
+        return mUserLat;
+    }
+
+    public static double getUserLng() {
+        return mUserLng;
+    }
+
+    public static double getLocationLat() {
+        return mLocationLat;
+    }
+
+    public static double getLocationLng() {
+        return mLocationLng;
     }
 
 }

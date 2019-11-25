@@ -52,30 +52,12 @@ public class AddLocActivity extends AppCompatActivity {
             }
         });
 
-        //Menu Stuff
-        totalMenu = new ArrayList<>();
-        adapter = new MyAdapter();
-        myDialog = new Dialog(this);
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
-
     }
-
 
     public void addLocation() {
         Log.d(TAG, "AddLoc");
 
         if (!validate()) {
-            AddFailed();
-            return;
-        }
-        totalMenu = adapter.updated_list();
-        //Make sure store owner can't add without an initial Menu
-        if(totalMenu == null || totalMenu.size() == 0){
             AddFailed();
             return;
         }
@@ -91,7 +73,6 @@ public class AddLocActivity extends AppCompatActivity {
         String address = Address.getText().toString();
 
         FirebaseUIActivity.addLocnMenu(name, address, totalMenu, this);
-
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {

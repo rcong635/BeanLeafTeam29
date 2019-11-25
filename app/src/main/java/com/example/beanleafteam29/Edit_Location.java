@@ -270,5 +270,3 @@ public class Edit_Location extends AppCompatActivity {
 //    }
 
 }
-
-

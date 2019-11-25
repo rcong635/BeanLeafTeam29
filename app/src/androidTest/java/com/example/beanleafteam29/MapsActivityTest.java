@@ -1,5 +1,7 @@
 package com.example.beanleafteam29;
 
+import androidx.test.rule.ActivityTestRule;
+
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.NoMatchingViewException;
 import androidx.test.espresso.intent.Intents;
@@ -18,14 +20,11 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withTagKey;
-import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.*;
+
 
 public class MapsActivityTest {
     @Rule
@@ -50,6 +49,20 @@ public class MapsActivityTest {
 
     }
 
+    @Test
+    public void testConvertToPixels() {
+        MapsActivity mActivity = mMapActivityTestRule.getActivity();
+        assertEquals(0, MapsActivity.convertToPixels(mActivity.getBaseContext(), 0));
+        assertEquals(35, MapsActivity.convertToPixels(mActivity.getBaseContext(), 10));
+        assertEquals(350, MapsActivity.convertToPixels(mActivity.getBaseContext(), 100));
+        assertEquals(3500, MapsActivity.convertToPixels(mActivity.getBaseContext(), 1000));
+        assertEquals(1166, MapsActivity.convertToPixels(mActivity.getBaseContext(), 333));
+        assertEquals(1985, MapsActivity.convertToPixels(mActivity.getBaseContext(), 567));
+        assertEquals(46, MapsActivity.convertToPixels(mActivity.getBaseContext(), 13));
+        assertEquals(28, MapsActivity.convertToPixels(mActivity.getBaseContext(), 8));
+        assertEquals(11, MapsActivity.convertToPixels(mActivity.getBaseContext(), 3));
+        assertEquals(4, MapsActivity.convertToPixels(mActivity.getBaseContext(), 1));
+    }
 
 
     @Test
