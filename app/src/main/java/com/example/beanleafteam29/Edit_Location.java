@@ -7,12 +7,8 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.view.View;
@@ -34,11 +30,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import androidx.annotation.VisibleForTesting;
 
 public class Edit_Location extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private MyAdapter mAdapter;
+    private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
     private EditText item;
@@ -49,8 +44,8 @@ public class Edit_Location extends AppCompatActivity {
     private static final String TAG = "Edit_Location";
     Dialog myDialog; //used for pop-ups
     private String myLocation = new String();
-    private static List<Map<String, Object> > input = new ArrayList<>();
-    private static List<Map<String, Object> > deleteTracker = new ArrayList<>();
+    private static List<Map<String, Object> > input;
+    private static List<Map<String, Object> > deleteTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,5 +241,4 @@ public class Edit_Location extends AppCompatActivity {
 
 
 }
-
-
+//To Do -- Make sure Adapter doesn't print the edit menu screen for multiple locations
