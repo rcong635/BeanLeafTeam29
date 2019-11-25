@@ -61,7 +61,7 @@ public class Edit_Location extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
-
+        FirebaseUIActivity.getLocationMenuFb(myLocation);
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);

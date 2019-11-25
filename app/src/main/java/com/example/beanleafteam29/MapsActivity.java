@@ -43,6 +43,7 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
+import android.content.Context;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         LocationListener, PopupMenu.OnMenuItemClickListener, OnMarkerClickListener {
@@ -71,6 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
+    private static Context context;
 
     private LatLng userLocation;
 
@@ -84,6 +86,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        MapsActivity.context = getApplicationContext();
+
         FirebaseUIActivity.openFbReference("some_data", this);
         if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
@@ -96,6 +100,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    public static Context getAppContext() {
+        return MapsActivity.context;
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
