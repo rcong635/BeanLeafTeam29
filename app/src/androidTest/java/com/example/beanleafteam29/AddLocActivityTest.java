@@ -111,6 +111,7 @@ public class AddLocActivityTest {
         onView(withId(R.id.btn_menu)).inRoot(isDialog()).check(doesNotExist());
         Thread.sleep(3000);
         Espresso.onView(withId(R.id.btn_add)).perform(click());
+        Thread.sleep(2000);
         //should add to our database
 
     }
