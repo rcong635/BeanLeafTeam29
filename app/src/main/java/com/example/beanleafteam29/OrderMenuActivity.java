@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.beanleafteam29.FirebaseUIActivity.getCaffeineAmount;
+import static com.example.beanleafteam29.FirebaseUIActivity.getUid;
 import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
 
 public class OrderMenuActivity extends AppCompatActivity {
@@ -37,6 +38,7 @@ public class OrderMenuActivity extends AppCompatActivity {
     ArrayList<CheckBox> checkBoxes = new ArrayList<>();
 
     String locationName;
+    String locationID;
 
     static double mUserLat;
     static double mUserLng;
@@ -56,7 +58,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String locationID = getIntent().getStringExtra("locationID");
+            locationID = getIntent().getStringExtra("locationID");
             locationName = getIntent().getStringExtra("locationName");
             db.collection("Locations/" + locationID + "/Menu")
                     .get()
@@ -109,6 +111,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
     public void OnBuyButtonClicked(View v) {
         Map<String, Object> order = new HashMap<>();
+        Map<String, Object> locOrder = new HashMap<>();
         if (checkDistance() < distanceThreshold) {
             long caffeineInOrder = 0;
             long caffeineConsumed = getCaffeineAmount();
@@ -127,7 +130,17 @@ public class OrderMenuActivity extends AppCompatActivity {
                     order.put("Caffeine", caffeine);
                     caffeineInOrder += caffeine;
                     order.put("Date", Timestamp.now());
+                    order.put("LocationID", locationID);
                     FirebaseUIActivity.addElementToUserHistory(order);
+
+                    //Location history
+                    order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
+                    order.put("Customer", getUserName());
+                    order.put("CustomerID", getUid());
+                    order.put("Price", Double.valueOf(priceString));
+                    order.put("Date", Timestamp.now());
+
+                    FirebaseUIActivity.addElementToLocationHistory(order, locationID);
                 }
             }
             if (order.isEmpty()) {
@@ -162,7 +175,22 @@ public class OrderMenuActivity extends AppCompatActivity {
                 finish();
             }
         } else {
-            Toast.makeText(this, "Too far from the location to order", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "Too far from the location to order", Toast.LENGTH_SHORT).show();
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle("Too Far!!!");
+            alertDialogBuilder
+                    .setMessage("You are too far to make an order. Try again when you are close to this place.")
+                    .setCancelable(true)
+                    .setNegativeButton("Close",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
     }
 

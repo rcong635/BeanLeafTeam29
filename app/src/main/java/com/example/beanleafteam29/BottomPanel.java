@@ -115,11 +115,10 @@ public class BottomPanel extends BottomSheetDialogFragment {
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //TO CHange
-                Intent editLocIntent = new Intent(getContext(), Edit_Location.class);
-                editLocIntent.putExtra("locationID", locId);
-                startActivity(editLocIntent);
+                Intent intent = new Intent(getContext(), SellerHistoryActivity.class);
+                intent.putExtra("locationID", locId);
+                intent.putExtra("locationName", titleStr);
+                startActivity(intent);
                 self.dismiss();
             }
         });

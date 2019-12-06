@@ -334,6 +334,17 @@ public class FirebaseUIActivity {
         }
     }
 
+    public static void addElementToLocationHistory(Map m, String locationId) {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Locations")
+                    .document(locationId)
+                    .collection("History")
+                    .add(m);
+        }
+    }
+
     public static void addElementToMenu(Map m, String locationId) {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
