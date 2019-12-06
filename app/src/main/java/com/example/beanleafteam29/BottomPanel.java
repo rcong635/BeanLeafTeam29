@@ -54,6 +54,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
         title.setText(titleStr);
         Button button1 = v.findViewById(R.id.menuBtn);
         final Button button2 = v.findViewById(R.id.navigateBtn);
+        Button button3 = v.findViewById(R.id.btmLocHistory);
 
         HashMap<String, QueryDocumentSnapshot> myLocations = FirebaseUIActivity.getUserLocations();
         if (myLocations.containsKey(locId)) {
@@ -102,6 +103,18 @@ public class BottomPanel extends BottomSheetDialogFragment {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent editLocIntent = new Intent(getContext(), Edit_Location.class);
+                editLocIntent.putExtra("locationID", locId);
+                startActivity(editLocIntent);
+                self.dismiss();
+            }
+        });
+
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //TO CHange
                 Intent editLocIntent = new Intent(getContext(), Edit_Location.class);
                 editLocIntent.putExtra("locationID", locId);
                 startActivity(editLocIntent);

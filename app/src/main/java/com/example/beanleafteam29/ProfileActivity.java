@@ -42,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView caffeineAmount;
     private TextView yourLocationsTV;
     private Button viewHistBtn;
+    private Button cafHistBtn;
     private RadioGroup rg;
     private ScrollView scroller;
 
@@ -55,6 +56,7 @@ public class ProfileActivity extends AppCompatActivity {
         caffeineCaption = findViewById(R.id.caffeineAmount);
         caffeineAmount = findViewById(R.id.profileProgressBar);
         viewHistBtn = findViewById(R.id.profileViewHistBtn);
+        cafHistBtn = findViewById(R.id.profileCafHistBtn);
         rg = findViewById(R.id.profileRadioGroup);
         yourLocationsTV = findViewById(R.id.profileYourLocationsTV);
         scroller = findViewById(R.id.profileScroller);
@@ -80,6 +82,14 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent historyIntent = new Intent(getBaseContext(), UserHistoryActivity.class);
                 startActivity(historyIntent);
+            }
+        });
+
+        cafHistBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent chartIntent = new Intent(getBaseContext(), CaffeineChartActivity.class);
+                startActivity(chartIntent);
             }
         });
 
