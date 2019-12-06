@@ -7,10 +7,10 @@
 
     <item android:id="@+id/logout"
         android:title="Logout" />
-    <item android:id="@+id/View_History"
-        android:title="View History" />
     <item android:id="@+id/profileBtn"
         android:title="Profile" />
+    <item android:id="@+id/View_History"
+        android:title="View History" />
     <item android:id="@+id/Add"
         android:title="Add Location" />
 

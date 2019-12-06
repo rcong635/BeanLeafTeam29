@@ -134,13 +134,13 @@ public class OrderMenuActivity extends AppCompatActivity {
                     FirebaseUIActivity.addElementToUserHistory(order);
 
                     //Location history
-                    order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
-                    order.put("Customer", getUserName());
-                    order.put("CustomerID", getUid());
-                    order.put("Price", Double.valueOf(priceString));
-                    order.put("Date", Timestamp.now());
+                    locOrder.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
+                    locOrder.put("Customer", FirebaseUIActivity.getUserName());
+                    locOrder.put("CustomerID", getUid());
+                    locOrder.put("Price", Double.valueOf(priceString));
+                    locOrder.put("Date", Timestamp.now());
 
-                    FirebaseUIActivity.addElementToLocationHistory(order, locationID);
+                    FirebaseUIActivity.addElementToLocationHistory(locOrder, locationID);
                 }
             }
             if (order.isEmpty()) {
