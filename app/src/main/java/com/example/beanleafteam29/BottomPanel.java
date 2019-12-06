@@ -59,8 +59,10 @@ public class BottomPanel extends BottomSheetDialogFragment {
         HashMap<String, QueryDocumentSnapshot> myLocations = FirebaseUIActivity.getUserLocations();
         if (myLocations.containsKey(locId)) {
             button2.setVisibility(View.VISIBLE);
+            button3.setVisibility(View.VISIBLE);
         } else {
             button2.setVisibility(View.GONE);
+            button3.setVisibility(View.GONE);
         }
 
 
