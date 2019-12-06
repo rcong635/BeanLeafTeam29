@@ -8,8 +8,10 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class CaffeineChartActivity extends AppCompatActivity {
@@ -20,15 +22,18 @@ public class CaffeineChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_caffeine_chart);
 
 
+        HashMap<String, QueryDocumentSnapshot> userHistory = FirebaseUIActivity.getUserHistory();
+
         BarChart barChart = (BarChart) findViewById(R.id.barchart);
 
         ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(8f, 0));
+        entries.add(new BarEntry(1f, 0));
         entries.add(new BarEntry(2f, 1));
-        entries.add(new BarEntry(5f, 2));
-        entries.add(new BarEntry(20f, 3));
-        entries.add(new BarEntry(15f, 4));
-        entries.add(new BarEntry(19f, 5));
+        entries.add(new BarEntry(3f, 2));
+        entries.add(new BarEntry(4f, 3));
+        entries.add(new BarEntry(5f, 4));
+        entries.add(new BarEntry(6f, 5));
+        entries.add(new BarEntry(7f, 6));
 
         BarDataSet bardataset = new BarDataSet(entries, "Cells");
 
@@ -39,12 +44,14 @@ public class CaffeineChartActivity extends AppCompatActivity {
         labels.add("2013");
         labels.add("2012");
         labels.add("2011");
+        labels.add("2010");
 
         BarData data = new BarData(labels, bardataset);
         barChart.setData(data); // set the data and list of labels into chart
-        barChart.setDescription("Set Bar Chart Description Here");  // set the description
-        bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
-        barChart.animateY(5000);
+        //barChart.setDescription("Set Bar Chart Description Here");  // set the description
+        bardataset.setColors(ColorTemplate.LIBERTY_COLORS);
+        //bardataset.setColors(ColorTemplate.COLORFUL_COLORS);
+        barChart.animateY(1000);
 
     }
 }

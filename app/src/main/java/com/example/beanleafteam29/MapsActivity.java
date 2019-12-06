@@ -95,6 +95,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             FirebaseUIActivity.checkAdmin(this);
             displayLocations();
             FirebaseUIActivity.computeCaffeineAmount();
+            FirebaseUIActivity.getUserHistoryFb();
+            FirebaseUIActivity.getUsernameFb();
         } else {
             FirebaseUIActivity.attachListener();
         }

@@ -51,6 +51,7 @@ public class FirebaseUIActivity {
     private static boolean newSignIn = false;
     private static  List<Map<String, Object> > menu = new ArrayList<>();
     private static HashMap<String, QueryDocumentSnapshot> userHistory = new HashMap<>();
+    private static String username = "";
 
     public FirebaseUIActivity() {
 
@@ -139,6 +140,34 @@ public class FirebaseUIActivity {
             return mFirebaseAuth.getUid();
         return null;
     }
+
+    // call this function in onCreate() of MapsActivity
+    public static void getUsernameFb() {
+        db = FirebaseFirestore.getInstance();
+        final String uid = getUid();
+        db.collection("Users")
+                .whereEqualTo("UID", uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().size() != 0) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    username = document.getString("Name");
+                                }
+                            }
+                        } else {
+                            Log.d("getUsernameFb", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+    public static String getUsername() {
+        return username;
+    }
+
 
     public static void logout(final MapsActivity callerActivity) {
         //Toast.makeText(callerActivity.getBaseContext(), "logout() called", Toast.LENGTH_SHORT).show();
