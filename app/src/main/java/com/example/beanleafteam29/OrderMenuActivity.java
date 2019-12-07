@@ -110,8 +110,8 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        Map<String, Object> order = new HashMap<>();
-        Map<String, Object> locOrder = new HashMap<>();
+        HashMap<String, Object> order = new HashMap<>();
+        HashMap<String, Object> locOrder = new HashMap<>();
         if (checkDistance() < distanceThreshold) {
             long caffeineInOrder = 0;
             long caffeineConsumed = getCaffeineAmount();
@@ -140,7 +140,20 @@ public class OrderMenuActivity extends AppCompatActivity {
                     locOrder.put("Price", Double.valueOf(priceString));
                     locOrder.put("Date", Timestamp.now());
 
+
+                    // NOT THE RIGHT PLACE TO ADD ITEM TO DATABASE
+                    // CHECK IF CAFFEINE IS MORE THAN 400 MG
+
                     FirebaseUIActivity.addElementToLocationHistory(locOrder, locationID);
+                    String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
+                    StringBuilder sb = new StringBuilder(20);
+                    for (int k = 0; k < 20; k++) {
+                        int index = (int)(AlphaNumericString.length() * Math.random());
+                        sb.append(AlphaNumericString.charAt(index));
+                    }
+                    FirebaseUIActivity.setUserHistory(sb.toString(), order);
+
+
                 }
             }
             if (order.isEmpty()) {
