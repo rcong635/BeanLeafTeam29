@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,16 +20,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,6 +45,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import android.content.Context;
+import android.widget.Toast;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, ActivityCompat.OnRequestPermissionsResultCallback,
         LocationListener, PopupMenu.OnMenuItemClickListener, OnMarkerClickListener {
@@ -64,7 +66,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
-
     //    Flag indicating whether a requested permission has been denied after returning in
 //    {@link #onRequestPermissionsResult(int, String[], int[])}.
     private boolean mPermissionDenied = false;
@@ -74,6 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final float MIN_DISTANCE = 1000;
     private static Context context;
 
+    private String provider;
     private LatLng userLocation;
 
     @Override
@@ -100,6 +102,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             FirebaseUIActivity.attachListener();
         }
+
+
+
     }
 
     public static Context getAppContext() {
@@ -134,7 +139,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 //      Creating listeners for markers on the map to show their data
-//        mMap.setOnMarkerClickListener(this);
+//      mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
               @Override
               public boolean onMarkerClick(Marker marker) {
@@ -156,23 +161,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(final Marker marker) {
         Intent intent3 = new Intent(getBaseContext(), ProfileActivity.class);
         startActivity(intent3);
-        //Toast.makeText(getBaseContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
         return false;
     }
-
 
     @Override
     protected void onResume() {
         super.onResume();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        /*Map<String, Object> m = new HashMap<>();
-        m.put("Caffeine", 100);
-        m.put("Name", "Some Weird Coffee");
-        m.put("Price", 4.99);
-        FirebaseUIActivity.addElementToMenu(m, "7vufQOykpFmHKM0Itlm4");*/
-        //FirebaseUIActivity.deleteElementFromMenu("7vufQOykpFmHKM0Itlm4", "Some Weird Coffee");
     }
 
     @Override

@@ -64,7 +64,7 @@ public class CaffeineChartActivity extends AppCompatActivity {
 
         long seconds = Instant.now().getEpochSecond() - 6*secondsInADay;
         Date d;
-        DateFormat df = new SimpleDateFormat("dd/MM");
+        DateFormat df = new SimpleDateFormat("MM/dd");
         for (int i = 0; i < 7; i++) {
             entries.add(new BarEntry(caffeineAtDay[i], i));
             d = new Date(seconds * 1000);
@@ -74,9 +74,9 @@ public class CaffeineChartActivity extends AppCompatActivity {
         }
 
         BarDataSet bardataset = new BarDataSet(entries, "Your caffeine consumption day by day");
+        barChart.setDescription("");
         BarData data = new BarData(labels, bardataset);
-        barChart.setData(data); // set the data and list of labels into chart
-        //barChart.setDescription("Your caffeine consumption day by day");  // set the description
+        barChart.setData(data);
         bardataset.setColors(new int[] {Color.rgb(48, 63, 159)});
         barChart.animateY(1000);
 
