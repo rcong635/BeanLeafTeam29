@@ -31,17 +31,17 @@ public class AddLocActivity extends AppCompatActivity {
     private ImageButton delete;
     Dialog myDialog; //used for pop-ups
     private static final String TAG = "AddLocActivity";
-    private List<Map<String, Object>> totalMenu = new ArrayList<>(); //used to add all the menu items to database
-    private List<Map<String, Object>> deleteTracker;
+    private List<Map<String, Object>> totalMenu = new ArrayList<>();; //used to add all the menu items to database
+    //private List<Map<String, Object>> deleteTracker;
     //For Recycler View
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private MyAdapter adapter;
+    private MyAdapter mAdapter = new MyAdapter();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_loc);
-
+        myDialog = new Dialog(this);
         Name = findViewById(R.id.input_name);
         Address = findViewById(R.id.input_address);
         Add = findViewById(R.id.btn_add);
@@ -51,13 +51,20 @@ public class AddLocActivity extends AppCompatActivity {
                 addLocation();
             }
         });
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        //getLocMenu(myLocation);
+        mAdapter = new MyAdapter();
+        recyclerView.setAdapter(mAdapter);
 
     }
 
     public void addLocation() {
         Log.d(TAG, "AddLoc");
-
-        if (!validate()) {
+        totalMenu = mAdapter.updated_list();
+        if (!validate() || totalMenu.size() == 0 || totalMenu == null) {
             AddFailed();
             return;
         }
@@ -171,7 +178,7 @@ public class AddLocActivity extends AppCompatActivity {
         m.put("Caffeine", item_caff);
         m.put("Name", item_name);
         m.put("Price", item_price);
-        adapter.add(adapter.getItemCount(), m);
+        mAdapter.add(mAdapter.getItemCount(), m);
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -187,7 +194,7 @@ public class AddLocActivity extends AppCompatActivity {
     //delete Menu Items
     public void deleteMenu(View v){
 
-        if(adapter.delete_list().size() == 0)
+        if(mAdapter.delete_list().size() == 0)
         {
             Toast.makeText(getBaseContext(), "Delete Menu Item Failed", Toast.LENGTH_LONG).show();
         }

@@ -49,8 +49,8 @@ public class Edit_Location extends AppCompatActivity {
     private static final String TAG = "Edit_Location";
     Dialog myDialog; //used for pop-ups
     private String myLocation = new String();
-    private static List<Map<String, Object> > input = new ArrayList<>();
-    private static List<Map<String, Object> > deleteTracker = new ArrayList<>();
+    private List<Map<String, Object> > input;
+    private List<Map<String, Object> > deleteTracker = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,8 @@ public class Edit_Location extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
-        FirebaseUIActivity.getLocationMenuFb(myLocation);
+        FirebaseUIActivity.getLocationMenuFb(myLocation); //update FireBaseUI with Menu
+        input = new ArrayList<>(FirebaseUIActivity.getLocationMenu()); //gives Menu to this edit location
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -69,7 +70,7 @@ public class Edit_Location extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        getLocMenu(myLocation);
+        //getLocMenu(myLocation);
         mAdapter = new MyAdapter(input);
         recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
@@ -230,7 +231,7 @@ public class Edit_Location extends AppCompatActivity {
     }
 
     //used to intailize the menu items
-    public static void getLocMenu(String myLocation) {
+    public void getLocMenu(String myLocation) {
         int counter = 0;
         if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -244,8 +245,6 @@ public class Edit_Location extends AppCompatActivity {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         Map<String, Object> myData = document.getData();
                                         input.add(myData);
-                                        System.out.println(document);
-                                        System.out.println(task.getResult().size());
                                     }
 
                                 }
