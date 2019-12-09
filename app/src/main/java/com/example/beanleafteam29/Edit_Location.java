@@ -61,8 +61,8 @@ public class Edit_Location extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
-        FirebaseUIActivity.getLocationMenuFb(myLocation); //update FireBaseUI with Menu
-        input = new ArrayList<>(FirebaseUIActivity.getLocationMenu()); //gives Menu to this edit location
+        //FirebaseUIActivity.getLocationMenuFb(myLocation); //update FireBaseUI with Menu
+        //input = new ArrayList<>(FirebaseUIActivity.getLocationMenu()); //gives Menu to this edit location
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -70,10 +70,10 @@ public class Edit_Location extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        //getLocMenu(myLocation);
+        getLocMenu(myLocation);
         mAdapter = new MyAdapter(input);
         recyclerView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        //mAdapter.notifyDataSetChanged();
         final ProgressDialog progressDialog = new ProgressDialog(Edit_Location.this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Loading Data...");
@@ -232,7 +232,7 @@ public class Edit_Location extends AppCompatActivity {
 
     //used to intailize the menu items
     public void getLocMenu(String myLocation) {
-        int counter = 0;
+        input = new ArrayList<>();
         if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("Locations/" + myLocation + "/Menu")
