@@ -50,7 +50,8 @@ public class FirebaseUIActivity {
     private static long caffeineAmount = 0;
     private static boolean newSignIn = false;
     private static  List<Map<String, Object> > menu = new ArrayList<>();
-    private static HashMap<String, QueryDocumentSnapshot> userHistory = new HashMap<>();
+    private static HashMap<String, Object> userHistory = new HashMap<>();
+    private static String username = "";
 
     public FirebaseUIActivity() {
 
@@ -139,6 +140,34 @@ public class FirebaseUIActivity {
             return mFirebaseAuth.getUid();
         return null;
     }
+
+    // call this function in onCreate() of MapsActivity
+    public static void getUsernameFb() {
+        db = FirebaseFirestore.getInstance();
+        final String uid = getUid();
+        db.collection("Users")
+                .whereEqualTo("UID", uid)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if(task.getResult().size() != 0) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    username = document.getString("Name");
+                                }
+                            }
+                        } else {
+                            Log.d("getUsernameFb", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+    }
+    public static String getUsername() {
+        return username;
+    }
+
 
     public static void logout(final MapsActivity callerActivity) {
         //Toast.makeText(callerActivity.getBaseContext(), "logout() called", Toast.LENGTH_SHORT).show();
@@ -334,6 +363,17 @@ public class FirebaseUIActivity {
         }
     }
 
+    public static void addElementToLocationHistory(Map m, String locationId) {
+        if(isUserLoggedIn()) {
+            db = FirebaseFirestore.getInstance();
+            String uid = mFirebaseAuth.getUid();
+            db.collection("Locations")
+                    .document(locationId)
+                    .collection("History")
+                    .add(m);
+        }
+    }
+
     public static void addElementToMenu(Map m, String locationId) {
         if(isUserLoggedIn()) {
             db = FirebaseFirestore.getInstance();
@@ -398,7 +438,7 @@ public class FirebaseUIActivity {
                                     }
                                 }
                             } else {
-                                Log.d("getUserHistory", "Error getting documents: ", task.getException());
+                                Log.d("deleteElementFromMenu", "Error getting documents: ", task.getException());
                             }
                         }
                     });
@@ -451,7 +491,7 @@ public class FirebaseUIActivity {
                                 userHistory.clear();
                                 if(task.getResult().size() != 0) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        userHistory.put(document.getId(), document);
+                                        userHistory.put(document.getId(), document.getData());
                                     }
                                 }
                             } else {
@@ -462,8 +502,12 @@ public class FirebaseUIActivity {
         }
     }
 
-    public static HashMap<String, QueryDocumentSnapshot> getUserHistory() {
+    public static HashMap<String, Object> getUserHistory() {
         return userHistory;
+    }
+
+    public static void setUserHistory(String key, HashMap<String, Object> doc) {
+        userHistory.put(key, doc);
     }
 
     public static void addUserToFirestore() {

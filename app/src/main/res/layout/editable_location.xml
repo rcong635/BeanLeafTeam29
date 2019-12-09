@@ -11,10 +11,11 @@
         android:id="@+id/locationName"
         android:layout_width="196dp"
         android:layout_height="24dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="32dp"
         android:text="@string/app_name"
         android:textColor="#2B2727"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +24,7 @@
         android:layout_width="74dp"
         android:layout_height="35dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginEnd="56dp"
         android:backgroundTint="#E8FF5252"
         android:fontFamily="sans-serif"
         android:onClick="OnEditButtonClicked"
@@ -37,14 +38,39 @@
         app:layout_constraintStart_toEndOf="@+id/locationName"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/salesButton"
+        android:layout_width="74dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="56dp"
+        android:backgroundTint="#FFAB40"
+        android:text="Sales"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:onClick="OnSalesButtonClicked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editButton" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="409dp"
         android:layout_height="1dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="90dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/verifyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:text="Verify"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 

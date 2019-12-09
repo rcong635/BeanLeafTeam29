@@ -7,6 +7,36 @@
     android:background="@drawable/background"
     tools:context=".ProfileActivity">
 
+    <Button
+        android:id="@+id/profileCafHistBtn"
+        android:layout_width="155dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#447DDD"
+        android:text="Caffeine History"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/profileViewHistBtn"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/caffeineAmount2" />
+
+    <Button
+        android:id="@+id/profileViewHistBtn"
+        android:layout_width="149dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="48dp"
+        android:backgroundTint="#447DDD"
+        android:text="View Purchases"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/caffeineAmount2" />
+
     <TextView
         android:id="@+id/caffeineAmount2"
         android:layout_width="wrap_content"
@@ -61,23 +91,8 @@
             android:layout_width="98dp"
             android:layout_height="wrap_content"
             android:text="No" />
-    </RadioGroup>
 
-    <Button
-        android:id="@+id/profileViewHistBtn"
-        android:layout_width="197dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="#447DDD"
-        android:text="View Purchases"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caffeineAmount2" />
+    </RadioGroup>
 
     <TextView
         android:id="@+id/profileProgressBar"
@@ -165,7 +180,7 @@
         android:id="@+id/divider3"
         android:layout_width="477dp"
         android:layout_height="1dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="50dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -185,5 +200,18 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+    <Button
+        android:id="@+id/ProfileAddLocBtn"
+        android:layout_width="174dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:backgroundTint="#1F7430"
+        android:text="Add Location"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/profileRadioGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

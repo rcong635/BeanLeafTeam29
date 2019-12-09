@@ -3,9 +3,7 @@ package com.example.beanleafteam29;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,34 +13,29 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-
 import static com.example.beanleafteam29.FirebaseUIActivity.getCaffeineAmount;
-import static com.example.beanleafteam29.FirebaseUIActivity.mFirebaseAuth;
+import static com.example.beanleafteam29.FirebaseUIActivity.getUid;
 
 public class OrderMenuActivity extends AppCompatActivity {
 
     ArrayList<CheckBox> checkBoxes = new ArrayList<>();
 
     String locationName;
+    String locationID;
 
     static double mUserLat;
     static double mUserLng;
     static double mLocationLat;
     static double mLocationLng;
-    float distanceThreshold = 100;
+    double distanceThreshold = 200.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +49,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
         if(FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            String locationID = getIntent().getStringExtra("locationID");
+            locationID = getIntent().getStringExtra("locationID");
             locationName = getIntent().getStringExtra("locationName");
             db.collection("Locations/" + locationID + "/Menu")
                     .get()
@@ -68,39 +61,30 @@ public class OrderMenuActivity extends AppCompatActivity {
                                     TextView noItems = findViewById(R.id.noItems);
                                     noItems.setVisibility(View.INVISIBLE);
                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                        System.out.println(document);
-
+                                        //System.out.println(document);
                                         LayoutInflater inflater = getLayoutInflater();
                                         View itemView = inflater.inflate(R.layout.order_menu_item, null);
                                         ViewGroup menuView = findViewById(R.id.Menu);
-
                                         String name = document.getString("Name");
                                         TextView nameView = itemView.findViewById(R.id.ItemName);
                                         nameView.setText(name);
-
                                         double price = document.getDouble("Price");
                                         TextView priceView = itemView.findViewById(R.id.ItemPrice);
                                         String priceString = "$" + String.format("%.2f", price);
                                         priceView.setText(priceString);
-
                                         long caffeine = document.getLong("Caffeine");
-                                        FirebaseUIActivity.setCaffeine(FirebaseUIActivity.getCaffeineAmount() + caffeine);
                                         TextView caffeineView = itemView.findViewById(R.id.ItemCaffeine);
                                         String caffeineString = caffeine + " mg caffeine";
                                         caffeineView.setText(caffeineString);
-
                                         menuView.addView(itemView,0);
-
                                         checkBoxes.add((CheckBox) itemView.findViewById(R.id.checkbox));
-
-                                        //System.out.println(task.getResult().size());
                                     }
                                 } else {
                                     TextView noItems = findViewById(R.id.noItems);
                                     noItems.setVisibility(View.VISIBLE);
                                 }
                             } else {
-                                Log.d("getUserHistory", "Error getting documents: ", task.getException());
+                                Log.d("OrderMenuActivity", "Error getting documents: ", task.getException());
                             }
                         }
                     });
@@ -108,7 +92,12 @@ public class OrderMenuActivity extends AppCompatActivity {
     }
 
     public void OnBuyButtonClicked(View v) {
-        Map<String, Object> order = new HashMap<>();
+        HashMap<String, Object> order = new HashMap<>();
+        HashMap<String, Object> locOrder = new HashMap<>();
+        final ArrayList<HashMap<String, Object>> orders = new ArrayList<>();
+        final ArrayList<HashMap<String, Object>> locOrders = new ArrayList<>();
+        long caffeine = 0;
+        final long caffeineFinal; // variable used in inner class, it's just a copy of caffeineInOrder
         if (checkDistance() < distanceThreshold) {
             long caffeineInOrder = 0;
             long caffeineConsumed = getCaffeineAmount();
@@ -116,6 +105,9 @@ public class OrderMenuActivity extends AppCompatActivity {
             for (int i = 0; i < checkBoxes.size(); i++) {
                 boolean checked = checkBoxes.get(i).isChecked();
                 if (checked) {
+                    order.clear();
+                    locOrder.clear();
+
                     RelativeLayout itemLayout = (RelativeLayout) checkBoxes.get(i).getParent();
                     order.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
                     order.put("LocationName", locationName);
@@ -123,13 +115,25 @@ public class OrderMenuActivity extends AppCompatActivity {
                     priceString = priceString.substring(1);
                     order.put("Price", Double.valueOf(priceString));
                     String caffeineString = (String) ((TextView) itemLayout.getChildAt(3)).getText();
-                    long caffeine = caffeineToLong(caffeineString);
+                    caffeine = caffeineToLong(caffeineString);
                     order.put("Caffeine", caffeine);
                     caffeineInOrder += caffeine;
                     order.put("Date", Timestamp.now());
-                    FirebaseUIActivity.addElementToUserHistory(order);
+                    order.put("LocationID", locationID);
+
+                    //Location history
+                    locOrder.put("Name", ((TextView) itemLayout.getChildAt(1)).getText());
+                    locOrder.put("Customer", FirebaseUIActivity.getUserName());
+                    locOrder.put("CustomerID", getUid());
+                    locOrder.put("Price", Double.valueOf(priceString));
+                    locOrder.put("Date", Timestamp.now());
+
+                    orders.add((HashMap<String, Object>) order.clone());
+                    locOrders.add((HashMap<String, Object>)locOrder.clone());
                 }
             }
+            caffeineFinal = caffeineInOrder;
+
             if (order.isEmpty()) {
                 Toast.makeText(this, "No items selected", Toast.LENGTH_SHORT).show();
             }
@@ -140,15 +144,16 @@ public class OrderMenuActivity extends AppCompatActivity {
                         .setMessage("After this purchase, you will have exceeded the recommended daily caffeine limit (400mg). Are you sure you want to continue?")
                         .setCancelable(false)
                         .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                            public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
+                                addElementsToDatabase(orders, locOrders, caffeineFinal);
                                 Toast.makeText(getBaseContext(), "Purchase completed", Toast.LENGTH_SHORT).show();
                                 OrderMenuActivity.this.finish();
                             }
                         })
-                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, just close
                                 // the dialog box and do nothing
                                 dialog.cancel();
@@ -158,12 +163,44 @@ public class OrderMenuActivity extends AppCompatActivity {
                 alertDialog.show();
             }
             else {
+                addElementsToDatabase(orders, locOrders, caffeineFinal);
                 Toast.makeText(this, "Purchase completed", Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else {
-            Toast.makeText(this, "Too far from the location to order", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setTitle("Too Far!!!");
+            alertDialogBuilder
+                    .setMessage("You are too far to make an order. Try again when you are close to this place.")
+                    .setCancelable(true)
+                    .setNegativeButton("Close",new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,int id) {
+                            // if this button is clicked, just close
+                            // the dialog box and do nothing
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
+    }
+
+    private void addElementsToDatabase(ArrayList<HashMap<String, Object>> orders, ArrayList<HashMap<String, Object>> locOrders, long caffeineInOrder) {
+        for(HashMap<String, Object> locOrder : locOrders) {
+            FirebaseUIActivity.addElementToLocationHistory(locOrder, locationID);
+        }
+
+        for(HashMap<String, Object> order : orders) {
+            FirebaseUIActivity.addElementToUserHistory(order);
+            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
+            StringBuilder sb = new StringBuilder(20);
+            for (int k = 0; k < 20; k++) {
+                int index = (int)(AlphaNumericString.length() * Math.random());
+                sb.append(AlphaNumericString.charAt(index));
+            }
+            FirebaseUIActivity.setUserHistory(sb.toString(), order);
+        }
+        FirebaseUIActivity.setCaffeine(FirebaseUIActivity.getCaffeineAmount() + caffeineInOrder);
     }
 
     public static long caffeineToLong(String caffeineString) {
@@ -176,8 +213,8 @@ public class OrderMenuActivity extends AppCompatActivity {
         return -1;
     }
 
-    public static float checkDistance() {
-        double earthRadius = 3958.75;
+    public static double checkDistance() {
+        double earthRadius = 6371 * 1000;
         double latDiff = Math.toRadians(getUserLat()-getLocationLat());
         double lngDiff = Math.toRadians(getUserLng()-getLocationLng());
         double a = Math.sin(latDiff /2) * Math.sin(latDiff /2) +
@@ -186,9 +223,7 @@ public class OrderMenuActivity extends AppCompatActivity {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double distance = earthRadius * c;
 
-        int meterConversion = 1609;
-
-        return new Float(distance * meterConversion).floatValue();
+        return distance;
     }
 
     public static void setCoordinates(double userLat, double userLng, double locationLat, double locationLng) {

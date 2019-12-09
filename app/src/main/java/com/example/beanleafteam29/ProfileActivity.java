@@ -42,6 +42,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView caffeineAmount;
     private TextView yourLocationsTV;
     private Button viewHistBtn;
+    private Button cafHistBtn;
+    private Button addLocBtn;
     private RadioGroup rg;
     private ScrollView scroller;
 
@@ -55,9 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
         caffeineCaption = findViewById(R.id.caffeineAmount);
         caffeineAmount = findViewById(R.id.profileProgressBar);
         viewHistBtn = findViewById(R.id.profileViewHistBtn);
+        cafHistBtn = findViewById(R.id.profileCafHistBtn);
         rg = findViewById(R.id.profileRadioGroup);
         yourLocationsTV = findViewById(R.id.profileYourLocationsTV);
         scroller = findViewById(R.id.profileScroller);
+        addLocBtn = findViewById(R.id.ProfileAddLocBtn);
         header.setText("Hello " + FirebaseUIActivity.getUserName());
 
 
@@ -69,10 +73,12 @@ public class ProfileActivity extends AppCompatActivity {
         if (FirebaseUIActivity.getIsAdmin()){
             question.setText("You are a Merchant! :)");
             rg.setVisibility(View.GONE);
+
         }
         else {
             scroller.setVisibility(View.GONE);
             yourLocationsTV.setVisibility(View.GONE);
+            addLocBtn.setVisibility(View.GONE);
         }
 
         viewHistBtn.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +86,22 @@ public class ProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent historyIntent = new Intent(getBaseContext(), UserHistoryActivity.class);
                 startActivity(historyIntent);
+            }
+        });
+
+        cafHistBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent chartIntent = new Intent(getBaseContext(), CaffeineChartActivity.class);
+                startActivity(chartIntent);
+            }
+        });
+
+        addLocBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), AddLocActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -95,6 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                      Toast.makeText(getBaseContext(), "Yes Clicked", Toast.LENGTH_SHORT).show();
                         question.setText("You are a Merchant! :)");
                         rg.setVisibility(View.GONE);
+                        addLocBtn.setVisibility(View.VISIBLE);
                         scroller.setVisibility(View.VISIBLE);
                         yourLocationsTV.setVisibility(View.VISIBLE);
                         break;
@@ -123,6 +146,8 @@ public class ProfileActivity extends AppCompatActivity {
             myLocations.put(id, name);
             TextView nameView = locationView.findViewById(R.id.locationName);
             nameView.setText(name);
+            Button verifyBtn = locationView.findViewById(R.id.verifyButton);
+            verifyBtn.setVisibility(View.INVISIBLE);
             locationsView.addView(locationView, 0);
         }
     }
@@ -146,6 +171,30 @@ public class ProfileActivity extends AppCompatActivity {
 
         Intent editLocationIntent = new Intent(this, Edit_Location.class);
         editLocationIntent.putExtra("locationID", locationID);
+        startActivity(editLocationIntent);
+    }
+
+
+    public void OnSalesButtonClicked(View v) {
+        ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
+
+        TextView location = (TextView) editLayout.getChildAt(0);
+        String locationName = location.getText().toString();
+        String name = new String();
+        Iterator locationsIterator = locations.entrySet().iterator();
+        String locationID = "";
+        while (locationsIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)locationsIterator.next();
+            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            name = value.getString("Name");
+            if (name.equals(locationName)) {
+                locationID = (String) mapElement.getKey();
+            }
+        }
+
+        Intent editLocationIntent = new Intent(this, SellerHistoryActivity.class);
+        editLocationIntent.putExtra("locationID", locationID);
+        editLocationIntent.putExtra("locationName", name);
         startActivity(editLocationIntent);
     }
 }

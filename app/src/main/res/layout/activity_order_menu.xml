@@ -52,16 +52,17 @@
         </RelativeLayout>
 
         <Button
-            android:layout_width="114dp"
-            android:layout_height="78dp"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/menu"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="1dp"
             android:layout_marginBottom="114dp"
             android:background="@color/colorPrimary"
-            android:textColor="#ffffff"
             android:onClick="OnBuyButtonClicked"
-            android:paddingBottom="20dp"
-            android:text="Buy Items" />
+            android:paddingBottom="1dp"
+            android:text="Buy Items"
+            android:textColor="#ffffff" />
 
     </RelativeLayout>
 

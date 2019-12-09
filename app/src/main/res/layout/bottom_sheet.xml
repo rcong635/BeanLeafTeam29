@@ -19,7 +19,27 @@
 
 
 
+
+
+
+
+
+
+
+
     ]]>
+
+    <Button
+        android:id="@+id/btmLocHistory"
+        android:layout_width="251dp"
+        android:layout_height="39dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="View Sales"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#FFFEFE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/navigateBtn" />
 
     <TextView
         android:id="@+id/titleTV"
