@@ -2,32 +2,20 @@ package com.example.beanleafteam29;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.View;
-
 import android.view.LayoutInflater;
-
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import static com.example.beanleafteam29.FirebaseUIActivity.getUid;
 import static com.example.beanleafteam29.FirebaseUIActivity.getUserLocations;
 
@@ -146,8 +134,16 @@ public class ProfileActivity extends AppCompatActivity {
             myLocations.put(id, name);
             TextView nameView = locationView.findViewById(R.id.locationName);
             nameView.setText(name);
+
+            Button salesBtn = locationView.findViewById(R.id.salesButton);
+            Button editBtn = locationView.findViewById(R.id.editButton);
             Button verifyBtn = locationView.findViewById(R.id.verifyButton);
-            verifyBtn.setVisibility(View.INVISIBLE);
+
+
+            verifyBtn.setVisibility(View.VISIBLE);
+            salesBtn.setVisibility(View.INVISIBLE);
+            editBtn.setVisibility(View.INVISIBLE);
+
             locationsView.addView(locationView, 0);
         }
     }
@@ -196,5 +192,37 @@ public class ProfileActivity extends AppCompatActivity {
         editLocationIntent.putExtra("locationID", locationID);
         editLocationIntent.putExtra("locationName", name);
         startActivity(editLocationIntent);
+    }
+
+
+
+    public void OnVerifyButtonClicked(View v) {
+
+        ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
+
+//        TextView location = (TextView) editLayout.getChildAt(0);
+//        String locationName = location.getText().toString();
+//        String name = new String();
+//        Iterator locationsIterator = locations.entrySet().iterator();
+//        String locationID = "";
+//        while (locationsIterator.hasNext()) {
+//            Map.Entry mapElement = (Map.Entry)locationsIterator.next();
+//            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+//            name = value.getString("Name");
+//            if (name.equals(locationName)) {
+//                locationID = (String) mapElement.getKey();
+//            }
+//        }
+
+        Button salesBtn = editLayout.findViewById(R.id.verifyButton);
+        Button editBtn = editLayout.findViewById(R.id.editButton);
+        Button verifyBtn = editLayout.findViewById(R.id.salesButton);
+
+        salesBtn.setVisibility(View.VISIBLE);
+        editBtn.setVisibility(View.VISIBLE);
+        verifyBtn.setVisibility(View.INVISIBLE);
+
+
+
     }
 }

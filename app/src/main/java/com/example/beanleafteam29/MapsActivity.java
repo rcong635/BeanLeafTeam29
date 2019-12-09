@@ -280,9 +280,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                String location_name = document.getString("Name");
-                                GeoPoint coordinates = document.getGeoPoint("Coordinates");
-                                LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
+//                                boolean verified = document.getBoolean("Verified");
+//                                if (verified) {
+                                    String location_name = document.getString("Name");
+                                    GeoPoint coordinates = document.getGeoPoint("Coordinates");
+                                    LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
 
 //                                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
                                 Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected")
