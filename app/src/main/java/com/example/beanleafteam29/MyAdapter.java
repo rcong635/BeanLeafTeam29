@@ -13,8 +13,11 @@ import android.widget.TextView;
 import java.util.Map;
 import java.util.Vector;
 import android.util.SparseBooleanArray;
+import android.content.Context;
+import androidx.annotation.NonNull;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+
     private List<Map<String, Object> > print = new ArrayList<>();
     private List<Map<String, Object> > delete = new ArrayList<>();
     // sparse boolean array for checking the state of the items
@@ -34,30 +37,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
            return null;
 
         delete.clear();
-        Vector<Integer> del = new Vector();
-//        System.out.println("itemCheck size: " + itemStateArray.size());
-//        System.out.println("Current size: " + print.size());
+
         for(int i = 0; i < itemStateArray.size(); i++) {
             if(itemStateArray.valueAt(i)) { //delete this item
-                delete.add(print.get(i));
-                //del.add(i); //used to remove from StateArray
-                remove(i);
+                delete.add(print.get(itemStateArray.keyAt(i)));
+                print.remove(itemStateArray.keyAt(i));
             }
         }
-        for(int i=0; i< del.size(); i++){
-            itemStateArray.delete(del.get(i));
-        }
-
-//        for(int i = 0; i < itemStateArray.size(); i++) {
-//            if(itemStateArray.valueAt(i)) { //delete this item
-//                remove(i);
-//                //remove me from itemStateArray
-//            }
-//
-//        }
-        System.out.println("itemCheck size: " + itemStateArray.size());
-        System.out.println("Remaining Items: " + print.size());
-        //System.out.println("Delete List size:" + delete.size());
         return delete;
     }
 
@@ -102,13 +88,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public void add(int position, Map<String,Object> item) {
         print.add(position, item);
-        //itemStateArray.put(position, false);
         notifyItemInserted(position);
     }
 
     public void remove(int position) {
         print.remove(position);
-        //itemStateArray.delete(position);
         notifyItemRemoved(position);
     }
 
@@ -116,15 +100,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-        // create a new view
-        LayoutInflater inflater = LayoutInflater.from(
-                parent.getContext());
-        View v = inflater.inflate(R.layout.row_layout, parent, false);
-        // set the view's size, margins, paddings and layout parameters
-        ViewHolder vh = new ViewHolder(v);
+            // create a new view
+            LayoutInflater inflater = LayoutInflater.from(
+                    parent.getContext());
+            View v = inflater.inflate(R.layout.row_layout, parent, false);
+            // set the view's size, margins, paddings and layout parameters
+            ViewHolder vh = new ViewHolder(v);
 
-        return vh;
+            return vh;
+
     }
+
+
 
     // Replace the contents of a view (invoked by the layout manager) -- assigns the data
     @Override
@@ -137,7 +124,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         String caf = print.get(position).get("Caffeine").toString();
         holder.txtHeader.setText(name);
         holder.txtFooter.setText("Price: " + price + " Caffeine: " + caf);
-
         holder.chk_box.setId(position);
         holder.bind(position);
 
@@ -145,7 +131,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int adapterPosition = position;
-                System.out.println("I am pos: " + adapterPosition);
                 if (!itemStateArray.get(adapterPosition, false)) {
 
                     holder.chk_box.setChecked(true);

@@ -54,7 +54,7 @@ public class AddLocActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
+        //recyclerView.setHasFixedSize(true);
         //getLocMenu(myLocation);
         mAdapter = new MyAdapter();
         recyclerView.setAdapter(mAdapter);
@@ -64,7 +64,12 @@ public class AddLocActivity extends AppCompatActivity {
     public void addLocation() {
         Log.d(TAG, "AddLoc");
         totalMenu = mAdapter.updated_list();
-        if (!validate() || totalMenu.size() == 0 || totalMenu == null) {
+
+        if(totalMenu == null || totalMenu.size() == 0){
+            Toast.makeText(getBaseContext(), "Please provide an initial Menu", Toast.LENGTH_LONG).show();
+        }
+
+        if (!validate()) {
             AddFailed();
             return;
         }
@@ -193,11 +198,34 @@ public class AddLocActivity extends AppCompatActivity {
 
     //delete Menu Items
     public void deleteMenu(View v){
+        List<Map<String, Object>> deleteTracker = new ArrayList<>(mAdapter.delete_list()); //mAdapter.delete_list -- should update UI via adapter class
 
-        if(mAdapter.delete_list().size() == 0)
-        {
-            Toast.makeText(getBaseContext(), "Delete Menu Item Failed", Toast.LENGTH_LONG).show();
+        if(deleteTracker == null || deleteTracker.size() == 0){
+            Toast.makeText(getBaseContext(), "Please Select Items to delete", Toast.LENGTH_LONG).show();
+            return;
         }
+        //create the new View
+        totalMenu = new ArrayList<>(mAdapter.updated_list());
+        mAdapter = new MyAdapter();
+        recyclerView.setAdapter(mAdapter);
+        for(Map<String, Object> map: totalMenu){
+            mAdapter.add(mAdapter.getItemCount(), map);
+        }
+
+        final ProgressDialog progressDialog = new ProgressDialog(AddLocActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Deleting Menu Items...");
+        progressDialog.show();
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        // On complete call either AddSuccess or AddFail
+                        // depending on success
+                        // onSignupFailed();
+                        progressDialog.dismiss();
+                    }
+                }, 2000);
     }
 
     public void AddSuccessM() {
