@@ -189,10 +189,8 @@ public class OrderMenuActivity extends AppCompatActivity {
         for(HashMap<String, Object> locOrder : locOrders) {
             FirebaseUIActivity.addElementToLocationHistory(locOrder, locationID);
         }
-
         for(HashMap<String, Object> order : orders) {
-            FirebaseUIActivity.addElementToUserHistory(order); // THIS NEEDS TO BE CHANGED, PASS DOWN STRING THAT REPRESENTS THE ID
-
+            FirebaseUIActivity.addElementToUserHistory(order);
         }
         FirebaseUIActivity.setCaffeineLocal(FirebaseUIActivity.getCaffeineAmount() + caffeineInOrder);
     }

@@ -9,23 +9,18 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import static com.example.beanleafteam29.FirebaseUIActivity.getUid;
 import static com.example.beanleafteam29.FirebaseUIActivity.getUserLocations;
 
 public class ProfileActivity extends AppCompatActivity {
     private TextView question;
     private TextView header;
-
     private HashMap<String, Object> locations;
     private HashMap<String, String> myLocations;
-
     private TextView caffeineCaption;
     private TextView caffeineAmount;
     private TextView yourLocationsTV;
@@ -52,10 +47,8 @@ public class ProfileActivity extends AppCompatActivity {
         addLocBtn = findViewById(R.id.ProfileAddLocBtn);
         header.setText("Hello " + FirebaseUIActivity.getUserName());
 
-
         //set the name
         caffeineAmount.setText("" + FirebaseUIActivity.getCaffeineAmount());
-
 
         // if user is and admin change the question otherwise hide the non admin stuff
         if (FirebaseUIActivity.getIsAdmin()){
@@ -110,15 +103,11 @@ public class ProfileActivity extends AppCompatActivity {
                         yourLocationsTV.setVisibility(View.VISIBLE);
                         break;
                     case R.id.radioBtnNo:
-//                        Toast.makeText(getBaseContext(), "No Clicked", Toast.LENGTH_SHORT).show();
                         break;
 
                 }
             }
         });
-
-//        val name = findViewById< EditText >(R.id.profile);
-//        val header = findViewById<TextView>(R.id.profileHeader);
 
         myLocations = new HashMap<>();
         locations = getUserLocations();
@@ -129,19 +118,14 @@ public class ProfileActivity extends AppCompatActivity {
             View locationView = inflater.inflate(R.layout.editable_location, null);
             ViewGroup locationsView = findViewById(R.id.locations);
             String id = (String) mapElement.getKey();
-            //QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
             HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
-           // String name = value.getString("Name");
             String name = (String)value.get("Name");
             myLocations.put(id, name);
             TextView nameView = locationView.findViewById(R.id.locationName);
             nameView.setText(name);
-
             Button salesBtn = locationView.findViewById(R.id.salesButton);
             Button editBtn = locationView.findViewById(R.id.editButton);
             Button verifyBtn = locationView.findViewById(R.id.verifyButton);
-
-//            verifyBtn.setId(verifyBtn.getId() );
             if (FirebaseUIActivity.isStoreVerified(id)){
                 verifyBtn.setVisibility(View.INVISIBLE);
                 salesBtn.setVisibility(View.VISIBLE);
@@ -152,31 +136,24 @@ public class ProfileActivity extends AppCompatActivity {
                 salesBtn.setVisibility(View.INVISIBLE);
                 editBtn.setVisibility(View.INVISIBLE);
             }
-
-
             locationsView.addView(locationView, 0);
         }
     }
 
     public void OnEditButtonClicked(View v) {
         ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
-
         TextView location = (TextView) editLayout.getChildAt(0);
         String locationName = location.getText().toString();
-
         Iterator locationsIterator = locations.entrySet().iterator();
         String locationID = "";
         while (locationsIterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)locationsIterator.next();
-            //QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
             HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
-            //String name = value.getString("Name");
             String name = (String) value.get("Name");
             if (name.equals(locationName)) {
                 locationID = (String) mapElement.getKey();
             }
         }
-
         Intent editLocationIntent = new Intent(this, Edit_Location.class);
         editLocationIntent.putExtra("locationID", locationID);
         startActivity(editLocationIntent);
@@ -193,14 +170,12 @@ public class ProfileActivity extends AppCompatActivity {
         String locationID = "";
         while (locationsIterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)locationsIterator.next();
-            //QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
             HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
             name = (String)value.get("Name");
             if (name.equals(locationName)) {
                 locationID = (String) mapElement.getKey();
             }
         }
-
         Intent editLocationIntent = new Intent(this, SellerHistoryActivity.class);
         editLocationIntent.putExtra("locationID", locationID);
         editLocationIntent.putExtra("locationName", name);
@@ -210,12 +185,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     public void OnVerifyButtonClicked(View v) {
-
         ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
-//        HashMap<String, Object> allLocations = FirebaseUIActivity.getAllLocations();
-//        String locationId
-//
-
         TextView location = (TextView) editLayout.getChildAt(0);
         String locationName = location.getText().toString();
         String name = new String();
@@ -229,7 +199,6 @@ public class ProfileActivity extends AppCompatActivity {
                 locationID = (String) mapElement.getKey();
             }
         }
-
 
         Intent intent = new Intent(this, VerificationActivity.class);
         intent.putExtra("locationID", locationID);

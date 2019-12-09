@@ -90,8 +90,6 @@ public class AddLocActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 }, 3000);
-
-        //FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
     }
 
     public void AddSuccess() {
