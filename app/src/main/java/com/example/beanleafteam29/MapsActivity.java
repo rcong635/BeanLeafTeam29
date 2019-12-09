@@ -126,6 +126,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationManager.removeUpdates(this);
         mMap.setMinZoomPreference(15);
 
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location arg0) {
+                userLocation = new LatLng(arg0.getLatitude(), arg0.getLongitude());
+            }
+        });
+
         if (FirebaseUIActivity.isUserLoggedIn()) {
             if (FirebaseUIActivity.getNewSignIn()) {
                 FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
