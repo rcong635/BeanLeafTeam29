@@ -48,7 +48,7 @@ public class FirebaseUIActivity {
     private static MapsActivity caller;
     private static boolean isAdmin = false;
     private static FirebaseFirestore db;
-    private static HashMap<String, QueryDocumentSnapshot> userLocations = new HashMap<>();
+    private static HashMap<String, Object> userLocations = new HashMap<>();
     private static HashMap<String, Object> allLocations = new HashMap<>();
     private static long caffeineAmount = 0;
     private static boolean newSignIn = false;
@@ -298,7 +298,7 @@ public class FirebaseUIActivity {
                 });
     }
 
-    public static HashMap<String, QueryDocumentSnapshot> getUserLocations() {
+    public static HashMap<String, Object> getUserLocations() {
         return userLocations;
     }
 
@@ -322,7 +322,7 @@ public class FirebaseUIActivity {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         String ownerUid = document.getString("Owner");
                                         if (ownerUid.equals(uid))
-                                            userLocations.put(document.getId(), document);
+                                            userLocations.put(document.getId(), document.getData());
                                     }
                                 }
                             }
@@ -637,6 +637,7 @@ public class FirebaseUIActivity {
         db = FirebaseFirestore.getInstance();
         String id = db.collection("Locations").document().getId();
         allLocations.put(id, locations); // todo add menu to local variable too
+        userLocations.put(id, locations);
         db.collection("Locations").document(id)
                 .set(locations)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
