@@ -91,7 +91,7 @@ public class AddLocActivity extends AppCompatActivity {
                     }
                 }, 3000);
 
-        FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
+        //FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
     }
 
     public void AddSuccess() {
