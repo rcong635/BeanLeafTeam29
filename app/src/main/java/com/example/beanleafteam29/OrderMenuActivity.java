@@ -192,13 +192,7 @@ public class OrderMenuActivity extends AppCompatActivity {
 
         for(HashMap<String, Object> order : orders) {
             FirebaseUIActivity.addElementToUserHistory(order); // THIS NEEDS TO BE CHANGED, PASS DOWN STRING THAT REPRESENTS THE ID
-            /*String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvxyz";
-            StringBuilder sb = new StringBuilder(20);
-            for (int k = 0; k < 20; k++) {
-                int index = (int)(AlphaNumericString.length() * Math.random());
-                sb.append(AlphaNumericString.charAt(index));
-            }*/
-            //FirebaseUIActivity.setUserHistoryLocal(sb.toString(), order); // update local variable
+
         }
         FirebaseUIActivity.setCaffeineLocal(FirebaseUIActivity.getCaffeineAmount() + caffeineInOrder);
     }

@@ -139,10 +139,18 @@ public class ProfileActivity extends AppCompatActivity {
             Button editBtn = locationView.findViewById(R.id.editButton);
             Button verifyBtn = locationView.findViewById(R.id.verifyButton);
 
+//            verifyBtn.setId(verifyBtn.getId() );
+            if (FirebaseUIActivity.isStoreVerified(id)){
+                verifyBtn.setVisibility(View.INVISIBLE);
+                salesBtn.setVisibility(View.VISIBLE);
+                editBtn.setVisibility(View.VISIBLE);
+            }
+            else{
+                verifyBtn.setVisibility(View.VISIBLE);
+                salesBtn.setVisibility(View.INVISIBLE);
+                editBtn.setVisibility(View.INVISIBLE);
+            }
 
-            verifyBtn.setVisibility(View.VISIBLE);
-            salesBtn.setVisibility(View.INVISIBLE);
-            editBtn.setVisibility(View.INVISIBLE);
 
             locationsView.addView(locationView, 0);
         }
@@ -199,30 +207,42 @@ public class ProfileActivity extends AppCompatActivity {
     public void OnVerifyButtonClicked(View v) {
 
         ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
+//        HashMap<String, Object> allLocations = FirebaseUIActivity.getAllLocations();
+//        String locationId
+//
 
-//        TextView location = (TextView) editLayout.getChildAt(0);
-//        String locationName = location.getText().toString();
-//        String name = new String();
-//        Iterator locationsIterator = locations.entrySet().iterator();
-//        String locationID = "";
-//        while (locationsIterator.hasNext()) {
-//            Map.Entry mapElement = (Map.Entry)locationsIterator.next();
-//            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
-//            name = value.getString("Name");
-//            if (name.equals(locationName)) {
-//                locationID = (String) mapElement.getKey();
-//            }
+        TextView location = (TextView) editLayout.getChildAt(0);
+        String locationName = location.getText().toString();
+        String name = new String();
+        Iterator locationsIterator = locations.entrySet().iterator();
+        String locationID = "";
+        while (locationsIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)locationsIterator.next();
+            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            name = value.getString("Name");
+            if (name.equals(locationName)) {
+                locationID = (String) mapElement.getKey();
+            }
+        }
+
+
+        Intent intent = new Intent(this, VerificationActivity.class);
+        intent.putExtra("locationID", locationID);
+        intent.putExtra("locationName", name);
+        startActivity(intent);
+        finish();
+
+
+//        if(FirebaseUIActivity.isStoreVerified(locationID)){
+//            Button salesBtn = editLayout.findViewById(R.id.verifyButton);
+//            Button editBtn = editLayout.findViewById(R.id.editButton);
+//            Button verifyBtn = editLayout.findViewById(R.id.salesButton);
+//
+//
+//            salesBtn.setVisibility(View.VISIBLE);
+//            editBtn.setVisibility(View.VISIBLE);
+//            verifyBtn.setVisibility(View.INVISIBLE);
+//
 //        }
-
-        Button salesBtn = editLayout.findViewById(R.id.verifyButton);
-        Button editBtn = editLayout.findViewById(R.id.editButton);
-        Button verifyBtn = editLayout.findViewById(R.id.salesButton);
-
-        salesBtn.setVisibility(View.VISIBLE);
-        editBtn.setVisibility(View.VISIBLE);
-        verifyBtn.setVisibility(View.INVISIBLE);
-
-
-
     }
 }

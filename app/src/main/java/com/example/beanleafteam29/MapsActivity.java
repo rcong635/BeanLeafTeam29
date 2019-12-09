@@ -278,19 +278,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-//                                boolean verified = document.getBoolean("Verified");
-//                                if (verified) {
+                                boolean verified = document.getBoolean("Verified");
+                                if (verified) {
                                     String location_name = document.getString("Name");
                                     GeoPoint coordinates = document.getGeoPoint("Coordinates");
                                     LatLng latLng = new LatLng(coordinates.getLatitude(), coordinates.getLongitude());
 
 //                                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location_name));
-                                Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected")
-                                        .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.coffee, location_name))));
-                                locIdToMarker.put(document.getId(), newMarker);
-                                markerToLocId.put(newMarker, document.getId());
-                                markerToName.put(newMarker, location_name);
-                                markerToCoord.put(newMarker, coordinates);
+                                    Marker newMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Selected")
+                                            .icon(BitmapDescriptorFactory.fromBitmap(writeTextOnDrawable(R.drawable.coffee, location_name))));
+                                    locIdToMarker.put(document.getId(), newMarker);
+                                    markerToLocId.put(newMarker, document.getId());
+                                    markerToName.put(newMarker, location_name);
+                                    markerToCoord.put(newMarker, coordinates);
+                                }
                             }
                         } else {
                             Log.d("Some string", "Error getting documents: ", task.getException());

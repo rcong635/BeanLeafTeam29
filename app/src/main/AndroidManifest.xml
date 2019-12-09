@@ -19,7 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SellerHistoryActivity"></activity>
+        <activity android:name=".VerificationActivity"></activity>
+        <activity android:name=".SellerHistoryActivity" />
         <activity android:name=".CaffeineChartActivity" />
         <activity android:name=".Edit_Location" />
         <activity android:name=".OrderMenuActivity" />
