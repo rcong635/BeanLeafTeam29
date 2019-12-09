@@ -150,21 +150,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
-    <ScrollView
-        android:id="@+id/profileScroller"
-        android:layout_width="478dp"
-        android:layout_height="388dp"
-        android:layout_marginTop="8dp"
+
+    <LinearLayout
+        android:layout_width="389dp"
+        android:layout_height="248dp"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileYourLocationsTV">
 
-        <LinearLayout
-            android:id="@+id/locations"
+
+        <ScrollView
+            android:id="@+id/profileScroller"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            android:layout_height="241dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.454"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profileYourLocationsTV">
+
+            <LinearLayout
+                android:id="@+id/locations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+
+    </LinearLayout>
 
     <View
         android:id="@+id/divider2"

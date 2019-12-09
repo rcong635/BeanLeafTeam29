@@ -28,7 +28,6 @@ public class CaffeineChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_caffeine_chart);
 
-
         HashMap<String, Object> userHistory = FirebaseUIActivity.getUserHistory();
         long[] caffeineAtDay = new long[7];
         for (int i = 0; i < 7; i++) {

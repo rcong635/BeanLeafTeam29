@@ -39,7 +39,7 @@ public class BottomPanel extends BottomSheetDialogFragment {
         final Button button2 = v.findViewById(R.id.navigateBtn);
         Button button3 = v.findViewById(R.id.btmLocHistory);
 
-        HashMap<String, QueryDocumentSnapshot> myLocations = FirebaseUIActivity.getUserLocations();
+        HashMap<String, Object> myLocations = FirebaseUIActivity.getUserLocations();
         if (myLocations.containsKey(locId)) {
             button2.setVisibility(View.VISIBLE);
             button3.setVisibility(View.VISIBLE);

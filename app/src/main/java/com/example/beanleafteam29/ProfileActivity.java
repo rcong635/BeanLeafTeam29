@@ -2,32 +2,20 @@ package com.example.beanleafteam29;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.View;
-
 import android.view.LayoutInflater;
-
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import static com.example.beanleafteam29.FirebaseUIActivity.getUid;
 import static com.example.beanleafteam29.FirebaseUIActivity.getUserLocations;
 
@@ -35,7 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView question;
     private TextView header;
 
-    private HashMap<String, QueryDocumentSnapshot> locations;
+    private HashMap<String, Object> locations;
     private HashMap<String, String> myLocations;
 
     private TextView caffeineCaption;
@@ -141,13 +129,31 @@ public class ProfileActivity extends AppCompatActivity {
             View locationView = inflater.inflate(R.layout.editable_location, null);
             ViewGroup locationsView = findViewById(R.id.locations);
             String id = (String) mapElement.getKey();
-            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
-            String name = value.getString("Name");
+            //QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
+           // String name = value.getString("Name");
+            String name = (String)value.get("Name");
             myLocations.put(id, name);
             TextView nameView = locationView.findViewById(R.id.locationName);
             nameView.setText(name);
+
+            Button salesBtn = locationView.findViewById(R.id.salesButton);
+            Button editBtn = locationView.findViewById(R.id.editButton);
             Button verifyBtn = locationView.findViewById(R.id.verifyButton);
-            verifyBtn.setVisibility(View.INVISIBLE);
+
+//            verifyBtn.setId(verifyBtn.getId() );
+            if (FirebaseUIActivity.isStoreVerified(id)){
+                verifyBtn.setVisibility(View.INVISIBLE);
+                salesBtn.setVisibility(View.VISIBLE);
+                editBtn.setVisibility(View.VISIBLE);
+            }
+            else{
+                verifyBtn.setVisibility(View.VISIBLE);
+                salesBtn.setVisibility(View.INVISIBLE);
+                editBtn.setVisibility(View.INVISIBLE);
+            }
+
+
             locationsView.addView(locationView, 0);
         }
     }
@@ -162,8 +168,10 @@ public class ProfileActivity extends AppCompatActivity {
         String locationID = "";
         while (locationsIterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)locationsIterator.next();
-            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
-            String name = value.getString("Name");
+            //QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
+            //String name = value.getString("Name");
+            String name = (String) value.get("Name");
             if (name.equals(locationName)) {
                 locationID = (String) mapElement.getKey();
             }
@@ -185,8 +193,9 @@ public class ProfileActivity extends AppCompatActivity {
         String locationID = "";
         while (locationsIterator.hasNext()) {
             Map.Entry mapElement = (Map.Entry)locationsIterator.next();
-            QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
-            name = value.getString("Name");
+            //QueryDocumentSnapshot value = (QueryDocumentSnapshot) mapElement.getValue();
+            HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
+            name = (String)value.get("Name");
             if (name.equals(locationName)) {
                 locationID = (String) mapElement.getKey();
             }
@@ -196,5 +205,37 @@ public class ProfileActivity extends AppCompatActivity {
         editLocationIntent.putExtra("locationID", locationID);
         editLocationIntent.putExtra("locationName", name);
         startActivity(editLocationIntent);
+    }
+
+
+
+    public void OnVerifyButtonClicked(View v) {
+
+        ConstraintLayout editLayout = (ConstraintLayout) v.getParent();
+//        HashMap<String, Object> allLocations = FirebaseUIActivity.getAllLocations();
+//        String locationId
+//
+
+        TextView location = (TextView) editLayout.getChildAt(0);
+        String locationName = location.getText().toString();
+        String name = new String();
+        Iterator locationsIterator = locations.entrySet().iterator();
+        String locationID = "";
+        while (locationsIterator.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)locationsIterator.next();
+            HashMap<String, Object> value = (HashMap<String, Object>) mapElement.getValue();
+            name = (String) value.get("Name");
+            if (name.equals(locationName)) {
+                locationID = (String) mapElement.getKey();
+            }
+        }
+
+
+        Intent intent = new Intent(this, VerificationActivity.class);
+        intent.putExtra("locationID", locationID);
+        intent.putExtra("locationName", name);
+        startActivity(intent);
+        finish();
+
     }
 }
