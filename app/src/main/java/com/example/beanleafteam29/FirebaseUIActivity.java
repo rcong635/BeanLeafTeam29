@@ -19,11 +19,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import android.location.Address;
 
@@ -47,6 +49,7 @@ public class FirebaseUIActivity {
     private static boolean isAdmin = false;
     private static FirebaseFirestore db;
     private static HashMap<String, QueryDocumentSnapshot> userLocations = new HashMap<>();
+    private static HashMap<String, Object> allLocations = new HashMap<>();
     private static long caffeineAmount = 0;
     private static boolean newSignIn = false;
     private static  List<Map<String, Object> > menu = new ArrayList<>();
@@ -92,7 +95,7 @@ public class FirebaseUIActivity {
         }
     }
 
-    public static void setCaffeine(long amount) {
+    public static void setCaffeineLocal(long amount) {
         FirebaseUIActivity.caffeineAmount = amount;
     }
 
@@ -181,42 +184,43 @@ public class FirebaseUIActivity {
                 });
     }
 
-    public static void addLocation(String locationName, String address) {
-        Context myContext = MapsActivity.getAppContext();
-        Geocoder coder = new Geocoder(myContext);
-        double latitude = 0, longitude = 0;
-        try {
-            ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(address, 5);
-            for(Address add : adresses){
-                longitude = add.getLongitude();
-                latitude = add.getLatitude();
-            }
-        } catch(IOException ex) {
-            System.err.println (ex.toString());
-            System.err.println("IOException thrown in method addLocation()");
-            System.exit(1);
-        }
-        Map<String, Object> locations = new HashMap<>();
-        GeoPoint latLong = new GeoPoint(latitude, longitude);
-        locations.put("Coordinates", latLong);
-        locations.put("Name", locationName);
-        locations.put("Owner", getUid());
-        db = FirebaseFirestore.getInstance();
-        db.collection("Locations").document()
-                .set(locations)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("FirebaseUIActivity", "Error writing document", e);
-                    }
-                });
-    }
+//    public static void addLocation(String locationName, String address) {
+//        Context myContext = MapsActivity.getAppContext();
+//        Geocoder coder = new Geocoder(myContext);
+//        double latitude = 0, longitude = 0;
+//        try {
+//            ArrayList<Address> adresses = (ArrayList<Address>) coder.getFromLocationName(address, 5);
+//            for(Address add : adresses){
+//                longitude = add.getLongitude();
+//                latitude = add.getLatitude();
+//            }
+//        } catch(IOException ex) {
+//            System.err.println (ex.toString());
+//            System.err.println("IOException thrown in method addLocation()");
+//            System.exit(1);
+//        }
+//        Map<String, Object> locations = new HashMap<>();
+//        GeoPoint latLong = new GeoPoint(latitude, longitude);
+//        locations.put("Coordinates", latLong);
+//        locations.put("Name", locationName);
+//        locations.put("Owner", getUid());
+//        locations.put("Verified", false);
+//        db = FirebaseFirestore.getInstance();
+//        db.collection("Locations").document()
+//                .set(locations)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d("FirebaseUIActivity", "DocumentSnapshot successfully written!");
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.w("FirebaseUIActivity", "Error writing document", e);
+//                    }
+//                });
+//    }
 
     public static void makeAdmin() {
         if (isUserLoggedIn()) {
@@ -327,6 +331,53 @@ public class FirebaseUIActivity {
         }
     }
 
+    public static void queryDatabaseForAllLocations() {
+        allLocations.clear();
+        db = FirebaseFirestore.getInstance();
+        db.collection("Locations")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                allLocations.put(document.getId(), document.getData());
+                            }
+                        }
+                    }
+                });
+    }
+
+    public static boolean isStoreVerified(String storeID) {
+        if (allLocations.size() != 0) {
+            HashMap<String, Object> myDocument = null;
+            for (Map.Entry mapElement : allLocations.entrySet()) {
+                if (storeID.equals(mapElement.getKey())) {
+                    myDocument = (HashMap) mapElement.getValue();
+                    break;
+                }
+            }
+            return (boolean) myDocument.get("Verified");
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    public static HashMap<String, Object> getAllLocations() {
+        return allLocations;
+    }
+
+    public static void setStoreVerified(String storeID, boolean verified) {
+        // ALSO UPDATE LOCAL VARIABLE WHEN ADDING A STORE TO THE DATABASE
+        HashMap<String, Object> myLocation = (HashMap<String, Object>) allLocations.get(storeID);
+        myLocation.put("Verified", verified); // update local variable
+        db = FirebaseFirestore.getInstance();
+        Map<String, Object> data = new HashMap<>();
+        data.put("Verified", verified);
+        db.collection("Locations")
+                .document(storeID)
+                .set(data, SetOptions.merge());
+    }
 
     public static void attachListener() {
         mFirebaseAuth.addAuthStateListener(mAuthListener);
@@ -352,14 +403,23 @@ public class FirebaseUIActivity {
                 RC_SIGN_IN);
     }
 
-    public static void addElementToUserHistory(Map m) {
+    public static void addElementToUserHistory(HashMap<String, Object> m) {
+        final HashMap<String, Object> myOrder = (HashMap<String, Object>) m.clone();
         if(isUserLoggedIn()) {
-            db = FirebaseFirestore.getInstance();
             String uid = mFirebaseAuth.getUid();
+            //String id = db.collection("Users").document("History").collection("History").getId();
+            db = FirebaseFirestore.getInstance();
             db.collection("Users")
                     .document(uid)
                     .collection("History")
-                    .add(m);
+                    .add(m)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    setUserHistoryLocal(documentReference.getId(), myOrder);
+                    //Log.d("addElementToUserHistory", "DocumentSnapshot written with ID: " + documentReference.getId());
+                }
+            });
         }
     }
 
@@ -475,7 +535,6 @@ public class FirebaseUIActivity {
                         Log.w("deleteUser", "Error deleting document", e);
                     }
                 });
-
     }
 
     public static void getUserHistoryFb() {
@@ -506,7 +565,7 @@ public class FirebaseUIActivity {
         return userHistory;
     }
 
-    public static void setUserHistory(String key, HashMap<String, Object> doc) {
+    public static void setUserHistoryLocal(String key, HashMap<String, Object> doc) {
         userHistory.put(key, doc);
     }
 
@@ -574,8 +633,10 @@ public class FirebaseUIActivity {
         locations.put("Coordinates", latLong);
         locations.put("Name", locationName);
         locations.put("Owner", getUid());
+        locations.put("Verified", false);
         db = FirebaseFirestore.getInstance();
         String id = db.collection("Locations").document().getId();
+        allLocations.put(id, locations); // todo add menu to local variable too
         db.collection("Locations").document(id)
                 .set(locations)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -597,5 +658,4 @@ public class FirebaseUIActivity {
                     .add(map);
         }
     }
-
 }
