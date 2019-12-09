@@ -92,19 +92,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         FirebaseUIActivity.openFbReference("some_data", this);
         if (FirebaseUIActivity.isUserLoggedIn()) {
+            displayLocations();
             FirebaseUIActivity.queryDatabaseForCurrentUserLocations();
             FirebaseUIActivity.addUserToFirestore();
             FirebaseUIActivity.checkAdmin(this);
-            displayLocations();
             FirebaseUIActivity.computeCaffeineAmount();
             FirebaseUIActivity.getUserHistoryFb();
             FirebaseUIActivity.getUsernameFb();
         } else {
             FirebaseUIActivity.attachListener();
         }
-
-
-
+        FirebaseUIActivity.queryDatabaseForAllLocations();
     }
 
     public static Context getAppContext() {

@@ -49,8 +49,8 @@ public class Edit_Location extends AppCompatActivity {
     private static final String TAG = "Edit_Location";
     Dialog myDialog; //used for pop-ups
     private String myLocation = new String();
-    private static List<Map<String, Object> > input = new ArrayList<>();
-    private static List<Map<String, Object> > deleteTracker = new ArrayList<>();
+    private List<Map<String, Object> > input;
+    private List<Map<String, Object> > deleteTracker = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,17 +61,42 @@ public class Edit_Location extends AppCompatActivity {
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         myLocation = intent.getStringExtra("locationID");
-        FirebaseUIActivity.getLocationMenuFb(myLocation);
+
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        getLocMenu(myLocation);
+
+        input = new ArrayList<>();
+        if (FirebaseUIActivity.isUserLoggedIn()) {
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("Locations/" + myLocation + "/Menu")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if (task.getResult().size() != 0) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        Map<String, Object> myData = document.getData();
+                                        input.add(myData);
+                                    }
+
+                                }
+                            } else {
+                                Log.d("getLocMenu", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+
+
+        //getLocMenu(myLocation);
         mAdapter = new MyAdapter(input);
         recyclerView.setAdapter(mAdapter);
+
         mAdapter.notifyDataSetChanged();
         final ProgressDialog progressDialog = new ProgressDialog(Edit_Location.this);
         progressDialog.setIndeterminate(true);
@@ -82,7 +107,7 @@ public class Edit_Location extends AppCompatActivity {
                     public void run() {
                         progressDialog.dismiss();
                     }
-                }, 3000);
+                }, 4000);
     }
 
     public void ShowPopup(View v) { //used to show popup
@@ -230,8 +255,8 @@ public class Edit_Location extends AppCompatActivity {
     }
 
     //used to intailize the menu items
-    public static void getLocMenu(String myLocation) {
-        int counter = 0;
+    public void getLocMenu(String myLocation) {
+        input = new ArrayList<>();
         if (FirebaseUIActivity.isUserLoggedIn()) {
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             db.collection("Locations/" + myLocation + "/Menu")
@@ -244,8 +269,6 @@ public class Edit_Location extends AppCompatActivity {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         Map<String, Object> myData = document.getData();
                                         input.add(myData);
-                                        System.out.println(document);
-                                        System.out.println(task.getResult().size());
                                     }
 
                                 }

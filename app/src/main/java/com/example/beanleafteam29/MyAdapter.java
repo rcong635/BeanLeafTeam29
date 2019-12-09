@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 import java.util.Map;
+import java.util.Vector;
 import android.util.SparseBooleanArray;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
@@ -29,23 +30,34 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     }
 
     public List<Map<String, Object> > delete_list(){ //returns the updated list after deletion
-        System.out.println("itemCheck size: " + itemStateArray.size());
-        System.out.println("Current size: " + print.size());
+       if(print.size() == 0 || print == null)
+           return null;
+
+        delete.clear();
+        Vector<Integer> del = new Vector();
+//        System.out.println("itemCheck size: " + itemStateArray.size());
+//        System.out.println("Current size: " + print.size());
         for(int i = 0; i < itemStateArray.size(); i++) {
             if(itemStateArray.valueAt(i)) { //delete this item
                 delete.add(print.get(i));
-            }
-
-        }
-        for(int i = 0; i < itemStateArray.size(); i++) {
-            if(itemStateArray.valueAt(i)) { //delete this item
+                //del.add(i); //used to remove from StateArray
                 remove(i);
             }
-
         }
+        for(int i=0; i< del.size(); i++){
+            itemStateArray.delete(del.get(i));
+        }
+
+//        for(int i = 0; i < itemStateArray.size(); i++) {
+//            if(itemStateArray.valueAt(i)) { //delete this item
+//                remove(i);
+//                //remove me from itemStateArray
+//            }
+//
+//        }
         System.out.println("itemCheck size: " + itemStateArray.size());
-        System.out.println("Return size: " + print.size());
-        System.out.println("Delete List size:" + delete.size());
+        System.out.println("Remaining Items: " + print.size());
+        //System.out.println("Delete List size:" + delete.size());
         return delete;
     }
 
@@ -90,13 +102,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     public void add(int position, Map<String,Object> item) {
         print.add(position, item);
-        itemStateArray.put(position, false);
+        //itemStateArray.put(position, false);
         notifyItemInserted(position);
     }
 
     public void remove(int position) {
         print.remove(position);
-        itemStateArray.delete(position);
+        //itemStateArray.delete(position);
         notifyItemRemoved(position);
     }
 
@@ -132,13 +144,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.chk_box.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                System.out.println("Entered");
                 int adapterPosition = position;
+                System.out.println("I am pos: " + adapterPosition);
                 if (!itemStateArray.get(adapterPosition, false)) {
+
                     holder.chk_box.setChecked(true);
                     itemStateArray.put(adapterPosition, true);
                 }
                 else  {
+
                     holder.chk_box.setChecked(false);
                     itemStateArray.put(adapterPosition, false);
                 }
