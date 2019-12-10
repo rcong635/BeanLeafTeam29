@@ -31,7 +31,7 @@ public class AddLocActivity extends AppCompatActivity {
     private ImageButton delete;
     Dialog myDialog; //used for pop-ups
     private static final String TAG = "AddLocActivity";
-    private List<Map<String, Object>> totalMenu = new ArrayList<>();; //used to add all the menu items to database
+    private List<Map<String, Object>> totalMenu = new ArrayList<>(); //used to add all the menu items to database
     //private List<Map<String, Object>> deleteTracker;
     //For Recycler View
     private RecyclerView recyclerView;
@@ -67,6 +67,7 @@ public class AddLocActivity extends AppCompatActivity {
 
         if(totalMenu == null || totalMenu.size() == 0){
             Toast.makeText(getBaseContext(), "Please provide an initial Menu", Toast.LENGTH_LONG).show();
+            return;
         }
 
         if (!validate()) {
